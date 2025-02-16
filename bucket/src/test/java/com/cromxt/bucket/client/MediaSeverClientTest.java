@@ -1,8 +1,8 @@
 package com.cromxt.bucket.client;
 
-import com.cromxt.common.dtos.mediaserver.requests.MediaStatus;
-import com.cromxt.common.dtos.mediaserver.requests.NewMediaRequest;
-import com.cromxt.common.dtos.mediaserver.requests.UpdateMediaRequest;
+import com.cromxt.common.crombucket.dtos.mediaserver.requests.MediaStatus;
+import com.cromxt.common.crombucket.dtos.mediaserver.requests.NewMediaRequest;
+import com.cromxt.common.crombucket.dtos.mediaserver.requests.UpdateMediaRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

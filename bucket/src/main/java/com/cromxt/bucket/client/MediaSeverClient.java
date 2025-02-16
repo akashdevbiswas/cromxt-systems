@@ -1,8 +1,8 @@
 package com.cromxt.bucket.client;
 
 
-import com.cromxt.common.dtos.mediaserver.requests.NewMediaRequest;
-import com.cromxt.common.dtos.mediaserver.requests.UpdateMediaRequest;
+import com.cromxt.common.crombucket.dtos.mediaserver.requests.NewMediaRequest;
+import com.cromxt.common.crombucket.dtos.mediaserver.requests.UpdateMediaRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatusCode;
@@ -30,7 +30,6 @@ public class MediaSeverClient {
         assert mediaClientUrl != null;
 
         this.webClient = WebClient.builder()
-                .baseUrl(mediaClientUrl)
                 .build();
     }
 
@@ -40,11 +39,12 @@ public class MediaSeverClient {
     ){
         return webClient
                 .post()
+                .uri(URI.create(mediaClientUrl))
                 .header("Api-Key",API_KEY)
                 .bodyValue(mediaDetails)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError,clientResponse -> {
-                    log.error("Some error occurred");
+                    log.error("Error occurred while creating media object");
                     return Mono.error(new RuntimeException("Some error Occurred"));
                 })
                 .bodyToMono(String.class);
@@ -61,7 +61,20 @@ public class MediaSeverClient {
                 .bodyValue(updateMediaDetails)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError,clientResponse -> {
-                    log.error("Some error occurred");
+                    log.error("Error occurred while update the media object");
+                    return Mono.error(new RuntimeException("Some error Occurred"));
+                })
+                .bodyToMono(Void.class);
+    }
+
+    public Mono<Void> deleteMediaObject(String mediaId){
+        return webClient
+                .delete()
+                .uri(URI.create(mediaClientUrl+"/"+mediaId))
+                .header("Api-Key",API_KEY)
+                .retrieve()
+                .onStatus(HttpStatusCode::isError,clientResponse -> {
+                    log.error("Error occurred while delete the media object");
                     return Mono.error(new RuntimeException("Some error Occurred"));
                 })
                 .bodyToMono(Void.class);

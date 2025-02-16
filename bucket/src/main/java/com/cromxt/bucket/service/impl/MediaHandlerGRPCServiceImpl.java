@@ -4,9 +4,9 @@ import com.cromxt.bucket.client.MediaSeverClient;
 import com.cromxt.bucket.exception.InvalidMediaData;
 import com.cromxt.bucket.exception.MediaOperationException;
 import com.cromxt.bucket.service.FileService;
-import com.cromxt.common.dtos.mediaserver.requests.MediaStatus;
-import com.cromxt.common.dtos.mediaserver.requests.NewMediaRequest;
-import com.cromxt.common.dtos.mediaserver.requests.UpdateMediaRequest;
+import com.cromxt.common.crombucket.dtos.mediaserver.requests.MediaStatus;
+import com.cromxt.common.crombucket.dtos.mediaserver.requests.NewMediaRequest;
+import com.cromxt.common.crombucket.dtos.mediaserver.requests.UpdateMediaRequest;
 import com.cromxt.grpc.MediaHeadersKey;
 import com.cromxt.proto.files.*;
 import io.grpc.Context;
@@ -17,6 +17,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicLong;
@@ -52,7 +53,7 @@ public class MediaHandlerGRPCServiceImpl extends ReactorMediaHandlerServiceGrpc.
             );
 
 
-            mediaSeverClient.createMediaObject(mediaDetails).doOnNext(bucketId->{
+            mediaSeverClient.createMediaObject(mediaDetails).doOnNext(bucketId -> {
                 long actualSize = fileDetails.getFileSize();
                 try {
                     FileOutputStream fileOutputStream = new FileOutputStream(fileDetails.getAbsolutePath());
@@ -61,7 +62,7 @@ public class MediaHandlerGRPCServiceImpl extends ReactorMediaHandlerServiceGrpc.
                             .doOnNext(chunkData -> {
                                 byte[] data = chunkData.getFile().toByteArray();
                                 countSize.addAndGet(data.length);
-                                if(countSize.get() > actualSize){
+                                if (countSize.get() > actualSize) {
                                     throw new InvalidMediaData("The mentioned data is greater than the actual size");
                                 }
                                 try {
@@ -75,19 +76,34 @@ public class MediaHandlerGRPCServiceImpl extends ReactorMediaHandlerServiceGrpc.
                                     fileOutputStream.close();
                                     UpdateMediaRequest updateMediaDetails = new UpdateMediaRequest(
                                             countSize.get()
-                                            );
-                                    mediaSeverClient.updateMediaObject(bucketId,updateMediaDetails).doOnSubscribe((ignored)->{
-                                        log.info("Media saved successfully");
+                                    );
+                                    mediaSeverClient.updateMediaObject(bucketId, updateMediaDetails).doOnSubscribe((ignored) -> {
                                         sink.success(MediaUploadResponse.newBuilder()
                                                 .setStatus(OperationStatus.SUCCESS)
                                                 .setFileName(fileDetails.getFileId())
+                                                .build());
+                                    }).doOnError(e -> {
+                                        File file = new File(fileDetails.getAbsolutePath());
+
+                                        boolean result = file.delete();
+                                        if (!result) {
+                                            log.error("File not deleted with file name {} with error {}", fileDetails.getAbsolutePath(), e.getMessage());
+                                        }
+                                        sink.success(MediaUploadResponse.newBuilder()
+                                                .setStatus(OperationStatus.ERROR)
+                                                .setErrorMessage(e.getMessage())
                                                 .build());
                                     }).subscribe();
                                 } catch (IOException e) {
                                     throw new MediaOperationException(e.getMessage());
                                 }
                             })
-                            .doOnError(e->{
+                            .doOnError(e -> {
+                                mediaSeverClient.deleteMediaObject(bucketId)
+                                        .doOnError(err->{
+                                            log.error("Error occurred while deleting the media object from media server {}",err.getMessage());
+                                        })
+                                        .subscribe();
                                 sink.success(MediaUploadResponse.newBuilder()
                                         .setStatus(OperationStatus.ERROR)
                                         .setErrorMessage(e.getMessage())
@@ -100,6 +116,11 @@ public class MediaHandlerGRPCServiceImpl extends ReactorMediaHandlerServiceGrpc.
                             .build());
                 }
 
+            }).doOnError(e -> {
+                sink.success(MediaUploadResponse.newBuilder()
+                        .setStatus(OperationStatus.ERROR)
+                        .setErrorMessage(e.getMessage())
+                        .build());
             }).subscribe();
 
         });
