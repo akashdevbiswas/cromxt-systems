@@ -46,7 +46,7 @@ public class MediaHandlerGRPCServiceImpl extends ReactorMediaHandlerServiceGrpc.
 
             NewMediaRequest mediaDetails = new NewMediaRequest(
                     "user-1",
-                    bucketInformationService.getBUCKET_ID(),
+                    bucketInformationService.getBucketId(),
                     mediaMetaData.getContentType(),
                     fileDetails.getFileId(),
                     MediaStatus.UPLOADING

@@ -1,7 +1,9 @@
 package com.cromxt.bucket.service.impl;
 
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -11,28 +13,31 @@ import java.net.UnknownHostException;
 
 @Slf4j
 @Service
+@Getter
 public class BucketInformationService {
 
 
-    private final Boolean APPLICATION_HOSTNAME_AUTO_DISCOVERY;
-    @Getter
-    private final Integer APPLICATION_PORT;
-    @Getter
-    private final String BUCKET_ID;
+
+    @Getter(AccessLevel.NONE)
+    private final Boolean applicationHostnameAutoDiscovery;
+    private final Integer httpPort;
+    private final Integer rpcPort;
+    private final String bucketId;
 
 
     public BucketInformationService(
             Environment environment
     ) {
-        this.APPLICATION_HOSTNAME_AUTO_DISCOVERY = environment.getProperty("BUCKET_CONFIG_MACHINE_IP_AUTO_DISCOVERY", Boolean.class);
-        this.APPLICATION_PORT = environment.getProperty("BUCKET_CONFIG_GRPC_SERVICE_PORT", Integer.class);
-        this.BUCKET_ID = environment.getProperty("BUCKET_CONFIG_ID",String.class);
+        this.applicationHostnameAutoDiscovery = environment.getProperty("BUCKET_CONFIG_MACHINE_IP_AUTO_DISCOVERY", Boolean.class);
+        this.rpcPort = environment.getProperty("BUCKET_CONFIG_GRPC_SERVICE_PORT", Integer.class);
+        this.httpPort = environment.getProperty("BUCKET_CONFIG_HTTP_SERVICE_PORT", Integer.class);
+        this.bucketId = environment.getProperty("BUCKET_CONFIG_ID",String.class);
 
     }
 
     public String getApplicationHostname() {
         String hostName;
-        if(APPLICATION_HOSTNAME_AUTO_DISCOVERY) {
+        if(applicationHostnameAutoDiscovery) {
             try {
                 InetAddress ip = InetAddress.getLocalHost();
                 hostName = ip.getHostAddress();

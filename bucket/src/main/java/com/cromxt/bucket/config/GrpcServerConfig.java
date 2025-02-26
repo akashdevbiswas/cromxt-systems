@@ -20,7 +20,7 @@ public class GrpcServerConfig {
     public Server mediaHandlerGrpcServer(MediaHandlerGRPCServiceImpl mediaHandlerGRPCService,
                                          BucketInformationService bucketInformationService) throws IOException {
 
-        Integer grpcPort = bucketInformationService.getAPPLICATION_PORT();
+        Integer grpcPort = bucketInformationService.getRpcPort();
         String grpcHost = bucketInformationService.getApplicationHostname();
         assert grpcPort != null;
         assert grpcHost != null;

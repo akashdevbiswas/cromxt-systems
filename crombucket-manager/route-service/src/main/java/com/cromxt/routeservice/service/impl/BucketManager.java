@@ -215,11 +215,13 @@ public class BucketManager implements RoutingAdminServices, RoutingManagerServic
     }
 
 
-    @Scheduled(fixedRate = 5000)
-    private void printCollectionStatus(){
-        System.out.println(USAGE_QUEUE.toString());
-        System.out.println(AVAILABLE_BUCKETS.toString());
-    }
+//    @Scheduled(fixedRate = 5000)
+//    private void printCollectionStatus(){
+////        Debug method to monitor the buckets state comment the method in case of production.
+//        System.out.println(ONLINE_BUCKETS.toString());
+//        System.out.println(USAGE_QUEUE.toString());
+//        System.out.println(AVAILABLE_BUCKETS.toString());
+//    }
 
 
 
