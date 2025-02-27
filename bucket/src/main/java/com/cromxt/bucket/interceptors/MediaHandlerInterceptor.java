@@ -3,18 +3,26 @@ package com.cromxt.bucket.interceptors;
 import com.cromxt.proto.files.MediaHeaders;
 import io.grpc.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.env.Environment;
 
 import static com.cromxt.grpc.MediaHeadersKey.MEDIA_META_DATA;
 
 @Slf4j
 public class MediaHandlerInterceptor implements ServerInterceptor {
+    private final String secretKey;
+
+    public MediaHandlerInterceptor(String secretKey){
+        this.secretKey = secretKey;
+    }
     @Override
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call,
                                                                  Metadata headers,
                                                                  ServerCallHandler<ReqT, RespT> next) {
         MediaHeaders metaData = null;
         Metadata.Key<?> mediaMetaDatakey = MEDIA_META_DATA.getMetaDataKey();
-        log.info("Try to extract the metadata");
+
+//        TODO: Add the request validation to verify the request authenticity using JWT token.
+
         if (headers.containsKey(mediaMetaDatakey)) {
             {
                 try {

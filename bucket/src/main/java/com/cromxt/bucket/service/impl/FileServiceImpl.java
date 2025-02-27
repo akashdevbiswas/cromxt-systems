@@ -30,7 +30,6 @@ public class FileServiceImpl implements FileService {
         String fileId = generateName(extension);
         return FileDetails.builder()
                 .fileId(fileId)
-                .fileSize(metaData.getContentLength())
                 .contentType(metaData.getContentType())
                 .absolutePath(String.format("%s/file-%s.%s",PATH, fileId,extension))
                 .build();
@@ -48,19 +47,6 @@ public class FileServiceImpl implements FileService {
         return fileName;
     }
 
-    private String accessUrlBuilder(String bucketDetails,
-                                    String fileName,
-                                    String extension) {
-
-        return String.format("%s://%s:%s/api/v1/objects/%s.%s",
-                "protocol",
-                "Hostname",
-                "Port",
-                fileName,
-                extension);
-    }
-
-
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
@@ -71,7 +57,6 @@ public class FileServiceImpl implements FileService {
         private String fileId;
         private String contentType;
         private String absolutePath;
-        private Long fileSize;
 
     }
 

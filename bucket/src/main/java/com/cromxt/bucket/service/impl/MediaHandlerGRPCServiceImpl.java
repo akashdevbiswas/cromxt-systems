@@ -4,6 +4,7 @@ import com.cromxt.bucket.client.MediaSeverClient;
 import com.cromxt.bucket.exception.InvalidMediaData;
 import com.cromxt.bucket.exception.MediaOperationException;
 import com.cromxt.bucket.service.FileService;
+import com.cromxt.bucket.service.GRPCMediaService;
 import com.cromxt.common.crombucket.dtos.mediaserver.requests.MediaStatus;
 import com.cromxt.common.crombucket.dtos.mediaserver.requests.NewMediaRequest;
 import com.cromxt.common.crombucket.dtos.mediaserver.requests.UpdateMediaRequest;
@@ -12,6 +13,7 @@ import com.cromxt.proto.files.*;
 import io.grpc.Context;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -28,7 +30,8 @@ import static com.cromxt.bucket.service.impl.FileServiceImpl.FileDetails;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class MediaHandlerGRPCServiceImpl extends ReactorMediaHandlerServiceGrpc.MediaHandlerServiceImplBase {
+@Profile({"dev","prod"})
+public class MediaHandlerGRPCServiceImpl extends GRPCMediaService {
 
     private final FileService fileService;
     private final MediaSeverClient mediaSeverClient;
@@ -41,11 +44,13 @@ public class MediaHandlerGRPCServiceImpl extends ReactorMediaHandlerServiceGrpc.
         return Mono.create(sink -> {
 
 
+
             MediaHeaders mediaMetaData = MediaHeadersKey.MEDIA_META_DATA.getContextKey().get(Context.current());
             FileDetails fileDetails = fileService.generateFileDetails(mediaMetaData);
+            String clientId = mediaMetaData.getClientId();
 
             NewMediaRequest mediaDetails = new NewMediaRequest(
-                    "user-1",
+                    clientId,
                     bucketInformationService.getBucketId(),
                     mediaMetaData.getContentType(),
                     fileDetails.getFileId(),

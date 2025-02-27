@@ -2,14 +2,10 @@ BUCKET_CONFIG_MACHINE_IP_AUTO_DISCOVERY: true
 BUCKET_CONFIG_STORAGE_PATH: "/home/akash/Development/files"
 BUCKET_CONFIG_HTTP_SERVICE_PORT: 9090
 BUCKET_CONFIG_GRPC_SERVICE_PORT: 9091
-BUCKET_CONFIG_ID: "67bf64159fec6a457dbaf8d6"
-BUCKET_CONFIG_MEDIA_CLIENT_URL: "http://localhost:8903/service/v1/medias"
+BUCKET_CONFIG_ID: "bucket-1"
 spring:
   application:
     name: bucket
-  kafka:
-    bootstrap-servers: localhost:9092
-    producer:
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 server:
   port: ${BUCKET_CONFIG_HTTP_SERVICE_PORT}
+

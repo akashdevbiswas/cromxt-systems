@@ -2,6 +2,7 @@ package com.cromxt.bucket.service.impl;
 
 
 import com.cromxt.common.crombucket.kafka.BucketHeartBeat;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 
 @Service
+@Profile({"dev", "prod"})
 public class BucketInformationEventProducer {
 
     private final KafkaTemplate<String, BucketHeartBeat> kafkaTemplate;

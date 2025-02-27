@@ -64,7 +64,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.cromxt</groupId>
-			<artifactId>cloud-store-grpc-configuration</artifactId>
+			<artifactId>crombucket-grpc-configuration</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>

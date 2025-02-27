@@ -16,8 +16,6 @@ import java.net.UnknownHostException;
 @Getter
 public class BucketInformationService {
 
-
-
     @Getter(AccessLevel.NONE)
     private final Boolean applicationHostnameAutoDiscovery;
     private final Integer httpPort;

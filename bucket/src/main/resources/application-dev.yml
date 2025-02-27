@@ -1,0 +1,6 @@
+BUCKET_CONFIG_MEDIA_CLIENT_URL: "http://localhost:8903/service/v1/medias"
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

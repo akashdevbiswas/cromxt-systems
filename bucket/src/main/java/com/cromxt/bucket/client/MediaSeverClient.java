@@ -4,6 +4,7 @@ package com.cromxt.bucket.client;
 import com.cromxt.common.crombucket.dtos.mediaserver.requests.NewMediaRequest;
 import com.cromxt.common.crombucket.dtos.mediaserver.requests.UpdateMediaRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.net.URI;
 
 @Service
 @Slf4j
+@Profile({"dev","prod"})
 public class MediaSeverClient {
 
     private final WebClient webClient;
