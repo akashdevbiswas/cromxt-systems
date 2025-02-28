@@ -1,15 +1,11 @@
 package com.cromxt.bucket.service.impl;
 
 import com.cromxt.bucket.exception.MediaOperationException;
-import com.cromxt.bucket.models.MediaObjects;
 import com.cromxt.bucket.service.AccessURLGenerator;
 import com.cromxt.bucket.service.FileService;
 import com.cromxt.bucket.service.GRPCMediaService;
-import com.cromxt.grpc.MediaHeadersKey;
-import com.cromxt.proto.files.MediaHeaders;
-import com.cromxt.proto.files.MediaUploadRequest;
-import com.cromxt.proto.files.MediaUploadResponse;
-import com.cromxt.proto.files.OperationStatus;
+import com.cromxt.common.crombucket.grpc.MediaHeadersKey;
+import com.cromxt.proto.files.*;
 import io.grpc.Context;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +17,8 @@ import reactor.core.scheduler.Schedulers;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.Instant;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 
@@ -35,7 +31,6 @@ public class LocalMediaHandlerGRPCServiceImpl extends GRPCMediaService {
 
     private final FileService fileService;
     private final AccessURLGenerator accessURLGenerator;
-    private static final List<MediaObjects> SAVED_MEDIA_OBJECTS = new ArrayList<>();
 
 
     @Override
@@ -43,8 +38,8 @@ public class LocalMediaHandlerGRPCServiceImpl extends GRPCMediaService {
 
         return Mono.create(sink -> {
 
-            MediaHeaders mediaMetaData = MediaHeadersKey.MEDIA_META_DATA.getContextKey().get(Context.current());
-            FileServiceImpl.FileDetails fileDetails = fileService.generateFileDetails(mediaMetaData);
+            MediaDetails mediaDetails = MediaHeadersKey.MEDIA_DETAILS.getContextKey().get(Context.current());
+            FileServiceImpl.FileDetails fileDetails = fileService.generateFileDetails(mediaDetails.getContentType());
 
             try {
                 FileOutputStream fileOutputStream = new FileOutputStream(fileDetails.getAbsolutePath());
@@ -68,14 +63,18 @@ public class LocalMediaHandlerGRPCServiceImpl extends GRPCMediaService {
                                 throw new MediaOperationException(e.getMessage());
                             }
 
-                            SAVED_MEDIA_OBJECTS.add(
-                                    MediaObjects.builder()
-                                            .mediaId(fileDetails.getFileId())
-                                            .accessUrl(accessURLGenerator.generateAccessURL(fileDetails.getFileId()))
-                                            .contentType(fileDetails.getContentType())
-                                            .fileSize(countSize.get())
-                                            .build()
-                            );
+                            String accessURL = accessURLGenerator.generateAccessURL(fileDetails.getFileId()).block();
+
+                            sink.success(MediaUploadResponse.newBuilder()
+                                    .setStatus(OperationStatus.SUCCESS)
+                                    .setMediaObjectDetails(MediaObjectDetails.newBuilder()
+                                            .setFileId(fileDetails.getFileId())
+                                            .setAccessUrl(accessURL)
+                                            .setContentType(fileDetails.getContentType())
+                                            .setCreatedOn(Date.from(Instant.now()).toString())
+                                            .setFileSize(countSize.get())
+                                            .build())
+                                    .build());
                         })
                         .doOnError(e -> {
                             sink.success(MediaUploadResponse.newBuilder()
@@ -94,7 +93,5 @@ public class LocalMediaHandlerGRPCServiceImpl extends GRPCMediaService {
         });
 
     }
-
-
 
 }

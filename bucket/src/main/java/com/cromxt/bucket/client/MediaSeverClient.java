@@ -1,6 +1,7 @@
 package com.cromxt.bucket.client;
 
 
+import com.cromxt.common.crombucket.dtos.mediaserver.requests.MediaResponse;
 import com.cromxt.common.crombucket.dtos.mediaserver.requests.NewMediaRequest;
 import com.cromxt.common.crombucket.dtos.mediaserver.requests.UpdateMediaRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +37,7 @@ public class MediaSeverClient {
     }
 
 
-    public Mono<String> createMediaObject(
+    public Mono<MediaResponse> createMediaObject(
             NewMediaRequest mediaDetails
     ){
         return webClient
@@ -49,13 +50,14 @@ public class MediaSeverClient {
                     log.error("Error occurred while creating media object");
                     return Mono.error(new RuntimeException("Some error Occurred"));
                 })
-                .bodyToMono(String.class);
+                .bodyToMono(MediaResponse.class);
     }
 
     public Mono<Void> updateMediaObject(
             String mediaId,
             UpdateMediaRequest updateMediaDetails
     ){
+//      TODO:  Update this method to get the media entity from the media server.
         return webClient
                 .put()
                 .uri(URI.create(mediaClientUrl+"/"+mediaId))

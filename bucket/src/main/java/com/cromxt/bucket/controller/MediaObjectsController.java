@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/api/v1/objects")
 @RequiredArgsConstructor
-public class MediaObjectController {
+public class MediaObjectsController {
 
     private final MediaObjectService mediaObjectService;
 
@@ -31,6 +31,5 @@ public class MediaObjectController {
     public ResponseEntity<Mono<Void>> deleteMedia(@PathVariable(name = "objectId") String objectId) {
         return ResponseEntity.accepted().body(mediaObjectService.deleteMedia(objectId));
     }
-
 
 }

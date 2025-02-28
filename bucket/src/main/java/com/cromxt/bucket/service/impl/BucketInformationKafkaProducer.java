@@ -12,20 +12,21 @@ import java.io.File;
 
 @Service
 @Profile({"dev", "prod"})
-public class BucketInformationEventProducer {
+public class BucketInformationKafkaProducer {
 
     private final KafkaTemplate<String, BucketHeartBeat> kafkaTemplate;
     private final String topic;
-    private final String storagePath;
     private final String bucketId;
+    private final BucketInformationService bucketInformationService;
 
-    public BucketInformationEventProducer(
+    public BucketInformationKafkaProducer(
             KafkaTemplate<String, BucketHeartBeat> kafkaTemplate,
-            Environment environment) {
+            Environment environment,
+            BucketInformationService bucketInformationService) {
         this.kafkaTemplate = kafkaTemplate;
         this.topic = environment.getProperty("BUCKET_CONFIG_KAFKA_TOPIC_NAME", String.class, "buckets");
-        this.storagePath = environment.getProperty("BUCKET_CONFIG_STORAGE_PATH", String.class, "C:/Users/akash/Downloads/root_bucket");
         this.bucketId = environment.getProperty("BUCKET_CONFIG_ID", String.class);
+        this.bucketInformationService = bucketInformationService;
 
     }
 
@@ -35,11 +36,9 @@ public class BucketInformationEventProducer {
     }
 
     private BucketHeartBeat getBucketInformation(){
-        File rootDirectory = new File(storagePath);
-        long availableSpaceInBytes = rootDirectory.getFreeSpace();
         return BucketHeartBeat.builder()
                 .bucketId(bucketId)
-                .availableSpaceInBytes(availableSpaceInBytes)
+                .availableSpaceInBytes(bucketInformationService.getAvailableSpace())
                 .build();
     }
 

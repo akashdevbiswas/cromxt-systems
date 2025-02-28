@@ -1,4 +1,5 @@
 BUCKET_CONFIG_MEDIA_CLIENT_URL: "http://localhost:8903/service/v1/medias"
+BUCKET_CONFIG_SECRET_KEY: "secret"
 spring:
   kafka:
     bootstrap-servers: localhost:9092
