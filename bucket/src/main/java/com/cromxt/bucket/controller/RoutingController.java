@@ -2,7 +2,7 @@ package com.cromxt.bucket.controller;
 
 
 import com.cromxt.bucket.service.impl.BucketInformationService;
-import com.cromxt.common.crombucket.routeing.BucketDetails;
+import com.cromxt.common.crombucket.routeing.BucketDetailsResponse;
 import com.cromxt.common.crombucket.routeing.MediaDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
@@ -20,11 +20,9 @@ public class RoutingController {
     private final BucketInformationService bucketInformationService;
 
     @PostMapping
-    public BucketDetails getBucketDetails(@RequestBody MediaDetails ignored) {
-        return BucketDetails.builder()
-                .bucketId(bucketInformationService.getBucketId())
+    public BucketDetailsResponse getBucketDetails(@RequestBody MediaDetails ignored) {
+        return BucketDetailsResponse.builder()
                 .hostName(bucketInformationService.getApplicationHostname())
-                .httpPort(bucketInformationService.getHttpPort())
                 .rpcPort(bucketInformationService.getRpcPort())
                 .build();
     }

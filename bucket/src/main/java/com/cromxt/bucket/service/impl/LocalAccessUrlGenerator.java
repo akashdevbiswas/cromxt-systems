@@ -13,9 +13,9 @@ public class LocalAccessUrlGenerator implements AccessURLGenerator {
     private final BucketInformationService bucketInformationService;
 
     @Override
-    public Mono<String> generateAccessURL(String mediaId) {
+    public Mono<String> generateAccessURL(String mediaId, String BucketId) {
         String hostName = "localhost";
         Integer port = bucketInformationService.getHttpPort();
-        return Mono.just(String.format("http://%s:%s/%s", hostName, port, mediaId));
+        return Mono.just(String.format("http://%s:%s/api/v1/objects/%s", hostName, port, mediaId));
     }
 }

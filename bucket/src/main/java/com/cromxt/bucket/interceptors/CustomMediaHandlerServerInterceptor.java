@@ -40,7 +40,7 @@ public class CustomMediaHandlerServerInterceptor implements ServerInterceptor {
 
                     String clientId = bucketAuthorization.extractClientId(secret);
                     MediaDetails mediaDetails = MediaDetails.newBuilder()
-                            .setContentType(metaData.getContentType())
+                            .setExtension(metaData.getExtension())
                             .setClientId(clientId)
                             .build();
 

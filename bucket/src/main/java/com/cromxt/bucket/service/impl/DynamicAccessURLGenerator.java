@@ -20,7 +20,7 @@ public class DynamicAccessURLGenerator implements AccessURLGenerator {
 
 
     @Override
-    public Mono<String> generateAccessURL(String mediaId) {
+    public Mono<String> generateAccessURL(String mediaId,String BucketId) {
         return Mono.just("aLongURL");
     }
 }

@@ -26,7 +26,6 @@ public class MediaObjectsController {
         return ResponseEntity.ok(mediaObjectService.getFile(objectId));
     }
 
-
     @DeleteMapping("/{objectId}")
     public ResponseEntity<Mono<Void>> deleteMedia(@PathVariable(name = "objectId") String objectId) {
         return ResponseEntity.accepted().body(mediaObjectService.deleteMedia(objectId));

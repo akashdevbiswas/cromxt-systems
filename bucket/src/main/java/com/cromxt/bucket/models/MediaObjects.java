@@ -9,8 +9,9 @@ import lombok.*;
 @Getter
 @Setter
 public class MediaObjects {
-    private String mediaId;
+    private String fileId;
     private Long fileSize;
-    private String contentType;
+    private String extension;
     private String accessUrl;
+    private String absolutePath;
 }
