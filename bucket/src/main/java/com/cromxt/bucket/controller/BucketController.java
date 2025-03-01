@@ -18,6 +18,8 @@ public class BucketController {
 
     private final BucketService bucketService;
 
+//   Define the admin end points which will used to manage the bucket.
+
 
 
 }
