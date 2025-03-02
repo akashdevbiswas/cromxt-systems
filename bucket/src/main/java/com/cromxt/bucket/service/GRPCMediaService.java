@@ -1,7 +1,7 @@
 package com.cromxt.bucket.service;
 
 import com.cromxt.bucket.models.MediaObjects;
-import com.cromxt.common.crombucket.dtos.mediaserver.response.MediaEntityDTO;
+import com.cromxt.common.crombucket.dtos.mediamanager.response.MediaEntityDTO;
 import com.cromxt.proto.files.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

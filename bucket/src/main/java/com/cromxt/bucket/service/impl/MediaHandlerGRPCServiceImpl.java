@@ -1,9 +1,9 @@
 package com.cromxt.bucket.service.impl;
 
-import com.cromxt.bucket.client.MediaSeverClient;
+import com.cromxt.bucket.client.MediaManagerClient;
 import com.cromxt.bucket.service.FileService;
 import com.cromxt.bucket.service.GRPCMediaService;
-import com.cromxt.common.crombucket.dtos.mediaserver.requests.UpdateMediaRequestDTO;
+import com.cromxt.common.crombucket.dtos.mediamanager.requests.UpdateMediaRequestDTO;
 import com.cromxt.common.crombucket.grpc.MediaHeadersKey;
 import com.cromxt.proto.files.*;
 import io.grpc.Context;
@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono;
 public class MediaHandlerGRPCServiceImpl extends GRPCMediaService {
 
     private final FileService fileService;
-    private final MediaSeverClient mediaSeverClient;
+    private final MediaManagerClient mediaManagerClient;
     private final BucketInformationService bucketInformationService;
     private final DynamicAccessURLGenerator dynamicAccessURLGenerator;
 
@@ -35,11 +35,11 @@ public class MediaHandlerGRPCServiceImpl extends GRPCMediaService {
 
         String clientId = mediaDetails.getClientId();
 
-        return mediaSeverClient.createMediaObject(clientId).flatMap(newMediaResponse ->
+        return mediaManagerClient.createMediaObject(clientId).flatMap(newMediaResponse ->
                 fileService.saveFile(mediaDetails.getExtension(), newMediaResponse.spaceLeft(), request)
                         .flatMap(mediaObjects -> {
-                            UpdateMediaRequestDTO updateMediaRequestDTO = MediaSeverClient.createUpdateMediaRequest(mediaObjects);
-                            return mediaSeverClient.updateMediaObject(newMediaResponse.mediaId(), updateMediaRequestDTO)
+                            UpdateMediaRequestDTO updateMediaRequestDTO = MediaManagerClient.createUpdateMediaRequest(mediaObjects);
+                            return mediaManagerClient.updateMediaObject(newMediaResponse.mediaId(), updateMediaRequestDTO)
                                     .map(super::createNewSuccessMediaResponse);
                         }));
     }

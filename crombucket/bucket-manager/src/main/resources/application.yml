@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: bucket-manager
+server:
+  port: 8080
