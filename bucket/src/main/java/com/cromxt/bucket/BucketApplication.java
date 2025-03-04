@@ -1,5 +1,6 @@
 package com.cromxt.bucket;
 
+import com.cromxt.bucket.constants.FileConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -24,15 +25,15 @@ public class BucketApplication {
     @Bean
     public CommandLineRunner commandLineRunner(Environment environment, ApplicationContext context) {
         return args -> {
-            String PATH = environment.getProperty("BUCKET_CONFIG_STORAGE_PATH", String.class);
-            assert PATH != null;
-            File rootDirectory = new File(PATH);
-            if (!rootDirectory.exists()) {
-                boolean result = rootDirectory.mkdirs();
-                if (!result) {
+            String path = environment.getProperty("BUCKET_CONFIG_STORAGE_PATH", String.class);
+            assert path != null;
+            File baseDirectory = new File(path);
+            if (!baseDirectory.exists()) {
+                if (!baseDirectory.mkdirs()) {
                     log.error("Unable to create directory");
                     SpringApplication.exit(context, () -> 1);
                 }
+
             }
 
         };

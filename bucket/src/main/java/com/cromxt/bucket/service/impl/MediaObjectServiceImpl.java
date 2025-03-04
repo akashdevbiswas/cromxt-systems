@@ -1,7 +1,7 @@
 package com.cromxt.bucket.service.impl;
 
 import com.cromxt.bucket.exception.InvalidMediaData;
-import com.cromxt.bucket.models.MediaObjects;
+import com.cromxt.bucket.models.FileObjects;
 import com.cromxt.bucket.service.FileService;
 import com.cromxt.bucket.service.MediaObjectService;
 import io.netty.buffer.ByteBufAllocator;
@@ -29,16 +29,15 @@ public class MediaObjectServiceImpl implements MediaObjectService {
     private final ResourceLoader resourceLoader;
 
     @Override
-    public Flux<DataBuffer> getFile(String mediaId) {
+    public Flux<DataBuffer> getFile(String fileName) {
 
-        Mono<MediaObjects> mediaObjectsMono = fileService.getMediaObjectById(mediaId);
+        Mono<FileObjects> mediaObjectsMono = fileService.getFileByFileName(fileName);
 
         return Flux.from(mediaObjectsMono).flatMap(
                 mediaObject -> {
-
                     Resource resource = resourceLoader.getResource("file:" + mediaObject.getAbsolutePath());
                     if (!resource.exists()) {
-                        log.error("File not found {}", mediaId);
+                        log.error("File not found {}", fileName);
                         return Flux.error(new InvalidMediaData("File not found"));
                     }
                     NettyDataBufferFactory nettyDataBufferFactory = new NettyDataBufferFactory(
@@ -56,18 +55,14 @@ public class MediaObjectServiceImpl implements MediaObjectService {
     }
 
     @Override
-    public Mono<Void> deleteMedia(String objectId) {
-        return Mono.create((sink) -> {
-            Resource resource = resourceLoader.getResource("file:" + objectId);
-            try {
-                File file = resource.getFile();
-                file.delete();
-                sink.success();
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-                sink.error(e);
-            }
-        });
+    public Mono<Void> deleteMedia(String fileId) {
+//        Delete also the media which present in the remote server.
+        return fileService.deleteFileByFileName(fileId).then();
+    }
+
+    @Override
+    public Mono<Void> changeFileVisibility(String fileId) {
+        return fileService.changeFileVisibility(fileId).then();
     }
 
 

@@ -6,6 +6,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface MediaObjectService {
-    Flux<DataBuffer> getFile(String mediaId);
+    Flux<DataBuffer> getFile(String fileName);
     Mono<Void> deleteMedia(String objectId);
+    Mono<Void> changeFileVisibility(String objectId);
 }

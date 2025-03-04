@@ -5,7 +5,4 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface BucketService {
-    Flux<MediaObjects> getAllAvailableMedias();
-
-    Mono<MediaObjects> getMediaObject(String mediaId);
 }

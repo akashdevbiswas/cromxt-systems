@@ -1,18 +1,22 @@
 package com.cromxt.bucket.service;
 
 
-import com.cromxt.bucket.models.MediaObjects;
+import com.cromxt.bucket.constants.FileConstants;
+import com.cromxt.bucket.models.FileObjects;
 import com.cromxt.proto.files.MediaUploadRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface FileService {
-    Flux<MediaObjects> getAllAvailableMedias();
 
-    Mono<MediaObjects> saveFile(String extension, Long spaceUserLeft, Flux<MediaUploadRequest> data);
 
-    Mono<MediaObjects> getMediaObjectById(String mediaId);
+    Mono<FileObjects> saveFile(String extension, Long spaceUserLeft, Flux<MediaUploadRequest> data,Boolean isPublic);
 
-    Mono<MediaObjects> deleteMediaObjectById(String mediaId);
+    Mono<FileObjects> getFileByFileName(String fileName);
+
+    Mono<FileObjects> deleteFileByFileName(String fileName);
+
+    Mono<FileObjects> changeFileVisibility(String fileId);
+
 }
 
