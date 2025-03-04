@@ -3,7 +3,7 @@ package com.cromxt.bucket.service.impl;
 import com.cromxt.bucket.exception.InvalidMediaData;
 import com.cromxt.bucket.models.FileObjects;
 import com.cromxt.bucket.service.FileService;
-import com.cromxt.bucket.service.MediaObjectService;
+import com.cromxt.bucket.service.FileObjectsService;
 import io.netty.buffer.ByteBufAllocator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,14 +16,13 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class MediaObjectServiceImpl implements MediaObjectService {
+public class FileObjectsServiceImpl implements FileObjectsService {
 
     private final FileService fileService;
     private final ResourceLoader resourceLoader;
@@ -62,7 +61,7 @@ public class MediaObjectServiceImpl implements MediaObjectService {
 
     @Override
     public Mono<Void> changeFileVisibility(String fileId) {
-        return fileService.changeFileVisibility(fileId).then();
+        return fileService.changeFileVisibility(fileId, ).then();
     }
 
 

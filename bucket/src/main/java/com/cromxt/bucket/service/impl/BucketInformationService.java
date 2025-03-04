@@ -21,7 +21,6 @@ public class BucketInformationService {
     private final String applicationHostname;
     private final String baseDirectory;
 
-
     public BucketInformationService(
             Environment environment
     ) {
@@ -30,7 +29,6 @@ public class BucketInformationService {
         this.rpcPort = environment.getProperty("BUCKET_CONFIG_GRPC_SERVICE_PORT", Integer.class);
         this.httpPort = environment.getProperty("BUCKET_CONFIG_HTTP_SERVICE_PORT", Integer.class);
         this.bucketId = environment.getProperty("BUCKET_CONFIG_ID", String.class);
-
     }
 
     private String findHostName() {

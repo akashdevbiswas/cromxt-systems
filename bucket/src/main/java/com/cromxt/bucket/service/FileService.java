@@ -1,7 +1,6 @@
 package com.cromxt.bucket.service;
 
 
-import com.cromxt.bucket.constants.FileConstants;
 import com.cromxt.bucket.models.FileObjects;
 import com.cromxt.proto.files.MediaUploadRequest;
 import reactor.core.publisher.Flux;
@@ -16,7 +15,7 @@ public interface FileService {
 
     Mono<FileObjects> deleteFileByFileName(String fileName);
 
-    Mono<FileObjects> changeFileVisibility(String fileId);
+    Mono<FileObjects> changeFileVisibility(String fileId, Boolean visibility);
 
 }
 

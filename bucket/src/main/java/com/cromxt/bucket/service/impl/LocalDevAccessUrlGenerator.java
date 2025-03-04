@@ -13,9 +13,9 @@ public class LocalDevAccessUrlGenerator implements AccessURLGenerator {
     private final BucketInformationService bucketInformationService;
 
     @Override
-    public String generateAccessURL(String fileName) {
+    public String generateAccessURL(String fileName, String extension) {
         String hostName = "localhost";
         Integer port = bucketInformationService.getHttpPort();
-        return String.format("http://%s:%s/api/v1/objects/%s", hostName, port, fileName);
+        return String.format("http://%s:%s/api/v1/objects/%s.%s", hostName, port, fileName,extension);
     }
 }

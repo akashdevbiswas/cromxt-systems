@@ -9,6 +9,7 @@ import java.time.LocalDate;
 
 public abstract class GRPCMediaService extends ReactorMediaHandlerServiceGrpc.MediaHandlerServiceImplBase{
     protected MediaUploadResponse createNewSuccessMediaResponse(MediaObjects mediaObjects) {
+        System.out.println(mediaObjects);
         return MediaUploadResponse.newBuilder()
                 .setStatus(OperationStatus.SUCCESS)
                 .setMediaObjectDetails(MediaObjectDetails.newBuilder()

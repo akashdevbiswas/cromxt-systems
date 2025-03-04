@@ -16,8 +16,6 @@ import reactor.core.scheduler.Schedulers;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -71,6 +69,7 @@ public class FileServiceImpl implements FileService {
                                     .fileSize(countSize.get())
                                     .extension(extension)
                                     .absolutePath(absolutePath)
+                                    .isPublic(isPublic)
                                     .build();
                             sink.success(newMediaObject);
                         })
@@ -122,8 +121,9 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Mono<FileObjects> changeFileVisibility(String completeFileName) {
+    public Mono<FileObjects> changeFileVisibility(String completeFileName, Boolean visibility) {
         return Mono.create(sink -> {
+
             File file = new File(completeFileName);
             String newFileName = changeTheFileAccess(completeFileName);
             String absolutePath = getAbsolutePath(newFileName);
@@ -215,5 +215,20 @@ public class FileServiceImpl implements FileService {
             return Optional.empty();
         }
         return Optional.of(fileName.startsWith(publicAccess));
+    }
+
+    private String extractFileName(String fileName) {
+        if(fileName.startsWith("cm-"+FileConstants.PUBLIC_ACCESS.getAccessKey()) || fileName.startsWith("cm-"+FileConstants.PRIVATE_ACCESS.getAccessKey())){
+            return fileName.substring(10);
+        }
+        return null;
+    }
+
+    private Map<String,String> validateFileName(String completeFileName) {
+        return null;
+    }
+
+    enum FileAttributes {
+        FILE_NAME_WITHOUT_ACCESS_KEY, FILE_SIZE, FILE_EXTENSION, FILE_IS_PUBLIC
     }
 }

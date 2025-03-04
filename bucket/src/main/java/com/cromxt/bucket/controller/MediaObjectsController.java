@@ -1,7 +1,7 @@
 package com.cromxt.bucket.controller;
 
 
-import com.cromxt.bucket.service.MediaObjectService;
+import com.cromxt.bucket.service.FileObjectsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.MediaType;
@@ -12,36 +12,29 @@ import reactor.core.publisher.Mono;
 
 
 @RestController
-@RequestMapping("/api/v1/objects/public")
+@RequestMapping("/api/v1/objects")
 @RequiredArgsConstructor
 public class MediaObjectsController {
 
-    private final MediaObjectService mediaObjectService;
+    private final FileObjectsService fileObjectsService;
 
     @GetMapping(value = "/{fileId}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<Flux<DataBuffer>> getPublicObject(
-            @PathVariable(name = "objectId") String fileId
+            @PathVariable String fileId
     ) {
-        return ResponseEntity.ok(mediaObjectService.getFile(fileId));
-    }
-
-    @GetMapping(value = "/{fileId}")
-    public ResponseEntity<Flux<DataBuffer>> getPrivateObject(
-            @PathVariable(name = "objectId") String fileId
-    ){
-        return ResponseEntity.ok(mediaObjectService.getFile(fileId));
+        return ResponseEntity.ok(fileObjectsService.getFile(fileId));
     }
 
     @PatchMapping(value = "/{fileId}")
     public ResponseEntity<Mono<Void>> changeVisibility(@PathVariable String fileId,
                                                        @RequestParam(name = "visibility", defaultValue = "true", required = false) Boolean visibility) {
-        return ResponseEntity.accepted().body(mediaObjectService.changeFileVisibility(fileId));
+        return ResponseEntity.accepted().body(fileObjectsService.changeFileVisibility(fileId));
     }
 
 
     @DeleteMapping("/{fileId}")
-    public ResponseEntity<Mono<Void>> deleteMedia(@PathVariable(name = "objectId") String fileId) {
-        return ResponseEntity.accepted().body(mediaObjectService.deleteMedia(fileId));
+    public ResponseEntity<Mono<Void>> deleteMedia(@PathVariable String fileId) {
+        return ResponseEntity.accepted().body(fileObjectsService.deleteMedia(fileId));
     }
 
 }

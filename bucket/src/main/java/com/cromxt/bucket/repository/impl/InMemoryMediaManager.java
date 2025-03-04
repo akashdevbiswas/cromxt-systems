@@ -6,7 +6,7 @@ import com.cromxt.bucket.models.MediaObjects;
 import com.cromxt.bucket.repository.MediaManager;
 import com.cromxt.bucket.repository.MediaRepository;
 import com.cromxt.bucket.service.AccessURLGenerator;
-import org.springframework.beans.factory.annotation.Qualifier;
+import com.cromxt.bucket.service.impl.BucketInformationService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -22,9 +22,11 @@ public class InMemoryMediaManager extends MediaManager implements MediaRepositor
 
     //    This hashmap is a local database of media objects which are saved in the system.
     private static final Map<String, MediaObjects> MEDIA_OBJECTS_EXISTS = new HashMap<>();
+    private final BucketInformationService bucketInformationService;
 
-    public InMemoryMediaManager(AccessURLGenerator accessURLGenerator) {
+    public InMemoryMediaManager(AccessURLGenerator accessURLGenerator, BucketInformationService bucketInformationService) {
         super(accessURLGenerator);
+        this.bucketInformationService = bucketInformationService;
     }
 
     @Override
@@ -68,8 +70,9 @@ public class InMemoryMediaManager extends MediaManager implements MediaRepositor
     }
 
     private MediaObjects creteFileObject(FileObjects fileObjects) {
-        String accessUrl = accessURLGenerator.generateAccessURL(fileObjects.getFileId());
+        String accessUrl = accessURLGenerator.generateAccessURL(fileObjects.getFileId(), fileObjects.getExtension());
         return MediaObjects.builder()
+                .mediaId(fileObjects.getFileId())
                 .fileId(fileObjects.getFileId())
                 .accessUrl(accessUrl)
                 .extension(fileObjects.getExtension())

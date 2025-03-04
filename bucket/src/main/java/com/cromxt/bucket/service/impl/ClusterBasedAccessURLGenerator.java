@@ -14,7 +14,7 @@ public class ClusterBasedAccessURLGenerator implements AccessURLGenerator {
     private final BucketInformationService bucketInformationService;
 
     @Override
-    public String generateAccessURL(String mediaId) {
+    public String generateAccessURL(String mediaId, String extension) {
         return "aLongURL";
     }
 }

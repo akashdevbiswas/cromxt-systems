@@ -8,6 +8,7 @@ import lombok.*;
 @Builder
 @Getter
 @Setter
+@ToString
 public class MediaObjects {
     private String mediaId;
     private String fileId;
@@ -15,7 +16,4 @@ public class MediaObjects {
     private String extension;
     private String accessUrl;
     private Boolean isPublic;
-    private String regionId;
-    private String clusterId;
-    private String bucketId;
 }
