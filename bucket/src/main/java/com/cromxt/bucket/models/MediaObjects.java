@@ -15,5 +15,5 @@ public class MediaObjects {
     private Long fileSize;
     private String extension;
     private String accessUrl;
-    private Boolean isPublic;
+    private String visibility;
 }

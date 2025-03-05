@@ -1,6 +1,7 @@
 package com.cromxt.bucket.controller;
 
 
+import com.cromxt.bucket.dtos.MediaVisibility;
 import com.cromxt.bucket.service.FileObjectsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -26,9 +27,8 @@ public class MediaObjectsController {
     }
 
     @PatchMapping(value = "/{fileId}")
-    public ResponseEntity<Mono<Void>> changeVisibility(@PathVariable String fileId,
-                                                       @RequestParam(name = "visibility", defaultValue = "true", required = false) Boolean visibility) {
-        return ResponseEntity.accepted().body(fileObjectsService.changeFileVisibility(fileId));
+    public ResponseEntity<Mono<Void>> changeVisibility(@PathVariable String fileId,@RequestBody MediaVisibility visibility) {
+        return ResponseEntity.accepted().body(fileObjectsService.changeFileVisibility(fileId, visibility));
     }
 
 

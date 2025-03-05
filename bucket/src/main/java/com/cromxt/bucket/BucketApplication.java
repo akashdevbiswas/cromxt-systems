@@ -25,15 +25,31 @@ public class BucketApplication {
     @Bean
     public CommandLineRunner commandLineRunner(Environment environment, ApplicationContext context) {
         return args -> {
-            String path = environment.getProperty("BUCKET_CONFIG_STORAGE_PATH", String.class);
-            assert path != null;
-            File baseDirectory = new File(path);
-            if (!baseDirectory.exists()) {
-                if (!baseDirectory.mkdirs()) {
-                    log.error("Unable to create directory");
+            String basePath = environment.getProperty("BUCKET_CONFIG_DISK_PATH", String.class);
+            assert basePath != null;
+
+            File privateDirectory = new File(basePath + File.separator + FileConstants.PRIVATE_ACCESS.getAccessType());
+            if (!privateDirectory.exists()) {
+                if (!privateDirectory.mkdirs()) {
+                    log.error("Unable to create the private directory");
                     SpringApplication.exit(context, () -> 1);
                 }
+            }
 
+            File publicDirectory = new File(basePath + File.separator + FileConstants.PUBLIC_ACCESS.getAccessType());
+            if (!publicDirectory.exists()) {
+                if (!publicDirectory.mkdirs()) {
+                    log.error("Unable to create the public directory");
+                    SpringApplication.exit(context, () -> 1);
+                }
+            }
+
+            File protectedDirectory = new File(basePath + File.separator + FileConstants.PROTECTED_ACCESS.getAccessType());
+            if (!protectedDirectory.exists()) {
+                if (!protectedDirectory.mkdirs()) {
+                    log.error("Unable to create the protected directory");
+                    SpringApplication.exit(context, () -> 1);
+                }
             }
 
         };

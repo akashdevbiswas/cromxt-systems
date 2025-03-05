@@ -70,14 +70,14 @@ public class InMemoryMediaManager extends MediaManager implements MediaRepositor
     }
 
     private MediaObjects creteFileObject(FileObjects fileObjects) {
-        String accessUrl = accessURLGenerator.generateAccessURL(fileObjects.getFileId(), fileObjects.getExtension());
+        String accessUrl = accessURLGenerator.generateAccessURL(fileObjects.getFileId());
         return MediaObjects.builder()
                 .mediaId(fileObjects.getFileId())
                 .fileId(fileObjects.getFileId())
                 .accessUrl(accessUrl)
                 .extension(fileObjects.getExtension())
                 .fileSize(fileObjects.getFileSize())
-                .isPublic(fileObjects.getIsPublic())
+                .visibility(fileObjects.getVisibility().name())
                 .build();
     }
 }

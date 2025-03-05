@@ -51,11 +51,11 @@ public class RemoteMediaManager extends MediaManager {
     @Override
     public Mono<MediaObjects> createMediaObject(FileObjects fileObjects) {
         String url = String.format("%s/api/v1/medias", mediaClientBaseUrl);
-        String accessUrl = accessURLGenerator.generateAccessURL(fileObjects.getFileId(), fileObjects.getExtension());
+        String accessUrl = accessURLGenerator.generateAccessURL(fileObjects.getFileId());
         MediaRequest mediaRequest = MediaRequest.builder()
                 .fileId(fileObjects.getFileId())
                 .extension(fileObjects.getExtension())
-                .isPublic(fileObjects.getIsPublic())
+                .visibility(fileObjects.getVisibility().name())
                 .fileSize(fileObjects.getFileSize())
                 .accessUrl(accessUrl)
                 .bucketId(bucketInformationService.getBucketId())
@@ -81,11 +81,11 @@ public class RemoteMediaManager extends MediaManager {
             FileObjects fileObjects
     ) {
         String url = String.format("%s/api/v1/medias/%s", mediaClientBaseUrl, mediaObjectId);
-        String accessUrl = accessURLGenerator.generateAccessURL(fileObjects.getFileId(), "Akash");
+        String accessUrl = accessURLGenerator.generateAccessURL(fileObjects.getFileId());
         MediaRequest mediaRequest = MediaRequest.builder()
                 .fileSize(fileObjects.getFileSize())
                 .extension(fileObjects.getExtension())
-                .isPublic(fileObjects.getIsPublic())
+                .visibility(fileObjects.getVisibility().name())
                 .accessUrl(accessUrl)
                 .clusterId(clusterId)
                 .regionId(regionId)

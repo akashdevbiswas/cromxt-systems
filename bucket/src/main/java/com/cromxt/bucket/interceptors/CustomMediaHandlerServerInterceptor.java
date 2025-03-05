@@ -42,7 +42,7 @@ public class CustomMediaHandlerServerInterceptor implements ServerInterceptor {
                     MediaDetails mediaDetails = MediaDetails.newBuilder()
                             .setExtension(metaData.getExtension())
                             .setClientId(clientId)
-                            .setIsFilePrivate(metaData.getIsFilePrivate())
+                            .setVisibility(metaData.getVisibility())
                             .build();
 
 //                    Create a context for current call.

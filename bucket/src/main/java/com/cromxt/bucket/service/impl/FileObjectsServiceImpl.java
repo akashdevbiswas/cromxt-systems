@@ -1,5 +1,7 @@
 package com.cromxt.bucket.service.impl;
 
+import com.cromxt.bucket.constants.FileConstants;
+import com.cromxt.bucket.dtos.MediaVisibility;
 import com.cromxt.bucket.exception.InvalidMediaData;
 import com.cromxt.bucket.models.FileObjects;
 import com.cromxt.bucket.service.FileService;
@@ -60,8 +62,8 @@ public class FileObjectsServiceImpl implements FileObjectsService {
     }
 
     @Override
-    public Mono<Void> changeFileVisibility(String fileId) {
-        return fileService.changeFileVisibility(fileId, ).then();
+    public Mono<Void> changeFileVisibility(String fileId, MediaVisibility visibility) {
+        return fileService.changeFileVisibility(fileId, visibility.visibility()).then();
     }
 
 

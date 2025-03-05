@@ -1,7 +1,6 @@
 package com.cromxt.bucket.service.impl;
 
 import com.cromxt.bucket.constants.FileConstants;
-import com.cromxt.bucket.exception.FileException;
 import com.cromxt.bucket.exception.MediaOperationException;
 import com.cromxt.bucket.models.FileObjects;
 import com.cromxt.bucket.service.FileService;
@@ -16,6 +15,10 @@ import reactor.core.scheduler.Schedulers;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -29,14 +32,17 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
-    public Mono<FileObjects> saveFile(String extension, Long spaceUserLeft, Flux<MediaUploadRequest> mediaData, Boolean isPublic) {
+    public Mono<FileObjects> saveFile(String extension,
+                                      Long spaceUserLeft,
+                                      Flux<MediaUploadRequest> mediaData,
+                                      FileConstants visibility
+    ) {
 
         return Mono.create(sink -> {
 
-            String fileName = createNewFileName(extension,isPublic);
-            String completeFileName = String.format("%s.%s", fileName, extension);
-            String absolutePath = getAbsolutePath(completeFileName);
-
+            String fileName = createAUniqueFileName(extension);
+            String completeFileId = addAccessKey(fileName, visibility);
+            String absolutePath = getAbsolutePath(completeFileId,visibility);
 
             try {
                 FileOutputStream fileOutputStream = new FileOutputStream(absolutePath);
@@ -65,11 +71,11 @@ public class FileServiceImpl implements FileService {
                                 throw new MediaOperationException(e.getMessage());
                             }
                             FileObjects newMediaObject = FileObjects.builder()
-                                    .fileId(fileName)
+                                    .fileId(completeFileId)
                                     .fileSize(countSize.get())
                                     .extension(extension)
                                     .absolutePath(absolutePath)
-                                    .isPublic(isPublic)
+                                    .visibility(visibility)
                                     .build();
                             sink.success(newMediaObject);
                         })
@@ -86,86 +92,114 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public Mono<FileObjects> getFileByFileName(String fileName) throws MediaOperationException {
-        String filePath = getAbsolutePath(fileName);
-        File file = new File(filePath);
-        if (!file.exists()) {
-            return Mono.error(new MediaOperationException("File not found with this name " + fileName));
-        }
-
-        FileObjects fileObjects = createFileObject(file);
-
-        if (Objects.isNull(fileObjects)) {
-            return Mono.error(new MediaOperationException("The requested file is an invalid filename " + fileName));
-        }
-        return Mono.just(fileObjects);
-    }
-
-    @Override
-    public Mono<FileObjects> deleteFileByFileName(String fileId) {
         return Mono.create(sink -> {
-            String filePath = getAbsolutePath(fileId);
-            File file = new File(filePath);
+            FileDetails fileDetails = validateFileName(fileName);
 
-            FileObjects fileObjects = createFileObject(file);
-
-            if (!file.exists()) {
-                sink.error(new MediaOperationException("File not found with this name " + fileId));
+            if (fileDetails == null) {
+                sink.error(new MediaOperationException("The requested file is an invalid filename " + fileName));
                 return;
             }
-            if (file.delete()) {
-                sink.error(new MediaOperationException("Error occurred while deleting the file  " + fileId));
-                return;
-            }
+            FileObjects fileObjects = createFileObject(fileDetails);
             sink.success(fileObjects);
         });
     }
 
     @Override
-    public Mono<FileObjects> changeFileVisibility(String completeFileName, Boolean visibility) {
+    public Mono<FileObjects> deleteFileByFileName(String fileName) {
         return Mono.create(sink -> {
+            FileDetails fileDetails = validateFileName(fileName);
 
-            File file = new File(completeFileName);
-            String newFileName = changeTheFileAccess(completeFileName);
-            String absolutePath = getAbsolutePath(newFileName);
-
-            File changedFile = new File(absolutePath);
-            if (file.renameTo(changedFile)) {
-                FileObjects fileObject = createFileObject(changedFile);
-                sink.success(fileObject);
+            if (fileDetails == null) {
+                sink.error(new MediaOperationException("The requested file is an invalid filename " + fileName));
                 return;
             }
-            sink.error(new MediaOperationException("Error occurred while changing the file visibility"));
+            File file = fileDetails.getFile();
+            if (file.delete()) {
+                FileObjects fileObjects = createFileObject(fileDetails);
+                sink.success(fileObjects);
+                return;
+            }
+            sink.error(new MediaOperationException("Error occurred while deleting the file"));
         });
     }
 
+
+    @Override
+    public Mono<FileObjects> changeFileVisibility(String completeFileName, FileConstants visibility) {
+        return Mono.create(sink -> {
+            FileDetails details = validateFileName(completeFileName);
+            if (details == null) {
+                sink.error(new MediaOperationException("The requested file is an invalid filename " + completeFileName));
+                return;
+            }
+            if (details.getVisibility() == visibility) {
+                FileObjects fileObjects = createFileObject(details);
+                sink.success(fileObjects);
+                return;
+            }
+
+            FileDetails fileDetails = changeTheFileAccess(details.getFile(), visibility);
+
+            if (fileDetails == null) {
+                sink.error(new MediaOperationException("Error occurred while changing the file visibility"));
+                return;
+            }
+            FileObjects fileObjects = createFileObject(fileDetails);
+            sink.success(fileObjects);
+
+        });
+    }
+
+
     @NonNull
-    private String createNewFileName(String extension, Boolean isPublic) {
-        String fileName = createAUniqueFileName(extension);
-        if(isPublic)
-            return String.format("cm-%s-%s",FileConstants.PRIVATE_ACCESS.getAccessKey(), fileName);
-        return String.format("cm-%s-%s",FileConstants.PUBLIC_ACCESS.getAccessKey(), fileName);
+    private String addAccessKey(String fileName, FileConstants visibility) {
+        return switch (visibility) {
+            case PRIVATE_ACCESS -> String.format("cm-%s-%s", FileConstants.PRIVATE_ACCESS.getAccessType(), fileName);
+            case PROTECTED_ACCESS -> String.format("cm-%s-%s", FileConstants.PROTECTED_ACCESS.getAccessType(), fileName);
+            case PUBLIC_ACCESS -> String.format("cm-%s-%s", FileConstants.PUBLIC_ACCESS.getAccessType(), fileName);
+        };
+    }
+
+
+    private FileDetails changeTheFileAccess(File sourceFile, FileConstants visibility) {
+        String fileNameWithoutAccessKey = extractFileName(sourceFile.getName());
+
+        if (fileNameWithoutAccessKey == null) {
+            return null;
+        }
+        String newPath = getAbsolutePath(fileNameWithoutAccessKey,visibility);
+
+        Path source = Paths.get(sourceFile.getAbsolutePath());
+        Path destination = Paths.get(newPath);
+        try {
+            Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            log.error("Error occurred while moving the file with message: {}", e.getMessage());
+            return null;
+        }
+        return new FileDetails(new File(newPath), visibility);
+    }
+
+    private String extractFileName(String fileName) {
+        if (fileName.length() < 14) return null;
+        return fileName.substring(13);
     }
 
     @NonNull
-    private String changeTheFileAccess(String completeFileName) {
-        Optional<Boolean> filePublic = isFilePublic(completeFileName);
-        if(filePublic.isEmpty()) throw new FileException("File is not public or private");
-
-        boolean isPublic = filePublic.get();
-        if(isPublic) return String.format("cm-%s-%s",FileConstants.PRIVATE_ACCESS.getAccessKey(), completeFileName);
-        return String.format("cm-%s-%s",FileConstants.PUBLIC_ACCESS.getAccessKey(), completeFileName);
-    }
-
-    @NonNull
-    private String getAbsolutePath(String fileName) {
-        return String.format("%s/%s", bucketInformationService.getBaseDirectory(), fileName);
+    private String getAbsolutePath(String fileName, FileConstants visibility) {
+        String baseDir = bucketInformationService.getBaseDirectory();
+        return switch (visibility) {
+            case PUBLIC_ACCESS ->
+                    String.format("%s/%s/%s", baseDir, FileConstants.PUBLIC_ACCESS.getAccessType(), fileName);
+            case PRIVATE_ACCESS ->
+                    String.format("%s/%s/%s", baseDir, FileConstants.PRIVATE_ACCESS.getAccessType(), fileName);
+            case PROTECTED_ACCESS ->
+                    String.format("%s/%s/%s", baseDir, FileConstants.PROTECTED_ACCESS.getAccessType(), fileName);
+        };
     }
 
     private String createAUniqueFileName(String extension) {
-        String fileName = "";
-        while (fileName.isEmpty() || new File(String.format("%s/%s.%s", bucketInformationService.getBaseDirectory(), fileName, extension)).exists())
-            fileName = String.format("file-%s", UUID.randomUUID());
-        return fileName;
+        return String.format("file-%s-%s.%s", System.currentTimeMillis(), UUID.randomUUID(), extension);
     }
 
 
@@ -175,14 +209,29 @@ public class FileServiceImpl implements FileService {
 
         List<FileObjects> fileObjectsList = new ArrayList<>();
 
-        File baseDirectory = new File(basedir);
+        File publicDirectory = new File(String.format("%s/%s", basedir, FileConstants.PUBLIC_ACCESS.getAccessType()));
 
-        File[] listOfFiles = baseDirectory.listFiles();
+        File[] listOfFiles = publicDirectory.listFiles();
 
         if (listOfFiles != null) {
             for (File file : listOfFiles) {
-                FileObjects fileObjects = createFileObject(file);
-                if (Objects.nonNull(fileObjects)) {
+                FileDetails fileDetails = validateFileName(file.getName());
+                if (fileDetails != null) {
+                    FileObjects fileObjects = createFileObject(fileDetails);
+                    fileObjectsList.add(fileObjects);
+                }
+            }
+        }
+
+        File securedDirectory = new File(String.format("%s/%s", basedir, FileConstants.PRIVATE_ACCESS.getAccessType()));
+
+        File[] listOfSecuredFiles = securedDirectory.listFiles();
+
+        if (listOfSecuredFiles != null) {
+            for (File file : listOfSecuredFiles) {
+                FileDetails fileDetails = validateFileName(file.getName());
+                if (fileDetails != null) {
+                    FileObjects fileObjects = createFileObject(fileDetails);
                     fileObjectsList.add(fileObjects);
                 }
             }
@@ -191,44 +240,33 @@ public class FileServiceImpl implements FileService {
         return Flux.fromIterable(fileObjectsList);
     }
 
-    private FileObjects createFileObject(File file) {
-        String[] fileNameWithExtension = file.getName().split("\\.");
-
-        if (fileNameWithExtension.length != 2) return null;
-
-        Optional<Boolean> isPublic = isFilePublic(file.getName());
-        return isPublic.map(aBoolean -> FileObjects.builder()
-                .fileId(fileNameWithExtension[0])
-                .extension(fileNameWithExtension[1])
+    FileObjects createFileObject(FileDetails fileDetails){
+        File file = fileDetails.getFile();
+        String extension = FileService.extractFileExtension(file.getName());
+        return FileObjects.builder()
+                .fileId(file.getName())
                 .fileSize(file.length())
-                .isPublic(aBoolean)
+                .extension(extension)
                 .absolutePath(file.getAbsolutePath())
-                .build()).orElse(null);
-
+                .visibility(fileDetails.getVisibility())
+                .build();
     }
 
-    private Optional<Boolean> isFilePublic(String fileName) {
-        String publicAccess = String.format("cm-%s",FileConstants.PUBLIC_ACCESS.getAccessKey());
-        String privateAccess = String.format("cm-%s",FileConstants.PRIVATE_ACCESS.getAccessKey());
-
-        if(fileName.startsWith(publicAccess) == fileName.startsWith(privateAccess)){
-            return Optional.empty();
+    private FileDetails validateFileName(String fileId) {
+        FileConstants fileVisibility = FileService.getFileVisibility(fileId);
+        String path = getAbsolutePath(fileId,fileVisibility);
+        File file = new File(path);
+        if (!file.exists()) {
+            return null;
         }
-        return Optional.of(fileName.startsWith(publicAccess));
+        return new FileDetails(file, fileVisibility);
     }
 
-    private String extractFileName(String fileName) {
-        if(fileName.startsWith("cm-"+FileConstants.PUBLIC_ACCESS.getAccessKey()) || fileName.startsWith("cm-"+FileConstants.PRIVATE_ACCESS.getAccessKey())){
-            return fileName.substring(10);
-        }
-        return null;
-    }
-
-    private Map<String,String> validateFileName(String completeFileName) {
-        return null;
-    }
-
-    enum FileAttributes {
-        FILE_NAME_WITHOUT_ACCESS_KEY, FILE_SIZE, FILE_EXTENSION, FILE_IS_PUBLIC
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    private static class FileDetails {
+        File file;
+        FileConstants visibility;
     }
 }
