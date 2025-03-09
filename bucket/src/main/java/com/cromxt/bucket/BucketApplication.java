@@ -1,6 +1,6 @@
 package com.cromxt.bucket;
 
-import com.cromxt.bucket.constants.FileConstants;
+import com.cromxt.bucket.constants.FileVisibility;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -28,7 +28,7 @@ public class BucketApplication {
             String basePath = environment.getProperty("BUCKET_CONFIG_DISK_PATH", String.class);
             assert basePath != null;
 
-            File privateDirectory = new File(basePath + File.separator + FileConstants.PRIVATE_ACCESS.getAccessType());
+            File privateDirectory = new File(basePath + File.separator + FileVisibility.PRIVATE_ACCESS.getAccessType());
             if (!privateDirectory.exists()) {
                 if (!privateDirectory.mkdirs()) {
                     log.error("Unable to create the private directory");
@@ -36,7 +36,7 @@ public class BucketApplication {
                 }
             }
 
-            File publicDirectory = new File(basePath + File.separator + FileConstants.PUBLIC_ACCESS.getAccessType());
+            File publicDirectory = new File(basePath + File.separator + FileVisibility.PUBLIC_ACCESS.getAccessType());
             if (!publicDirectory.exists()) {
                 if (!publicDirectory.mkdirs()) {
                     log.error("Unable to create the public directory");
@@ -44,7 +44,7 @@ public class BucketApplication {
                 }
             }
 
-            File protectedDirectory = new File(basePath + File.separator + FileConstants.PROTECTED_ACCESS.getAccessType());
+            File protectedDirectory = new File(basePath + File.separator + FileVisibility.PROTECTED_ACCESS.getAccessType());
             if (!protectedDirectory.exists()) {
                 if (!protectedDirectory.mkdirs()) {
                     log.error("Unable to create the protected directory");

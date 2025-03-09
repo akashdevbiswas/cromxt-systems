@@ -18,7 +18,7 @@ public class GRPCServerEventHandlers {
     private final Server server;
     private final BucketInformationService network;
 
-    public GRPCServerEventHandlers(@Qualifier("mediaHandlerGrpcServer") Server server, BucketInformationService hostNetwork) {
+    public GRPCServerEventHandlers(@Qualifier("bucketGrpcServer") Server server, BucketInformationService hostNetwork) {
         this.server = server;
         this.network = hostNetwork;
     }

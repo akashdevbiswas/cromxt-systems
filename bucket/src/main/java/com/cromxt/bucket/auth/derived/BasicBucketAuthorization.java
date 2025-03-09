@@ -17,4 +17,5 @@ public class BasicBucketAuthorization implements BucketAuthorization {
     public String extractClientId(String secret) {
         return "local-client";
     }
+
 }

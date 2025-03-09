@@ -1,11 +1,9 @@
 package com.cromxt.bucket.service.impl;
 
-import com.cromxt.bucket.constants.FileConstants;
-import com.cromxt.bucket.dtos.MediaVisibility;
 import com.cromxt.bucket.exception.InvalidMediaData;
 import com.cromxt.bucket.models.FileObjects;
-import com.cromxt.bucket.service.FileService;
 import com.cromxt.bucket.service.FileObjectsService;
+import com.cromxt.bucket.service.FileService;
 import io.netty.buffer.ByteBufAllocator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,17 +52,4 @@ public class FileObjectsServiceImpl implements FileObjectsService {
                 }
         );
     }
-
-    @Override
-    public Mono<Void> deleteMedia(String fileId) {
-//        Delete also the media which present in the remote server.
-        return fileService.deleteFileByFileName(fileId).then();
-    }
-
-    @Override
-    public Mono<Void> changeFileVisibility(String fileId, MediaVisibility visibility) {
-        return fileService.changeFileVisibility(fileId, visibility.visibility()).then();
-    }
-
-
 }

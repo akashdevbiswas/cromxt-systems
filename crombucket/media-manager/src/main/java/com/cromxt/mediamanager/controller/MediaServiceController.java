@@ -1,9 +1,8 @@
 package com.cromxt.mediamanager.controller;
 
 
-import com.cromxt.common.crombucket.dtos.mediamanager.requests.NewMediaRequest;
-import com.cromxt.common.crombucket.dtos.mediamanager.response.MediaEntityDTO;
-import com.cromxt.common.crombucket.dtos.mediamanager.response.NewMediaResponseDTO;
+import com.cromxt.common.crombucket.mediamanager.requests.MediaRequest;
+import com.cromxt.common.crombucket.mediamanager.response.UpdateMediaUploadStatusRequest;
 import com.cromxt.mediamanager.service.MediaClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +18,13 @@ public class MediaServiceController {
 
     @PostMapping
     public ResponseEntity<Mono<MediaEntityDTO>> createMedia(
-            @RequestBody NewMediaRequest newMediaRequest
+            @RequestBody MediaRequest mediaRequest
             ){
-        return ResponseEntity.accepted().body(mediaClientService.createMedia(newMediaRequest));
+        return ResponseEntity.accepted().body(mediaClientService.createMedia(mediaRequest));
     }
 
     @PutMapping
-    public ResponseEntity<Mono<NewMediaResponseDTO>> updateMedia(){
+    public ResponseEntity<Mono<UpdateMediaUploadStatusRequest>> updateMedia(){
         return null;
     }
 

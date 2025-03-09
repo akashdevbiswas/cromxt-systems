@@ -1,12 +1,13 @@
 package com.cromxt.bucket.repository.impl;
 
 
+import com.cromxt.bucket.client.MediaManagerClient;
 import com.cromxt.bucket.models.FileObjects;
-import com.cromxt.bucket.models.MediaObjects;
-import com.cromxt.bucket.repository.MediaManager;
 import com.cromxt.bucket.service.AccessURLGenerator;
 import com.cromxt.bucket.service.impl.BucketInformationService;
 import com.cromxt.common.crombucket.mediamanager.requests.MediaRequest;
+import com.cromxt.common.crombucket.mediamanager.response.MediaObjects;
+import com.cromxt.common.crombucket.mediamanager.response.UpdateMediaUploadStatusRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
@@ -20,7 +21,7 @@ import java.net.URI;
 @Service
 @Profile({"prod", "dev"})
 @Slf4j
-public class RemoteMediaManager extends MediaManager {
+public class RemoteMediaManagerClient implements MediaManagerClient {
 
     private final WebClient webClient;
     private final String mediaClientBaseUrl;
@@ -28,18 +29,19 @@ public class RemoteMediaManager extends MediaManager {
     private final BucketInformationService bucketInformationService;
     private final String clusterId;
     private final String regionId;
+    private final AccessURLGenerator accessURLGenerator;
 
-    public RemoteMediaManager(WebClient webClient,
-                              AccessURLGenerator accessURLGenerator,
-                              BucketInformationService bucketInformationService,
-                              Environment environment) {
-        super(accessURLGenerator);
+    public RemoteMediaManagerClient(WebClient webClient,
+                                    AccessURLGenerator accessURLGenerator,
+                                    BucketInformationService bucketInformationService,
+                                    Environment environment) {
         String clientUrl = environment.getProperty("BUCKET_CONFIG_MEDIA_CLIENT_URL", String.class);
         String apiKey = environment.getProperty("BUCKET_CONFIG_MEDIA_CLIENT_API_KEY", String.class);
         String clusterId = environment.getProperty("BUCKET_CONFIG_CLUSTER_ID", String.class);
         String regionId = environment.getProperty("BUCKET_CONFIG_REGION_ID", String.class);
         assert clientUrl != null && apiKey != null && clusterId != null && regionId != null;
 
+        this.accessURLGenerator = accessURLGenerator;
         this.mediaClientBaseUrl = clientUrl;
         this.apiKey = apiKey;
         this.webClient = webClient;
@@ -49,19 +51,15 @@ public class RemoteMediaManager extends MediaManager {
     }
 
     @Override
-    public Mono<MediaObjects> createMediaObject(FileObjects fileObjects) {
-        String url = String.format("%s/api/v1/medias", mediaClientBaseUrl);
-        String accessUrl = accessURLGenerator.generateAccessURL(fileObjects.getFileId());
+    public Mono<String> createMediaObject(String clientId) {
         MediaRequest mediaRequest = MediaRequest.builder()
-                .fileId(fileObjects.getFileId())
-                .extension(fileObjects.getExtension())
-                .visibility(fileObjects.getVisibility().name())
-                .fileSize(fileObjects.getFileSize())
-                .accessUrl(accessUrl)
-                .bucketId(bucketInformationService.getBucketId())
+                .clientId(clientId)
+                .clusterId(clusterId)
                 .regionId(regionId)
-                .clientId(clusterId)
+                .bucketId(bucketInformationService.getBucketId())
                 .build();
+        String url = String.format("%s/api/v1/medias", mediaClientBaseUrl);
+
         return webClient
                 .post()
                 .uri(URI.create(url))
@@ -72,50 +70,34 @@ public class RemoteMediaManager extends MediaManager {
                     log.error("Error occurred while creating media object");
                     return Mono.error(new RuntimeException("Some error Occurred"));
                 })
-                .bodyToMono(MediaObjects.class);
+                .bodyToMono(String.class);
     }
 
     @Override
-    public Mono<MediaObjects> updateMedia(
-            String mediaObjectId,
-            FileObjects fileObjects
-    ) {
-        String url = String.format("%s/api/v1/medias/%s", mediaClientBaseUrl, mediaObjectId);
-        String accessUrl = accessURLGenerator.generateAccessURL(fileObjects.getFileId());
-        MediaRequest mediaRequest = MediaRequest.builder()
+    public Mono<MediaObjects> updateMediaUploadStatus(String mediaId, String accessUrl, FileObjects fileObjects) {
+
+        String fileId = fileObjects.getFileId();
+
+        UpdateMediaUploadStatusRequest updateMediaUploadStatusRequest = UpdateMediaUploadStatusRequest.builder()
                 .fileSize(fileObjects.getFileSize())
-                .extension(fileObjects.getExtension())
-                .visibility(fileObjects.getVisibility().name())
+                .fileId(fileId)
                 .accessUrl(accessUrl)
-                .clusterId(clusterId)
-                .regionId(regionId)
-                .bucketId(bucketInformationService.getBucketId())
+                .visibility(fileObjects.getVisibility().name())
                 .build();
+
+        String url = String.format("%s/service/v1/medias/%s", mediaClientBaseUrl, mediaId);
         return webClient
                 .put()
                 .uri(URI.create(url))
                 .header("Api-Key", apiKey)
-                .bodyValue(mediaRequest)
+                .bodyValue(updateMediaUploadStatusRequest)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, clientResponse -> {
-                    log.error("Error occurred while update the media object");
+                    log.error("Error occurred while updating media object");
                     return Mono.error(new RuntimeException("Some error Occurred"));
                 })
                 .bodyToMono(MediaObjects.class);
     }
 
-    @Override
-    public Mono<Void> deleteMedia(String mediaId) {
-        return webClient
-                .delete()
-                .uri(URI.create(mediaClientBaseUrl + "/" + mediaId))
-                .header("Api-Key", apiKey)
-                .retrieve()
-                .onStatus(HttpStatusCode::isError, clientResponse -> {
-                    log.error("Error occurred while delete the media object");
-                    return Mono.error(new RuntimeException("Some error Occurred"));
-                })
-                .bodyToMono(Void.class);
-    }
 
 }

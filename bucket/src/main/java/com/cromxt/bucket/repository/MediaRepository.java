@@ -1,13 +1,19 @@
 package com.cromxt.bucket.repository;
 
-import com.cromxt.bucket.models.FileObjects;
-import com.cromxt.bucket.models.MediaObjects;
+import com.cromxt.bucket.dtos.UpdateMediaVisibilityRequest;
+import com.cromxt.common.crombucket.mediamanager.response.MediaObjects;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 public interface MediaRepository {
 
     Flux<MediaObjects> getAllAvailableMedias();
 
     Mono<MediaObjects> getMediaObjectById(String mediaId);
+
+    Mono<Void> deleteMedias(List<String> mediaIds);
+
+    Flux<MediaObjects> updateMediasVisibility(List<UpdateMediaVisibilityRequest> updateMediaVisibilityRequests);
 }

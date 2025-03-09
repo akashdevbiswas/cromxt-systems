@@ -1,7 +1,7 @@
 package com.cromxt.bucket.models;
 
 
-import com.cromxt.bucket.constants.FileConstants;
+import com.cromxt.bucket.constants.FileVisibility;
 import lombok.*;
 
 @AllArgsConstructor
@@ -14,5 +14,5 @@ public class FileObjects {
     private Long fileSize;
     private String extension;
     private String absolutePath;
-    private FileConstants visibility;
+    private FileVisibility visibility;
 }

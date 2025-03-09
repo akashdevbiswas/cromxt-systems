@@ -1,9 +1,8 @@
 package com.cromxt.mediamanager.service.impl;
 
 
-import com.cromxt.common.crombucket.dtos.mediamanager.requests.NewMediaRequest;
-import com.cromxt.common.crombucket.dtos.mediamanager.requests.UpdateMediaRequestDTO;
-import com.cromxt.common.crombucket.dtos.mediamanager.response.MediaEntityDTO;
+import com.cromxt.common.crombucket.mediamanager.requests.MediaRequest;
+import com.cromxt.common.crombucket.mediamanager.requests.UpdateMediaRequestDTO;
 import com.cromxt.mediamanager.entity.Medias;
 import com.cromxt.mediamanager.repository.MediaRepository;
 import com.cromxt.mediamanager.service.MediaClientService;
@@ -22,7 +21,7 @@ public class MediaServiceImpl implements MediaService, MediaClientService {
 
 
     @Override
-    public Mono<MediaEntityDTO> createMedia(NewMediaRequest clientId) {
+    public Mono<MediaEntityDTO> createMedia(MediaRequest clientId) {
         Medias medias = Medias.builder()
                 .build();
         return mediaRepository.save(medias).map(this::createMediaEntity);

@@ -1,10 +1,10 @@
 package com.cromxt.bucket.service.impl;
 
-import com.cromxt.bucket.constants.FileConstants;
+import com.cromxt.bucket.constants.FileVisibility;
 import com.cromxt.bucket.exception.MediaOperationException;
 import com.cromxt.bucket.models.FileObjects;
 import com.cromxt.bucket.service.FileService;
-import com.cromxt.proto.files.*;
+import com.cromxt.proto.files.FileUploadRequest;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
@@ -32,15 +35,16 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
-    public Mono<FileObjects> saveFile(String extension,
+    public Mono<FileObjects> saveFile(String clientId,
+                                      String extension,
                                       Long spaceUserLeft,
-                                      Flux<MediaUploadRequest> mediaData,
-                                      FileConstants visibility
+                                      Flux<FileUploadRequest> mediaData,
+                                      FileVisibility visibility
     ) {
 
         return Mono.create(sink -> {
 
-            String fileName = createAUniqueFileName(extension);
+            String fileName = createAUniqueFileName(clientId,extension);
             String completeFileId = addAccessKey(fileName, visibility);
             String absolutePath = getAbsolutePath(completeFileId,visibility);
 
@@ -91,12 +95,12 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Mono<FileObjects> getFileByFileName(String fileName) throws MediaOperationException {
+    public Mono<FileObjects> getFileByFileName(String fileId) throws MediaOperationException {
         return Mono.create(sink -> {
-            FileDetails fileDetails = validateFileName(fileName);
+            FileDetails fileDetails = validateFileName(fileId);
 
             if (fileDetails == null) {
-                sink.error(new MediaOperationException("The requested file is an invalid filename " + fileName));
+                sink.error(new MediaOperationException("The requested file is an invalid filename " + fileId));
                 return;
             }
             FileObjects fileObjects = createFileObject(fileDetails);
@@ -105,12 +109,12 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Mono<FileObjects> deleteFileByFileName(String fileName) {
+    public Mono<FileObjects> deleteFileByFileName(String fileId) {
         return Mono.create(sink -> {
-            FileDetails fileDetails = validateFileName(fileName);
+            FileDetails fileDetails = validateFileName(fileId);
 
             if (fileDetails == null) {
-                sink.error(new MediaOperationException("The requested file is an invalid filename " + fileName));
+                sink.error(new MediaOperationException("The requested file is an invalid filename " + fileId));
                 return;
             }
             File file = fileDetails.getFile();
@@ -125,7 +129,7 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
-    public Mono<FileObjects> changeFileVisibility(String completeFileName, FileConstants visibility) {
+    public Mono<FileObjects> changeFileVisibility(String completeFileName, FileVisibility visibility) {
         return Mono.create(sink -> {
             FileDetails details = validateFileName(completeFileName);
             if (details == null) {
@@ -152,16 +156,16 @@ public class FileServiceImpl implements FileService {
 
 
     @NonNull
-    private String addAccessKey(String fileName, FileConstants visibility) {
+    private String addAccessKey(String fileName, FileVisibility visibility) {
         return switch (visibility) {
-            case PRIVATE_ACCESS -> String.format("cm-%s-%s", FileConstants.PRIVATE_ACCESS.getAccessType(), fileName);
-            case PROTECTED_ACCESS -> String.format("cm-%s-%s", FileConstants.PROTECTED_ACCESS.getAccessType(), fileName);
-            case PUBLIC_ACCESS -> String.format("cm-%s-%s", FileConstants.PUBLIC_ACCESS.getAccessType(), fileName);
+            case PRIVATE_ACCESS -> String.format("cm-%s-%s", FileVisibility.PRIVATE_ACCESS.getAccessType(), fileName);
+            case PROTECTED_ACCESS -> String.format("cm-%s-%s", FileVisibility.PROTECTED_ACCESS.getAccessType(), fileName);
+            case PUBLIC_ACCESS -> String.format("cm-%s-%s", FileVisibility.PUBLIC_ACCESS.getAccessType(), fileName);
         };
     }
 
 
-    private FileDetails changeTheFileAccess(File sourceFile, FileConstants visibility) {
+    private FileDetails changeTheFileAccess(File sourceFile, FileVisibility visibility) {
         String fileNameWithoutAccessKey = extractFileName(sourceFile.getName());
 
         if (fileNameWithoutAccessKey == null) {
@@ -186,20 +190,37 @@ public class FileServiceImpl implements FileService {
     }
 
     @NonNull
-    private String getAbsolutePath(String fileName, FileConstants visibility) {
+    private String getAbsolutePath(String fileName, FileVisibility visibility) {
         String baseDir = bucketInformationService.getBaseDirectory();
         return switch (visibility) {
             case PUBLIC_ACCESS ->
-                    String.format("%s/%s/%s", baseDir, FileConstants.PUBLIC_ACCESS.getAccessType(), fileName);
+                    String.format("%s/%s/%s", baseDir, FileVisibility.PUBLIC_ACCESS.getAccessType(), fileName);
             case PRIVATE_ACCESS ->
-                    String.format("%s/%s/%s", baseDir, FileConstants.PRIVATE_ACCESS.getAccessType(), fileName);
+                    String.format("%s/%s/%s", baseDir, FileVisibility.PRIVATE_ACCESS.getAccessType(), fileName);
             case PROTECTED_ACCESS ->
-                    String.format("%s/%s/%s", baseDir, FileConstants.PROTECTED_ACCESS.getAccessType(), fileName);
+                    String.format("%s/%s/%s", baseDir, FileVisibility.PROTECTED_ACCESS.getAccessType(), fileName);
         };
     }
 
-    private String createAUniqueFileName(String extension) {
-        return String.format("file-%s-%s.%s", System.currentTimeMillis(), UUID.randomUUID(), extension);
+    private String createAUniqueFileName(String extension,String userId) {
+
+        StringBuilder hexString = new StringBuilder();
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+
+            String input = userId+System.currentTimeMillis();
+            byte[] hashBytes = digest.digest(input.getBytes());
+
+            for (byte b : hashBytes) {
+                String hex = String.format("%02x", b);
+                hexString.append(hex);
+            }
+
+        } catch (NoSuchAlgorithmException e) {
+            return null;
+        }
+
+        return String.format("file-%s.%s",hexString, extension);
     }
 
 
@@ -209,7 +230,7 @@ public class FileServiceImpl implements FileService {
 
         List<FileObjects> fileObjectsList = new ArrayList<>();
 
-        File publicDirectory = new File(String.format("%s/%s", basedir, FileConstants.PUBLIC_ACCESS.getAccessType()));
+        File publicDirectory = new File(String.format("%s/%s", basedir, FileVisibility.PUBLIC_ACCESS.getAccessType()));
 
         File[] listOfFiles = publicDirectory.listFiles();
 
@@ -223,7 +244,7 @@ public class FileServiceImpl implements FileService {
             }
         }
 
-        File securedDirectory = new File(String.format("%s/%s", basedir, FileConstants.PRIVATE_ACCESS.getAccessType()));
+        File securedDirectory = new File(String.format("%s/%s", basedir, FileVisibility.PRIVATE_ACCESS.getAccessType()));
 
         File[] listOfSecuredFiles = securedDirectory.listFiles();
 
@@ -253,7 +274,7 @@ public class FileServiceImpl implements FileService {
     }
 
     private FileDetails validateFileName(String fileId) {
-        FileConstants fileVisibility = FileService.getFileVisibility(fileId);
+        FileVisibility fileVisibility = FileService.getFileVisibility(fileId);
         String path = getAbsolutePath(fileId,fileVisibility);
         File file = new File(path);
         if (!file.exists()) {
@@ -267,6 +288,6 @@ public class FileServiceImpl implements FileService {
     @Setter
     private static class FileDetails {
         File file;
-        FileConstants visibility;
+        FileVisibility visibility;
     }
 }

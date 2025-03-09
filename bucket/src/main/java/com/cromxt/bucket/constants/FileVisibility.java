@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum FileConstants {
+public enum FileVisibility {
     PUBLIC_ACCESS("pub"),
     PRIVATE_ACCESS("prv"),
     PROTECTED_ACCESS("prt");
