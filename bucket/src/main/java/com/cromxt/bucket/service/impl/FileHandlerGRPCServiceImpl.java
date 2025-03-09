@@ -20,7 +20,7 @@ import reactor.core.publisher.Mono;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class FileHandlerGRPCServiceImpl extends ReactorFileHandlerServiceGrpc.FileHandlerServiceImplBase implements GRPCService {
+public class  FileHandlerGRPCServiceImpl extends ReactorFileHandlerServiceGrpc.FileHandlerServiceImplBase implements GRPCService {
 
     private final FileService fileService;
     private final MediaManagerClient mediaManagerClient;
@@ -32,17 +32,17 @@ public class FileHandlerGRPCServiceImpl extends ReactorFileHandlerServiceGrpc.Fi
     public Mono<MediaUploadResponse> uploadFile(Flux<FileUploadRequest> request) {
 
 
-        MediaDetails mediaDetails = MediaHeadersKey.MEDIA_DETAILS.getContextKey().get(Context.current());
+        FileMetadata fileDetails = MediaHeadersKey.FILE_METADATA.getContextKey().get(Context.current());
 
-        String clientId = mediaDetails.getClientId();
+        String clientId = fileDetails.getClientId();
 
-        FileVisibility visibility = getFileVisibility(mediaDetails.getVisibility());
+        FileVisibility visibility = getFileVisibility(fileDetails.getVisibility());
 
         return bucketServerClient.getBucketInfoByClientId(clientId)
-                .flatMap(bucketInfo -> mediaManagerClient.createMediaObject(clientId)
+                .flatMap(bucketInfo -> mediaManagerClient.createMediaObject(clientId,visibility)
                         .flatMap(mediaId -> fileService.saveFile(
                                         clientId,
-                                        mediaDetails.getExtension(),
+                                        fileDetails.getExtension(),
                                         bucketInfo.getAvailableSpace(),
                                         request, visibility)
                                 .flatMap(fileObjects -> {
@@ -51,12 +51,13 @@ public class FileHandlerGRPCServiceImpl extends ReactorFileHandlerServiceGrpc.Fi
 
                                             return mediaObject.map(savedMediaObject -> {
 
+                                                FileVisibility savedFileVisibility = FileVisibility.valueOf(savedMediaObject.getVisibility());
+
                                                 MediaObjectDetails mediaObjectDetails = MediaObjectDetails.newBuilder()
                                                         .setMediaId(savedMediaObject.getMediaId())
                                                         .setFileSize(savedMediaObject.getFileSize())
-                                                        .setCreatedOn(savedMediaObject.getCreatedOn())
                                                         .setAccessUrl(savedMediaObject.getAccessUrl())
-                                                        .setVisibility(getFileVisibility(savedMediaObject.getVisibility()))
+                                                        .setVisibility(getFileVisibility(savedFileVisibility))
                                                         .build();
 
                                                 return MediaUploadResponse.newBuilder()

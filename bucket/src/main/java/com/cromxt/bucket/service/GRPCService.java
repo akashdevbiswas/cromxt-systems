@@ -6,12 +6,11 @@ import lombok.NonNull;
 
 public interface GRPCService {
     @NonNull
-    default Visibility getFileVisibility(String visibility) {
+    default Visibility getFileVisibility(FileVisibility visibility) {
         return switch (visibility) {
-            case "PRIVATE" -> Visibility.PRIVATE;
-            case "PROTECTED" -> Visibility.PROTECTED;
-            case "PUBLIC" -> Visibility.PUBLIC;
-            default -> throw new IllegalArgumentException("Invalid visibility");
+            case PRIVATE_ACCESS -> Visibility.PRIVATE;
+            case PROTECTED_ACCESS -> Visibility.PROTECTED;
+            case PUBLIC_ACCESS -> Visibility.PUBLIC;
         };
     }
     default FileVisibility getFileVisibility(Visibility visibility) {

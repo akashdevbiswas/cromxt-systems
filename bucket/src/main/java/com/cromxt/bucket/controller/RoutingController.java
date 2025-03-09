@@ -22,7 +22,7 @@ public class RoutingController {
     @PostMapping
     public BucketDetailsResponse getBucketDetails(@RequestBody MediaDetails ignored) {
         return BucketDetailsResponse.builder()
-                .hostName("localhost")
+                .hostName(bucketInformationService.getApplicationHostname())
                 .rpcPort(bucketInformationService.getRpcPort())
                 .build();
     }

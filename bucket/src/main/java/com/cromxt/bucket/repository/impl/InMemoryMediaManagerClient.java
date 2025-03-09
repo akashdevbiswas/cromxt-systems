@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,14 +36,20 @@ public class InMemoryMediaManagerClient implements MediaManagerClient, MediaRepo
 
 
     @Override
-    public Mono<String> createMediaObject(String clientId) {
+    public Mono<String> createMediaObject(String clientId, FileVisibility visibility) {
         String uniqueId = "";
 
         while (uniqueId.isEmpty() || MEDIA_OBJECTS_EXISTS.containsKey(uniqueId)) {
             uniqueId = UUID.randomUUID().toString();
         }
 
-        MEDIA_OBJECTS_EXISTS.put(uniqueId, MediaObjects.builder().mediaId(uniqueId).build());
+        MEDIA_OBJECTS_EXISTS.put(
+                uniqueId,
+                MediaObjects.builder()
+                        .mediaId(uniqueId)
+                        .visibility(visibility.name())
+                        .build()
+        );
         return Mono.just(uniqueId);
     }
 
@@ -54,6 +61,7 @@ public class InMemoryMediaManagerClient implements MediaManagerClient, MediaRepo
         mediaObjects.setFileSize(fileObjects.getFileSize());
         mediaObjects.setAccessUrl(accessUrl);
         mediaObjects.setVisibility(fileObjects.getVisibility().name());
+        mediaObjects.setCreatedOn(LocalDate.now().toString());
         MEDIA_OBJECTS_EXISTS.put(mediaId, mediaObjects);
 
         return Mono.just(mediaObjects);
@@ -89,7 +97,7 @@ public class InMemoryMediaManagerClient implements MediaManagerClient, MediaRepo
 
             return fileManagementGRPCService.changeFileVisibility(Mono.just(updateVisibilityRequest)).flatMap(
                     fileOperationResponse -> {
-                        if(fileOperationResponse.getStatus() == OperationStatus.SUCCESS) {
+                        if (fileOperationResponse.getStatus() == OperationStatus.SUCCESS) {
                             FileObjectDetails fileObjectDetails = fileOperationResponse.getFileObjectDetails();
 
                             FileVisibility updatedVisibility = getFileVisibility(fileObjectDetails.getVisibility());
@@ -136,6 +144,7 @@ public class InMemoryMediaManagerClient implements MediaManagerClient, MediaRepo
             default -> throw new IllegalArgumentException("Invalid visibility");
         };
     }
+
     private FileVisibility getFileVisibility(Visibility visibility) {
         return switch (visibility) {
             case PRIVATE -> FileVisibility.PRIVATE_ACCESS;

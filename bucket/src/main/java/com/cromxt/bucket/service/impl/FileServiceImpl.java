@@ -44,9 +44,9 @@ public class FileServiceImpl implements FileService {
 
         return Mono.create(sink -> {
 
-            String fileName = createAUniqueFileName(clientId,extension);
+            String fileName = createAUniqueFileName(clientId, extension);
             String completeFileId = addAccessKey(fileName, visibility);
-            String absolutePath = getAbsolutePath(completeFileId,visibility);
+            String absolutePath = getAbsolutePath(completeFileId, visibility);
 
             try {
                 FileOutputStream fileOutputStream = new FileOutputStream(absolutePath);
@@ -159,7 +159,8 @@ public class FileServiceImpl implements FileService {
     private String addAccessKey(String fileName, FileVisibility visibility) {
         return switch (visibility) {
             case PRIVATE_ACCESS -> String.format("cm-%s-%s", FileVisibility.PRIVATE_ACCESS.getAccessType(), fileName);
-            case PROTECTED_ACCESS -> String.format("cm-%s-%s", FileVisibility.PROTECTED_ACCESS.getAccessType(), fileName);
+            case PROTECTED_ACCESS ->
+                    String.format("cm-%s-%s", FileVisibility.PROTECTED_ACCESS.getAccessType(), fileName);
             case PUBLIC_ACCESS -> String.format("cm-%s-%s", FileVisibility.PUBLIC_ACCESS.getAccessType(), fileName);
         };
     }
@@ -171,7 +172,7 @@ public class FileServiceImpl implements FileService {
         if (fileNameWithoutAccessKey == null) {
             return null;
         }
-        String newPath = getAbsolutePath(fileNameWithoutAccessKey,visibility);
+        String newPath = getAbsolutePath(fileNameWithoutAccessKey, visibility);
 
         Path source = Paths.get(sourceFile.getAbsolutePath());
         Path destination = Paths.get(newPath);
@@ -202,13 +203,13 @@ public class FileServiceImpl implements FileService {
         };
     }
 
-    private String createAUniqueFileName(String extension,String userId) {
+    private String createAUniqueFileName(String clientId, String extension) {
 
         StringBuilder hexString = new StringBuilder();
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
 
-            String input = userId+System.currentTimeMillis();
+            String input = clientId + System.currentTimeMillis();
             byte[] hashBytes = digest.digest(input.getBytes());
 
             for (byte b : hashBytes) {
@@ -220,7 +221,7 @@ public class FileServiceImpl implements FileService {
             return null;
         }
 
-        return String.format("file-%s.%s",hexString, extension);
+        return String.format("file-%s.%s", hexString, extension);
     }
 
 
@@ -261,7 +262,7 @@ public class FileServiceImpl implements FileService {
         return Flux.fromIterable(fileObjectsList);
     }
 
-    FileObjects createFileObject(FileDetails fileDetails){
+    FileObjects createFileObject(FileDetails fileDetails) {
         File file = fileDetails.getFile();
         String extension = FileService.extractFileExtension(file.getName());
         return FileObjects.builder()
@@ -275,7 +276,7 @@ public class FileServiceImpl implements FileService {
 
     private FileDetails validateFileName(String fileId) {
         FileVisibility fileVisibility = FileService.getFileVisibility(fileId);
-        String path = getAbsolutePath(fileId,fileVisibility);
+        String path = getAbsolutePath(fileId, fileVisibility);
         File file = new File(path);
         if (!file.exists()) {
             return null;

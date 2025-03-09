@@ -1,19 +1,18 @@
 package com.cromxt.bucket.interceptors;
 
 import com.cromxt.bucket.auth.BucketAuthorization;
-import com.cromxt.proto.files.MediaDetails;
-import com.cromxt.proto.files.MediaHeaders;
+import com.cromxt.proto.files.FileMetadata;
 import io.grpc.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import static com.cromxt.common.crombucket.grpc.MediaHeadersKey.MEDIA_DETAILS;
-import static com.cromxt.common.crombucket.grpc.MediaHeadersKey.MEDIA_META_DATA;
+import static com.cromxt.common.crombucket.grpc.MediaHeadersKey.FILE_METADATA;
 
 
 @Slf4j
-@Service(value = "customServerInterceptor")
+@Component
 @RequiredArgsConstructor
 public class FileHandlerInterceptor implements ServerInterceptor {
 
@@ -21,14 +20,14 @@ public class FileHandlerInterceptor implements ServerInterceptor {
 
     @Override
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
-        MediaHeaders metaData = null;
-        Metadata.Key<?> mediaMetaDatakey = MEDIA_META_DATA.getMetaDataKey();
+        FileMetadata metaData = null;
+        Metadata.Key<?> mediaMetaDatakey = FILE_METADATA.getMetaDataKey();
 
         if (headers.containsKey(mediaMetaDatakey)) {
 
             try {
                 byte[] metaDataBytes = headers.get((Metadata.Key<byte[]>) mediaMetaDatakey);
-                metaData = MediaHeaders.parseFrom(metaDataBytes);
+                metaData = FileMetadata.parseFrom(metaDataBytes);
                 String secret = metaData.getClientSecret();
 
                 boolean authorized = bucketAuthorization.isRequestAuthorized(secret);
@@ -39,14 +38,15 @@ public class FileHandlerInterceptor implements ServerInterceptor {
                 }
 
                 String clientId = bucketAuthorization.extractClientId(secret);
-                MediaDetails mediaDetails = MediaDetails.newBuilder()
+
+                FileMetadata updatedMetaData = FileMetadata.newBuilder()
                         .setExtension(metaData.getExtension())
-                        .setClientId(clientId)
                         .setVisibility(metaData.getVisibility())
+                        .setClientId(clientId)
                         .build();
 
 //                    Create a context for current call.
-                Context currentContext = Context.current().withValue(MEDIA_DETAILS.getContextKey(), mediaDetails);
+                Context currentContext = Context.current().withValue(FILE_METADATA.getContextKey(), updatedMetaData);
 //                    Add the created Context to current request.
                 return Contexts.interceptCall(currentContext, call, headers, next);
             } catch (Exception e) {

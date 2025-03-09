@@ -20,7 +20,7 @@ public class FileObjectAccessController {
     private final FileObjectsService fileObjectsService;
 
     @GetMapping(value = "/{fileId}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<Flux<DataBuffer>> getPublicObject(
+    public ResponseEntity<Flux<DataBuffer>> getFile(
             @PathVariable String fileId
     ) {
         return ResponseEntity.ok(fileObjectsService.getFile(fileId));

@@ -23,43 +23,42 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 
 @Slf4j
-@Configuration
+@Configuration(enforceUniqueMethods = false)
 @RequiredArgsConstructor
 public class GrpcServerConfig {
-    private final FileHandlerInterceptor fileHandlerInterceptor;
+
+    private final BucketInformationService bucketInformationService;
     private final FileHandlerGRPCServiceImpl fileHandlerGRPCService;
+    private final FileHandlerInterceptor fileHandlerInterceptor;
 
-
-    @Bean(name = "bucketGrpcServerBuilder")
-    @Order(1)
-    public NettyServerBuilder configureServer(BucketInformationService bucketInformationService) throws IOException {
+    @Bean(name = "grpcServer")
+    @Profile("local")
+    public Server configureServer() {
         Integer grpcPort = bucketInformationService.getRpcPort();
         String grpcHost = bucketInformationService.getApplicationHostname();
-        assert grpcPort != null;
-        assert grpcHost != null;
+
         log.info("Create gRPC server at {} on port {}", grpcHost, grpcPort);
         return NettyServerBuilder
                 .forAddress(new InetSocketAddress(grpcHost, grpcPort))
-                .addService(ServerInterceptors.intercept(fileHandlerGRPCService,fileHandlerInterceptor));
+                .addService(fileHandlerGRPCService)
+                .intercept(fileHandlerInterceptor)
+                .build();
     }
 
+    @Bean(name = "grpcServer")
+    @Profile({"dev", "prod"})
+    public Server configureServer(
+            FileManagementGRPCService fileManagementGRPCService,
+            FileManagerInterceptor fileManagerInterceptor
+    ) {
+        Integer grpcPort = bucketInformationService.getRpcPort();
+        String grpcHost = bucketInformationService.getApplicationHostname();
 
-    @Bean
-    @Profile({"dev","prod"})
-    @Primary
-    public NettyServerBuilder addFileManagementService(FileManagementGRPCService fileManagementGRPCService,
-                                                       FileManagerInterceptor fileManagerInterceptor,
-                                                       @Qualifier("bucketGrpcServerBuilder") NettyServerBuilder server) {
-        log.info("Add file management service");
-        return server.addService(ServerInterceptors.intercept(fileManagementGRPCService,fileManagerInterceptor));
+        log.info("Create gRPC server at {} on port {}", grpcHost, grpcPort);
+        return NettyServerBuilder
+                .forAddress(new InetSocketAddress(grpcHost, grpcPort))
+                .addService(ServerInterceptors.intercept(fileHandlerGRPCService, fileHandlerInterceptor))
+                .addService(ServerInterceptors.intercept(fileManagementGRPCService, fileManagerInterceptor))
+                .build();
     }
-
-    @Bean(name = "bucketGrpcServer")
-    public Server createServer(NettyServerBuilder server) {
-        log.info("Build server successfully");
-        return server.build();
-    }
-
-
-
 }

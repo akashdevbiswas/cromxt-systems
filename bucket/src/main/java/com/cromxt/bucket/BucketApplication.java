@@ -21,7 +21,6 @@ public class BucketApplication {
         SpringApplication.run(BucketApplication.class, args);
     }
 
-
     @Bean
     public CommandLineRunner commandLineRunner(Environment environment, ApplicationContext context) {
         return args -> {

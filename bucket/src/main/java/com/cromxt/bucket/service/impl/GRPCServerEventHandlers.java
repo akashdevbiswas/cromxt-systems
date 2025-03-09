@@ -2,6 +2,7 @@ package com.cromxt.bucket.service.impl;
 
 
 import io.grpc.Server;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -16,17 +17,15 @@ import java.io.IOException;
 public class GRPCServerEventHandlers {
 
     private final Server server;
-    private final BucketInformationService network;
 
-    public GRPCServerEventHandlers(@Qualifier("bucketGrpcServer") Server server, BucketInformationService hostNetwork) {
+    public GRPCServerEventHandlers(@Qualifier("grpcServer") Server server) {
         this.server = server;
-        this.network = hostNetwork;
     }
 
     @EventListener(ApplicationReadyEvent.class)
     public void onStartApplication () throws IOException {
         server.start();
-        log.info("Bucket gRPC server successfully started at {} on Port {}", network.getApplicationHostname(),server.getPort());
+        log.info("Bucket gRPC server successfully started at {}", server.getListenSockets());
     }
 
     @EventListener(value = ContextClosedEvent.class)

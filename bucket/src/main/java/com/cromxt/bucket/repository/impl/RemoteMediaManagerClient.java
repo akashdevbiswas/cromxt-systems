@@ -2,6 +2,7 @@ package com.cromxt.bucket.repository.impl;
 
 
 import com.cromxt.bucket.client.MediaManagerClient;
+import com.cromxt.bucket.constants.FileVisibility;
 import com.cromxt.bucket.models.FileObjects;
 import com.cromxt.bucket.service.AccessURLGenerator;
 import com.cromxt.bucket.service.impl.BucketInformationService;
@@ -51,12 +52,13 @@ public class RemoteMediaManagerClient implements MediaManagerClient {
     }
 
     @Override
-    public Mono<String> createMediaObject(String clientId) {
+    public Mono<String> createMediaObject(String clientId, FileVisibility visibility) {
         MediaRequest mediaRequest = MediaRequest.builder()
                 .clientId(clientId)
                 .clusterId(clusterId)
                 .regionId(regionId)
                 .bucketId(bucketInformationService.getBucketId())
+                .visibility(visibility.name())
                 .build();
         String url = String.format("%s/api/v1/medias", mediaClientBaseUrl);
 
