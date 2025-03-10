@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: example-reactive-web
+server:
+  port: 8081

@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: demo
+  servlet:
+    multipart:
+      max-file-size: 1000000MB
+      max-request-size: 1000000MB
+server:
+  port: 8082
