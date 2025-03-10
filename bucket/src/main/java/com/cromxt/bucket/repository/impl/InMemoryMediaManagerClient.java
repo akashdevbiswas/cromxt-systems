@@ -7,11 +7,11 @@ import com.cromxt.bucket.dtos.UpdateMediaVisibilityRequest;
 import com.cromxt.bucket.models.FileObjects;
 import com.cromxt.bucket.repository.MediaRepository;
 import com.cromxt.bucket.service.AccessURLGenerator;
-import com.cromxt.bucket.service.impl.BucketInformationService;
 import com.cromxt.bucket.service.impl.FileManagementGRPCService;
+import com.cromxt.bucket.service.impl.FileServiceImpl;
 import com.cromxt.common.crombucket.mediamanager.response.MediaObjects;
 import com.cromxt.proto.files.*;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -25,15 +25,26 @@ import java.util.UUID;
 
 @Service
 @Profile("local")
-@RequiredArgsConstructor
 public class InMemoryMediaManagerClient implements MediaManagerClient, MediaRepository {
 
     //    This hashmap is a local database of media objects which are saved in the system.
     private static final Map<String, MediaObjects> MEDIA_OBJECTS_EXISTS = new HashMap<>();
-    private final BucketInformationService bucketInformationService;
     private final AccessURLGenerator accessURLGenerator;
     private final FileManagementGRPCService fileManagementGRPCService;
 
+
+    public InMemoryMediaManagerClient(AccessURLGenerator accessURLGenerator,
+                                      FileManagementGRPCService fileManagementGRPCService,
+                                      FileServiceImpl fileServiceImpl) {
+
+        this.accessURLGenerator = accessURLGenerator;
+        this.fileManagementGRPCService = fileManagementGRPCService;
+        fileServiceImpl.getAllAvailableFiles().doOnNext(fileObjects -> {
+            String mediaId = UUID.randomUUID().toString();
+            MediaObjects mediaObjectsFromFileObjects = createMediaObjectsFromFileObjects(mediaId, fileObjects);
+            MEDIA_OBJECTS_EXISTS.put(mediaId, mediaObjectsFromFileObjects);
+        }).subscribe();
+    }
 
     @Override
     public Mono<String> createMediaObject(String clientId, FileVisibility visibility) {
@@ -75,7 +86,7 @@ public class InMemoryMediaManagerClient implements MediaManagerClient, MediaRepo
             Mono<FileOperationResponse> fileOperationResponseMono = fileManagementGRPCService.deleteFile(fileObject);
 
             fileOperationResponseMono.doOnNext(fileOperationResponse -> {
-                if (fileOperationResponse.getStatus() != OperationStatus.SUCCESS) {
+                if (fileOperationResponse.getStatus() == OperationStatus.SUCCESS) {
                     MEDIA_OBJECTS_EXISTS.remove(mediaId);
                 }
             }).subscribe();
@@ -132,6 +143,7 @@ public class InMemoryMediaManagerClient implements MediaManagerClient, MediaRepo
                 .fileId(fileId)
                 .visibility(fileObjects.getVisibility().name())
                 .accessUrl(accessUrl)
+                .createdOn(LocalDate.now().toString())
                 .fileSize(fileObjects.getFileSize())
                 .build();
     }

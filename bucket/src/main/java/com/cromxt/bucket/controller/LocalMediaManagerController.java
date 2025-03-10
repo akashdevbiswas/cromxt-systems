@@ -6,10 +6,7 @@ import com.cromxt.common.crombucket.mediamanager.response.MediaObjects;
 import com.cromxt.bucket.repository.MediaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -24,12 +21,22 @@ public class LocalMediaManagerController {
     private final MediaRepository mediaRepository;
 
 
+    @GetMapping
+    public Flux<MediaObjects> getMedias(){
+        return mediaRepository.getAllAvailableMedias();
+    }
+
+    @GetMapping(value = "/{mediaId}")
+    public Mono<MediaObjects> getMedia(@PathVariable String mediaId){
+        return mediaRepository.getMediaObjectById(mediaId);
+    }
+
     @DeleteMapping
-    public Mono<Void> deleteMedia(List<String> mediaIds) {
+    public Mono<Void> deleteMedia(@RequestBody List<String> mediaIds) {
         return mediaRepository.deleteMedias(mediaIds);
     }
     @PutMapping
-    public Flux<MediaObjects> changeVisibility(List<UpdateMediaVisibilityRequest> updateMediaVisibilityRequests){
+    public Flux<MediaObjects> changeVisibility(@RequestBody List<UpdateMediaVisibilityRequest> updateMediaVisibilityRequests){
         return mediaRepository.updateMediasVisibility(updateMediaVisibilityRequests);
     }
 }

@@ -172,7 +172,8 @@ public class FileServiceImpl implements FileService {
         if (fileNameWithoutAccessKey == null) {
             return null;
         }
-        String newPath = getAbsolutePath(fileNameWithoutAccessKey, visibility);
+        String newFileName = addAccessKey(fileNameWithoutAccessKey, visibility);
+        String newPath = getAbsolutePath(newFileName, visibility);
 
         Path source = Paths.get(sourceFile.getAbsolutePath());
         Path destination = Paths.get(newPath);
@@ -231,23 +232,17 @@ public class FileServiceImpl implements FileService {
 
         List<FileObjects> fileObjectsList = new ArrayList<>();
 
-        File publicDirectory = new File(String.format("%s/%s", basedir, FileVisibility.PUBLIC_ACCESS.getAccessType()));
-
-        File[] listOfFiles = publicDirectory.listFiles();
-
-        if (listOfFiles != null) {
-            for (File file : listOfFiles) {
-                FileDetails fileDetails = validateFileName(file.getName());
-                if (fileDetails != null) {
-                    FileObjects fileObjects = createFileObject(fileDetails);
-                    fileObjectsList.add(fileObjects);
-                }
-            }
+        for(FileVisibility visibility : FileVisibility.values()) {
+            fetchAllFiles(visibility, fileObjectsList);
         }
 
-        File securedDirectory = new File(String.format("%s/%s", basedir, FileVisibility.PRIVATE_ACCESS.getAccessType()));
+        return Flux.fromIterable(fileObjectsList);
+    }
 
-        File[] listOfSecuredFiles = securedDirectory.listFiles();
+    private void fetchAllFiles(FileVisibility visibility, List<FileObjects> fileObjectsList) {
+        String basedir = bucketInformationService.getBaseDirectory();
+        File currentDirectory = new File(String.format("%s/%s", basedir, visibility.getAccessType()));
+        File[] listOfSecuredFiles = currentDirectory.listFiles();
 
         if (listOfSecuredFiles != null) {
             for (File file : listOfSecuredFiles) {
@@ -258,8 +253,6 @@ public class FileServiceImpl implements FileService {
                 }
             }
         }
-
-        return Flux.fromIterable(fileObjectsList);
     }
 
     FileObjects createFileObject(FileDetails fileDetails) {
@@ -275,6 +268,7 @@ public class FileServiceImpl implements FileService {
     }
 
     private FileDetails validateFileName(String fileId) {
+        if(!fileId.startsWith("cm-")) return null;
         FileVisibility fileVisibility = FileService.getFileVisibility(fileId);
         String path = getAbsolutePath(fileId, fileVisibility);
         File file = new File(path);
