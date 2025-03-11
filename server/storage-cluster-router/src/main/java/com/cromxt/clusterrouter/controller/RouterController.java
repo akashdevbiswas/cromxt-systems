@@ -1,9 +1,8 @@
 package com.cromxt.clusterrouter.controller;
 
-import com.cromxt.clusterrouter.service.RouteService;
+import com.cromxt.clusterrouter.service.ClusterRouterService;
 import com.cromxt.common.crombucket.routeing.BucketDetailsResponse;
 import com.cromxt.common.crombucket.routeing.MediaDetails;
-import com.cromxt.clusterrouter.service.RoutingManagementService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,12 +14,12 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/api/v1/routes")
 public record RouterController(
-        RouteService routeService
+        ClusterRouterService clusterRouterService
         ) {
-    @PostMapping("/get-bucket-id")
+    @PostMapping
     public Mono<ResponseEntity<BucketDetailsResponse>> getBucketId(
             @RequestBody MediaDetails mediaDetails) {
-        return routeService.getBucketDetails(mediaDetails).map(bucketDetails -> new ResponseEntity<>(bucketDetails, HttpStatus.OK))
+        return clusterRouterService.getBucketDetails(mediaDetails).map(bucketDetails -> new ResponseEntity<>(bucketDetails, HttpStatus.OK))
                 .onErrorResume(e -> Mono.just(new ResponseEntity<>(new BucketDetailsResponse(), HttpStatus.BAD_REQUEST)));
     }
 }

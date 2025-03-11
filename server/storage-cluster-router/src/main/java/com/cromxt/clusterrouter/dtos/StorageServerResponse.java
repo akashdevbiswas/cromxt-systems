@@ -6,15 +6,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
 @Builder
-public class BucketInformationDTO {
-    private String bucketId;
+@AllArgsConstructor
+@NoArgsConstructor
+public class StorageServerResponse {
+    private String storageServerId;
     private String hostName;
     private Integer rpcPort;
-    private Integer httpPort;
     private Long lastRefreshTime;
     private Long availableSpaceInBytes;
 }

@@ -1,7 +1,7 @@
 package com.cromxt.clusterrouter.client;
 
 import com.cromxt.clusterrouter.utils.RoutingProperties;
-import com.cromxt.common.crombucket.kafka.BucketObject;
+import com.cromxt.common.crombucket.systemmanager.StorageServerRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
@@ -21,7 +21,7 @@ public class BucketManagerClient {
     private final RoutingProperties routingProperties;
 
 
-    public Flux<BucketObject> getBucketObjects() {
+    public Flux<StorageServerRequest> getBucketObjects() {
         URI url = URI.create(
                 String.format("%s/%s", routingProperties.getBucketManagerAddress(), routingProperties.getClusterId())
         );
@@ -32,7 +32,7 @@ public class BucketManagerClient {
                 .onStatus(HttpStatusCode::isError,clientResponse -> {
                     return Mono.error(new RuntimeException("Some error occurred while fetch the buckets."));
                 })
-                .bodyToFlux(BucketObject.class)
+                .bodyToFlux(StorageServerRequest.class)
                 .onErrorResume(err->{
                     log.error("Error occurred while fetching the buckets {}", err.getMessage());
                     return Flux.empty();

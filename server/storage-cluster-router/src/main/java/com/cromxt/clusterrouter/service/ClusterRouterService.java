@@ -4,6 +4,6 @@ import com.cromxt.common.crombucket.routeing.BucketDetailsResponse;
 import com.cromxt.common.crombucket.routeing.MediaDetails;
 import reactor.core.publisher.Mono;
 
-public interface RouteService {
+public interface ClusterRouterService {
     Mono<BucketDetailsResponse> getBucketDetails(MediaDetails mediaDetails);
 }

@@ -9,11 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Buckets {
-    private String bucketId;
+public class StorageServer {
+    private String id;
     private String hostName;
     private Integer rpcPort;
-    private Integer httpPort;
     private Long lastRefreshTime;
     private Long availableSpaceInBytes;
 }
