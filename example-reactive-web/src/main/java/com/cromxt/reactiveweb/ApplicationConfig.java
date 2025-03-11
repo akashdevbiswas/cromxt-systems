@@ -1,10 +1,10 @@
 package com.cromxt.reactiveweb;
 
 
-import com.cromxt.toolkit.crombucket.CromBucketCreadentials;
+import com.cromxt.toolkit.crombucket.BucketUserDetails;
 import com.cromxt.toolkit.crombucket.clients.ReactiveCromBucketClient;
 import com.cromxt.toolkit.crombucket.clients.impl.ReactiveCromBucketClientImpl;
-import com.cromxt.toolkit.crombucket.creadentials.LocalBucketCredential;
+import com.cromxt.toolkit.crombucket.users.LocalBucketUserDetails;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,8 +14,8 @@ public class ApplicationConfig {
 
 
     @Bean
-    public CromBucketCreadentials cromBucketCreadentials() {
-        return new LocalBucketCredential("http://localhost:9090");
+    public BucketUserDetails cromBucketCreadentials() {
+        return new LocalBucketUserDetails("http://localhost:9090");
     }
 
     @Bean
@@ -24,7 +24,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public ReactiveCromBucketClient reactiveCromBucketClient(WebClient webClient, CromBucketCreadentials credentials) {
+    public ReactiveCromBucketClient reactiveCromBucketClient(WebClient webClient, BucketUserDetails credentials) {
         return new ReactiveCromBucketClientImpl(credentials, webClient);
     }
 
