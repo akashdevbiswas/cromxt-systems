@@ -28,12 +28,7 @@ public class BucketInformationService {
         this.rpcPort = environment.getProperty("STORAGE_SERVER_GRPC_SERVICE_PORT", Integer.class);
         this.httpPort = environment.getProperty("STORAGE_SERVER_HTTP_SERVICE_PORT", Integer.class);
         this.bucketId = environment.getProperty("STORAGE_SERVER_ID", String.class);
-        Boolean findHostIp = environment.getProperty("STORAGE_SERVER_FIND_HOST_IP", Boolean.class, false);
-        if (findHostIp) {
-            this.applicationHostname = findHostName();
-        } else {
-            this.applicationHostname = "127.0.0.1";
-        }
+        this.applicationHostname = findHostName();
 
     }
 
