@@ -10,7 +10,7 @@ import com.cromxt.clusterrouter.service.ClusterManagementService;
 import com.cromxt.clusterrouter.service.StorageHeartBeatService;
 import com.cromxt.common.crombucket.kafka.BucketHeartBeat;
 import com.cromxt.common.crombucket.systemmanager.StorageServerRequest;
-import com.cromxt.common.crombucket.routeing.BucketDetailsResponse;
+import com.cromxt.common.crombucket.routeing.StorageServerAddress;
 import com.cromxt.common.crombucket.routeing.MediaDetails;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -159,7 +159,7 @@ public class ClusterRouterServiceImpl implements ClusterRouterService, ClusterMa
     }
 
     @Override
-    public Mono<BucketDetailsResponse> getBucketDetails(MediaDetails mediaDetails) {
+    public Mono<StorageServerAddress> getBucketDetails(MediaDetails mediaDetails) {
         String bucketID = null;
 
         if (USAGE_QUEUE.isEmpty()) {
@@ -214,14 +214,14 @@ public class ClusterRouterServiceImpl implements ClusterRouterService, ClusterMa
                 .build();
     }
 
-    private Mono<BucketDetailsResponse> generateBucketDetailsOrError(String bucketId) {
+    private Mono<StorageServerAddress> generateBucketDetailsOrError(String bucketId) {
         if (bucketId == null) {
             return Mono.error(new NoRouteConfigurationFoundException("Not Buckets found"));
         }
         return ONLINE_BUCKETS.containsKey(bucketId) ?
                 Mono.fromCallable(() -> {
                     StorageServer bucket = AVAILABLE_STORAGE_SERVERS.get(bucketId);
-                    return BucketDetailsResponse.builder()
+                    return StorageServerAddress.builder()
                             .hostName(bucket.getHostName())
                             .rpcPort(bucket.getRpcPort())
                             .build();

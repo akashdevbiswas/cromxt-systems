@@ -14,7 +14,7 @@ public class ApplicationConfig {
 
 
     @Bean
-    public BucketUserDetails cromBucketCreadentials() {
+    public BucketUserDetails cromxtUserDetails() {
         return new LocalBucketUserDetails("http://localhost:9090");
     }
 
@@ -27,6 +27,5 @@ public class ApplicationConfig {
     public ReactiveCromBucketClient reactiveCromBucketClient(WebClient webClient, BucketUserDetails credentials) {
         return new ReactiveCromBucketClientImpl(credentials, webClient);
     }
-
 
 }

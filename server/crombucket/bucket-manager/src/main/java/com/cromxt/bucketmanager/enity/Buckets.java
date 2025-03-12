@@ -12,8 +12,6 @@ public class Buckets {
     private String id;
     private String clientId;
     private BucketType bucketType;
-    @DocumentReference
-    private Clusters cluster;
     private Long availableSpace;
     @DocumentReference
     private BucketGroups bucketGroups;

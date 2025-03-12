@@ -24,18 +24,15 @@ public class StorageServerApplication {
     @Bean
     public CommandLineRunner commandLineRunner(Environment environment, ApplicationContext context) {
         return args -> {
-            String basePath = environment.getProperty("BUCKET_CONFIG_DISK_PATH", String.class);
+            String basePath = environment.getProperty("STORAGE_SERVER_DISK_PATH", String.class);
             assert basePath != null;
 
-            for (FileVisibility visibility : FileVisibility.values()) {
-                File directory = new File(basePath + File.separator + visibility.getAccessType());
-                if (!directory.exists()) {
-                    if (!directory.mkdirs()) {
-                        log.error("Unable to create the public directory");
-                        SpringApplication.exit(context, () -> 1);
-                    }
+            File directory = new File(basePath);
+            if (!directory.exists()) {
+                if (!directory.mkdirs()) {
+                    log.error("Unable to create the public directory");
+                    SpringApplication.exit(context, () -> 1);
                 }
-
             }
 
         };

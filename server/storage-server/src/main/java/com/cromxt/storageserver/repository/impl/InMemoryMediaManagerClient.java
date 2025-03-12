@@ -98,7 +98,11 @@ public class InMemoryMediaManagerClient implements MediaManagerClient, MediaRepo
         return Flux.fromIterable(updateMediaVisibilityRequests).flatMap(updateMediaVisibilityRequest -> {
             String mediaID = updateMediaVisibilityRequest.mediaId();
             MediaObjects mediaObjects = MEDIA_OBJECTS_EXISTS.get(mediaID);
-            Visibility visibility = getFileVisibility(updateMediaVisibilityRequest.fileVisibility());
+
+            if(mediaObjects == null){
+                return Mono.empty();
+            }
+            Visibility visibility = getFileVisibility(updateMediaVisibilityRequest.visibility());
 
             UpdateVisibilityRequest updateVisibilityRequest = UpdateVisibilityRequest.newBuilder()
                     .setFileId(mediaObjects.getFileId())
@@ -158,9 +162,9 @@ public class InMemoryMediaManagerClient implements MediaManagerClient, MediaRepo
 
     private FileVisibility getFileVisibility(Visibility visibility) {
         return switch (visibility) {
-            case PRIVATE -> FileVisibility.PRIVATE_ACCESS;
-            case PROTECTED -> FileVisibility.PROTECTED_ACCESS;
-            case PUBLIC -> FileVisibility.PUBLIC_ACCESS;
+            case PRIVATE -> FileVisibility.PRIVATE;
+            case PROTECTED -> FileVisibility.PROTECTED;
+            case PUBLIC -> FileVisibility.PUBLIC;
             case UNRECOGNIZED -> throw new IllegalArgumentException("Invalid visibility");
         };
     }

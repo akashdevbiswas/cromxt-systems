@@ -1,11 +1,15 @@
 package com.cromxt.storageserver.controller;
 
 
-import com.cromxt.storageserver.dtos.UpdateMediaVisibilityRequest;
 import com.cromxt.common.crombucket.mediamanager.response.MediaObjects;
+import com.cromxt.storageserver.dtos.UpdateMediaVisibilityRequest;
 import com.cromxt.storageserver.repository.MediaRepository;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -14,7 +18,7 @@ import java.util.List;
 
 @RestController
 @Profile("local")
-@RequestMapping(value = "/api/v1/medias")
+@RequestMapping(value = "/media-manager/api/v1/medias")
 @RequiredArgsConstructor
 public class LocalMediaManagerController {
 
@@ -31,12 +35,21 @@ public class LocalMediaManagerController {
         return mediaRepository.getMediaObjectById(mediaId);
     }
 
-    @DeleteMapping
+    @PostMapping(value = "/delete")
     public Mono<Void> deleteMedia(@RequestBody List<String> mediaIds) {
         return mediaRepository.deleteMedias(mediaIds);
     }
-    @PutMapping
+
+    @PutMapping(value = "/change-visibility")
     public Flux<MediaObjects> changeVisibility(@RequestBody List<UpdateMediaVisibilityRequest> updateMediaVisibilityRequests){
         return mediaRepository.updateMediasVisibility(updateMediaVisibilityRequests);
     }
+
+    @PutMapping
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Mono<MediaObjects> updateVisibility(@RequestBody UpdateMediaVisibilityRequest updateMediaVisibilityRequest){
+        Flux<MediaObjects> mediaResponseFlux = mediaRepository.updateMediasVisibility(List.of(updateMediaVisibilityRequest));
+        return mediaResponseFlux.next();
+    }
+
 }

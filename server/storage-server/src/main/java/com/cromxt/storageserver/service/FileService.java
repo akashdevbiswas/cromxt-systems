@@ -24,9 +24,9 @@ public interface FileService {
         if(splitedString.length < 2) throw new FileException("Invalid file name");
         String accessKey = splitedString[1];
         return switch (accessKey) {
-            case "pub" -> FileVisibility.PUBLIC_ACCESS;
-            case "prv" -> FileVisibility.PRIVATE_ACCESS;
-            case "prt" -> FileVisibility.PROTECTED_ACCESS;
+            case "pub" -> FileVisibility.PUBLIC;
+            case "prv" -> FileVisibility.PRIVATE;
+            case "prt" -> FileVisibility.PROTECTED;
             default -> throw new FileException("Filename without invalid key.");
         };
     }

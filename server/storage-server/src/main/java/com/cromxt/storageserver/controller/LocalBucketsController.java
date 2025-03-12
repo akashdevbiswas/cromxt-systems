@@ -2,7 +2,7 @@ package com.cromxt.storageserver.controller;
 
 
 import com.cromxt.storageserver.service.impl.BucketInformationService;
-import com.cromxt.common.crombucket.routeing.BucketDetailsResponse;
+import com.cromxt.common.crombucket.routeing.StorageServerAddress;
 import com.cromxt.common.crombucket.routeing.MediaDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/routes")
+@RequestMapping("/bucket-manager/api/v1/buckets")
 @RequiredArgsConstructor
 @Profile("local")
-public class RoutingController {
+public class LocalBucketsController {
 
     private final BucketInformationService bucketInformationService;
 
-    @PostMapping
-    public BucketDetailsResponse getBucketDetails(@RequestBody MediaDetails ignored) {
-        return BucketDetailsResponse.builder()
+    @PostMapping(value = "/fetch-storage-address")
+    public StorageServerAddress getBucketDetails(@RequestBody MediaDetails ignored) {
+        return StorageServerAddress.builder()
                 .hostName(bucketInformationService.getApplicationHostname())
                 .rpcPort(bucketInformationService.getRpcPort())
                 .build();

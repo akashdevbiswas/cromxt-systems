@@ -36,10 +36,10 @@ public class RemoteMediaManagerClient implements MediaManagerClient {
                                     AccessURLGenerator accessURLGenerator,
                                     BucketInformationService bucketInformationService,
                                     Environment environment) {
-        String clientUrl = environment.getProperty("BUCKET_CONFIG_MEDIA_CLIENT_URL", String.class);
-        String apiKey = environment.getProperty("BUCKET_CONFIG_MEDIA_CLIENT_API_KEY", String.class);
-        String clusterId = environment.getProperty("BUCKET_CONFIG_CLUSTER_ID", String.class);
-        String regionId = environment.getProperty("BUCKET_CONFIG_REGION_ID", String.class);
+        String clientUrl = environment.getProperty("STORAGE_SERVER_MEDIA_CLIENT_URL", String.class);
+        String apiKey = environment.getProperty("STORAGE_SERVER_MEDIA_CLIENT_API_KEY", String.class);
+        String clusterId = environment.getProperty("STORAGE_SERVER_CLUSTER_ID", String.class);
+        String regionId = environment.getProperty("STORAGE_SERVER_REGION_ID", String.class);
         assert clientUrl != null && apiKey != null && clusterId != null && regionId != null;
 
         this.accessURLGenerator = accessURLGenerator;

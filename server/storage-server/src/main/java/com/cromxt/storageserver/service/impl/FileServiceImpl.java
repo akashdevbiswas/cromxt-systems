@@ -46,7 +46,7 @@ public class FileServiceImpl implements FileService {
 
             String fileName = createAUniqueFileName(clientId, extension);
             String completeFileId = addAccessKey(fileName, visibility);
-            String absolutePath = getAbsolutePath(completeFileId, visibility);
+            String absolutePath = getAbsolutePath(completeFileId);
 
             try {
                 FileOutputStream fileOutputStream = new FileOutputStream(absolutePath);
@@ -158,10 +158,9 @@ public class FileServiceImpl implements FileService {
     @NonNull
     private String addAccessKey(String fileName, FileVisibility visibility) {
         return switch (visibility) {
-            case PRIVATE_ACCESS -> String.format("cm-%s-%s", FileVisibility.PRIVATE_ACCESS.getAccessType(), fileName);
-            case PROTECTED_ACCESS ->
-                    String.format("cm-%s-%s", FileVisibility.PROTECTED_ACCESS.getAccessType(), fileName);
-            case PUBLIC_ACCESS -> String.format("cm-%s-%s", FileVisibility.PUBLIC_ACCESS.getAccessType(), fileName);
+            case PRIVATE -> String.format("cm-%s-%s", FileVisibility.PRIVATE.getAccessType(), fileName);
+            case PROTECTED -> String.format("cm-%s-%s", FileVisibility.PROTECTED.getAccessType(), fileName);
+            case PUBLIC -> String.format("cm-%s-%s", FileVisibility.PUBLIC.getAccessType(), fileName);
         };
     }
 
@@ -172,36 +171,29 @@ public class FileServiceImpl implements FileService {
         if (fileNameWithoutAccessKey == null) {
             return null;
         }
-        String newFileName = addAccessKey(fileNameWithoutAccessKey, visibility);
-        String newPath = getAbsolutePath(newFileName, visibility);
 
-        Path source = Paths.get(sourceFile.getAbsolutePath());
-        Path destination = Paths.get(newPath);
-        try {
-            Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            log.error("Error occurred while moving the file with message: {}", e.getMessage());
+        String newFileName = addAccessKey(fileNameWithoutAccessKey, visibility);
+
+        String absolutePath = getAbsolutePath(newFileName);
+
+        File newFile = new File(absolutePath);
+
+        if (!sourceFile.renameTo(newFile)) {
             return null;
         }
-        return new FileDetails(new File(newPath), visibility);
+
+        return new FileDetails(newFile, visibility);
     }
 
     private String extractFileName(String fileName) {
-        if (fileName.length() < 14) return null;
-        return fileName.substring(13);
+        int len = FileVisibility.PUBLIC.getAccessType().length() + 4;
+        if (fileName.length() < len) return null;
+        return fileName.substring(len);
     }
 
     @NonNull
-    private String getAbsolutePath(String fileName, FileVisibility visibility) {
-        String baseDir = bucketInformationService.getBaseDirectory();
-        return switch (visibility) {
-            case PUBLIC_ACCESS ->
-                    String.format("%s/%s/%s", baseDir, FileVisibility.PUBLIC_ACCESS.getAccessType(), fileName);
-            case PRIVATE_ACCESS ->
-                    String.format("%s/%s/%s", baseDir, FileVisibility.PRIVATE_ACCESS.getAccessType(), fileName);
-            case PROTECTED_ACCESS ->
-                    String.format("%s/%s/%s", baseDir, FileVisibility.PROTECTED_ACCESS.getAccessType(), fileName);
-        };
+    private String getAbsolutePath(String fileId) {
+        return String.format("%s/%s", bucketInformationService.getBaseDirectory(), fileId);
     }
 
     private String createAUniqueFileName(String clientId, String extension) {
@@ -232,7 +224,7 @@ public class FileServiceImpl implements FileService {
 
         List<FileObjects> fileObjectsList = new ArrayList<>();
 
-        for(FileVisibility visibility : FileVisibility.values()) {
+        for (FileVisibility visibility : FileVisibility.values()) {
             fetchAllFiles(visibility, fileObjectsList);
         }
 
@@ -268,9 +260,9 @@ public class FileServiceImpl implements FileService {
     }
 
     private FileDetails validateFileName(String fileId) {
-        if(!fileId.startsWith("cm-")) return null;
+        if (!fileId.startsWith("cm-")) return null;
         FileVisibility fileVisibility = FileService.getFileVisibility(fileId);
-        String path = getAbsolutePath(fileId, fileVisibility);
+        String path = getAbsolutePath(fileId);
         File file = new File(path);
         if (!file.exists()) {
             return null;
