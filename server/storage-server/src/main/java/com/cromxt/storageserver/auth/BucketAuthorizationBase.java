@@ -1,6 +1,6 @@
 package com.cromxt.storageserver.auth;
 
-public interface BucketAuthorization {
+public interface BucketAuthorizationBase {
 
     boolean isRequestAuthorized(String secret);
 

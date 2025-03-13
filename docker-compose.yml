@@ -6,12 +6,11 @@ services:
       - "9090:9090"
       - "9091:9091"
     environment:
-      - STORAGE_SERVER_FIND_HOST_IP=false
       - STORAGE_SERVER_DISK_PATH=/var/bucket
       - STORAGE_SERVER_HTTP_SERVICE_PORT=9090
       - STORAGE_SERVER_GRPC_SERVICE_PORT=9091
       - STORAGE_SERVER_ID=bucket-1
-      - SPRING_PROFILES_ACTIVE=local
+      - SPRING_PROFILES_ACTIVE=local-docker-dev
     volumes:
       - ./var:/var/bucket
     

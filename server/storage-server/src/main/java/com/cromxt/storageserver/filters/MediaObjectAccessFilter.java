@@ -2,6 +2,7 @@ package com.cromxt.storageserver.filters;
 
 
 import lombok.NonNull;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
@@ -9,6 +10,7 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 @Component
+@Profile({"crombucket","crombucket-docker","crombucket-docker-dev"})
 public class MediaObjectAccessFilter implements WebFilter {
 
 

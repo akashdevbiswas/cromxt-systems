@@ -7,6 +7,8 @@ import com.cromxt.storageserver.service.FileService;
 import com.cromxt.proto.files.FileUploadRequest;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -28,11 +30,25 @@ import java.util.concurrent.atomic.AtomicLong;
 @Slf4j
 @Service
 @Getter
-@RequiredArgsConstructor
 public class FileServiceImpl implements FileService {
 
     private final BucketInformationService bucketInformationService;
 
+
+    public FileServiceImpl(BucketInformationService bucketInformationService, ApplicationContext applicationContext) {
+        this.bucketInformationService = bucketInformationService;
+
+        String basePath = bucketInformationService.getBaseDirectory();
+        assert basePath != null;
+
+        File directory = new File(basePath);
+        if (!directory.exists()) {
+            if (!directory.mkdirs()) {
+                log.error("Unable to create the public directory");
+                SpringApplication.exit(applicationContext, () -> 1);
+            }
+        }
+    }
 
     @Override
     public Mono<FileObjects> saveFile(String clientId,
@@ -224,27 +240,24 @@ public class FileServiceImpl implements FileService {
 
         List<FileObjects> fileObjectsList = new ArrayList<>();
 
-        for (FileVisibility visibility : FileVisibility.values()) {
-            fetchAllFiles(visibility, fileObjectsList);
+        File currentDirectory = new File(basedir);
+
+        if(!currentDirectory.isDirectory() || !currentDirectory.exists()) {
+            throw new MediaOperationException("No Base directory found.");
         }
 
-        return Flux.fromIterable(fileObjectsList);
-    }
-
-    private void fetchAllFiles(FileVisibility visibility, List<FileObjects> fileObjectsList) {
-        String basedir = bucketInformationService.getBaseDirectory();
-        File currentDirectory = new File(String.format("%s/%s", basedir, visibility.getAccessType()));
         File[] listOfSecuredFiles = currentDirectory.listFiles();
-
-        if (listOfSecuredFiles != null) {
-            for (File file : listOfSecuredFiles) {
-                FileDetails fileDetails = validateFileName(file.getName());
-                if (fileDetails != null) {
-                    FileObjects fileObjects = createFileObject(fileDetails);
-                    fileObjectsList.add(fileObjects);
-                }
+        if(listOfSecuredFiles == null) {
+            return Flux.fromIterable(fileObjectsList);
+        }
+        for (File file : listOfSecuredFiles) {
+            FileDetails fileDetails = validateFileName(file.getName());
+            if (fileDetails != null) {
+                FileObjects fileObjects = createFileObject(fileDetails);
+                fileObjectsList.add(fileObjects);
             }
         }
+        return Flux.fromIterable(fileObjectsList);
     }
 
     FileObjects createFileObject(FileDetails fileDetails) {

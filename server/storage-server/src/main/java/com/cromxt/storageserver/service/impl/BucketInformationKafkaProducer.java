@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
-@Profile({"dev", "prod"})
+@Profile({"crombucket","crombucket-docker","crombucket-docker-dev"})
 public class BucketInformationKafkaProducer {
 
     private final KafkaTemplate<String, BucketHeartBeat> kafkaTemplate;

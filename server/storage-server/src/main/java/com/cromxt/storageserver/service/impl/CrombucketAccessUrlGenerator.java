@@ -7,9 +7,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
-@Profile({"dev","prod"})
+@Profile({"crombucket","crombucket-docker","crombucket-docker-dev"})
 @RequiredArgsConstructor
-public class ClusterBasedAccessURLGenerator implements AccessURLGenerator {
+public class CrombucketAccessUrlGenerator implements AccessURLGenerator {
 
     private final BucketInformationService bucketInformationService;
 

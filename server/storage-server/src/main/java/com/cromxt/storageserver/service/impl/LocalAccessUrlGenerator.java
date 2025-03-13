@@ -5,10 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-@Profile("local")
+@Profile({"local","local-docker","local-docker-dev"})
 @RequiredArgsConstructor
 @Service
-public class LocalDevAccessUrlGenerator implements AccessURLGenerator {
+public class LocalAccessUrlGenerator implements AccessURLGenerator {
 
     private final BucketInformationService bucketInformationService;
 

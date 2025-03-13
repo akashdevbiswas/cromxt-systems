@@ -27,7 +27,7 @@ public class GrpcServerConfig {
     private final FileHandlerInterceptor fileHandlerInterceptor;
 
     @Bean(name = "grpcServer")
-    @Profile("local")
+    @Profile({"local","local-docker","local-docker-dev"})
     public Server configureServer() {
         Integer grpcPort = bucketInformationService.getRpcPort();
         String grpcHost = bucketInformationService.getApplicationHostname();
@@ -41,7 +41,7 @@ public class GrpcServerConfig {
     }
 
     @Bean(name = "grpcServer")
-    @Profile({"dev", "prod"})
+    @Profile({"crombucket","crombucket-docker","crombucket-docker-dev"})
     public Server configureServer(
             FileManagementGRPCService fileManagementGRPCService,
             FileManagerInterceptor fileManagerInterceptor

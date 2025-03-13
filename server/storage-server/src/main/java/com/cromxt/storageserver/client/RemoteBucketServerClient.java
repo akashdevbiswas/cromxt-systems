@@ -9,7 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Service
-@Profile({"dev", "prod"})
+@Profile({"crombucket","crombucket-docker","crombucket-docker-dev"})
 @RequiredArgsConstructor
 public class RemoteBucketServerClient implements BucketServerClient {
 

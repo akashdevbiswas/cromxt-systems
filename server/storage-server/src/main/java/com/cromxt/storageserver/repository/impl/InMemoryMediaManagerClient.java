@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Service
-@Profile("local")
+@Profile({"local","local-docker","local-docker-dev"})
 public class InMemoryMediaManagerClient implements MediaManagerClient, MediaRepository {
 
     //    This hashmap is a local database of media objects which are saved in the system.
@@ -39,7 +39,7 @@ public class InMemoryMediaManagerClient implements MediaManagerClient, MediaRepo
         this.accessURLGenerator = accessURLGenerator;
         this.fileManagementGRPCService = fileManagementGRPCService;
         fileServiceImpl.getAllAvailableFiles().doOnNext(fileObjects -> {
-            String mediaId = UUID.randomUUID().toString();
+            String mediaId = createMediaId(fileObjects.getFileId());
             MediaObjects mediaObjectsFromFileObjects = createMediaObjectsFromFileObjects(mediaId, fileObjects);
             MEDIA_OBJECTS_EXISTS.put(mediaId, mediaObjectsFromFileObjects);
         }).subscribe();
@@ -72,8 +72,10 @@ public class InMemoryMediaManagerClient implements MediaManagerClient, MediaRepo
         mediaObjects.setAccessUrl(accessUrl);
         mediaObjects.setVisibility(fileObjects.getVisibility().name());
         mediaObjects.setCreatedOn(LocalDate.now().toString());
-        MEDIA_OBJECTS_EXISTS.put(mediaId, mediaObjects);
-
+        MEDIA_OBJECTS_EXISTS.remove(mediaId);
+        String newId = createMediaId(fileObjects.getFileId());
+        mediaObjects.setMediaId(newId);
+        MEDIA_OBJECTS_EXISTS.put(newId, mediaObjects);
         return Mono.just(mediaObjects);
     }
 
@@ -99,7 +101,7 @@ public class InMemoryMediaManagerClient implements MediaManagerClient, MediaRepo
             String mediaID = updateMediaVisibilityRequest.mediaId();
             MediaObjects mediaObjects = MEDIA_OBJECTS_EXISTS.get(mediaID);
 
-            if(mediaObjects == null){
+            if (mediaObjects == null) {
                 return Mono.empty();
             }
             Visibility visibility = getFileVisibility(updateMediaVisibilityRequest.visibility());
@@ -167,6 +169,12 @@ public class InMemoryMediaManagerClient implements MediaManagerClient, MediaRepo
             case PUBLIC -> FileVisibility.PUBLIC;
             case UNRECOGNIZED -> throw new IllegalArgumentException("Invalid visibility");
         };
+    }
+
+    private String createMediaId(String fileId) {
+        int len = FileVisibility.PUBLIC.getAccessType().length() + 9;
+        int index = fileId.lastIndexOf(".");
+        return fileId.substring(len, index);
     }
 
 }

@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @RestController
-@Profile("local")
+@Profile({"local","local-docker","local-docker-dev"})
 @RequestMapping(value = "/media-manager/api/v1/medias")
 @RequiredArgsConstructor
 public class LocalMediaManagerController {

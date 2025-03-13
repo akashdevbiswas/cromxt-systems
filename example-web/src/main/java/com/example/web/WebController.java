@@ -6,6 +6,7 @@ import com.cromxt.toolkit.crombucket.UpdateFileVisibilityRequest;
 import com.cromxt.toolkit.crombucket.clients.CromBucketWebClient;
 import com.cromxt.toolkit.crombucket.response.FileResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +27,7 @@ public class WebController {
     }
 
     @DeleteMapping("/{mediaId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteFile(@PathVariable String mediaId){
         cromBucketWebClient.deleteFile(mediaId);
     }

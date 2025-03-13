@@ -1,7 +1,6 @@
-package com.cromxt.storageserver.repository.impl;
+package com.cromxt.storageserver.client;
 
 
-import com.cromxt.storageserver.client.MediaManagerClient;
 import com.cromxt.storageserver.constants.FileVisibility;
 import com.cromxt.storageserver.models.FileObjects;
 import com.cromxt.storageserver.service.AccessURLGenerator;
@@ -20,7 +19,7 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 
 @Service
-@Profile({"prod", "dev"})
+@Profile({"crombucket","crombucket-docker","crombucket-docker-dev"})
 @Slf4j
 public class RemoteMediaManagerClient implements MediaManagerClient {
 
@@ -30,7 +29,6 @@ public class RemoteMediaManagerClient implements MediaManagerClient {
     private final BucketInformationService bucketInformationService;
     private final String clusterId;
     private final String regionId;
-    private final AccessURLGenerator accessURLGenerator;
 
     public RemoteMediaManagerClient(WebClient webClient,
                                     AccessURLGenerator accessURLGenerator,
@@ -42,7 +40,6 @@ public class RemoteMediaManagerClient implements MediaManagerClient {
         String regionId = environment.getProperty("STORAGE_SERVER_REGION_ID", String.class);
         assert clientUrl != null && apiKey != null && clusterId != null && regionId != null;
 
-        this.accessURLGenerator = accessURLGenerator;
         this.mediaClientBaseUrl = clientUrl;
         this.apiKey = apiKey;
         this.webClient = webClient;

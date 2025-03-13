@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-@Profile("local")
+@Profile({"local","local-docker","local-docker-dev"})
 @RequiredArgsConstructor
 @Service
 public class SystemBucketServerClient implements BucketServerClient {

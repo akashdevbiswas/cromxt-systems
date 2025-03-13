@@ -1,7 +1,7 @@
 package com.cromxt.storageserver.interceptors;
 
 
-import com.cromxt.storageserver.auth.BucketAuthorization;
+import com.cromxt.storageserver.auth.BucketAuthorizationBase;
 import com.cromxt.proto.files.AuthKey;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.grpc.*;
@@ -15,10 +15,10 @@ import static com.cromxt.common.crombucket.grpc.MediaHeadersKey.AUTH_KEY;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@Profile({"dev","prod"})
+@Profile({"crombucket","crombucket-docker","crombucket-docker-dev"})
 public class FileManagerInterceptor implements ServerInterceptor {
 
-    private final BucketAuthorization bucketAuthorization;
+    private final BucketAuthorizationBase bucketAuthorizationBase;
 
     @Override
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
@@ -32,7 +32,7 @@ public class FileManagerInterceptor implements ServerInterceptor {
 
                 String key = authKey.getAuthKey();
 
-                if (!key.equals(bucketAuthorization.getApiKey())) {
+                if (!key.equals(bucketAuthorizationBase.getApiKey())) {
                     call.close(Status.UNAUTHENTICATED.withDescription("Request is not authorized"), headers);
                 }
 
