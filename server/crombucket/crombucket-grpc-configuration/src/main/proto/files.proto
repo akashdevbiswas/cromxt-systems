@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+option java_package = "com.cromxt.proto.files";
+option java_multiple_files = true;
+
+
+
+
+enum OperationStatus {
+  SUCCESS = 0;
+  ERROR = 1;
+}
+
+enum Visibility {
+  PRIVATE = 0;
+  PUBLIC = 1;
+  PROTECTED = 2;
+}
+message FileMetadata {
+  string extension = 1;
+  Visibility visibility = 2;
+  optional string clientSecret = 3;
+  optional string clientId = 4;
+}
+
+message FileUploadRequest {
+  bytes file = 1;
+}
+
+message MediaUploadResponse {
+  optional MediaObjectDetails mediaObjectDetails = 1;
+  OperationStatus status = 3;
+  optional string errorMessage = 4;
+}
+
+message MediaObjectDetails{
+  string mediaId = 1;
+  string accessUrl = 3;
+  uint64 fileSize = 4;
+  Visibility visibility = 5;
+}
+
+service FileHandlerService {
+  rpc uploadFile (stream FileUploadRequest) returns (MediaUploadResponse) {}
+}
+
+message FileObject{
+  string fileId = 1;
+}
+
+message UpdateVisibilityRequest{
+  string fileId = 1;
+  Visibility visibility = 2;
+}
+
+message FileObjectDetails{
+  string fileId = 1;
+  string accessUrl = 2;
+  uint64 fileSize = 3;
+  string createdOn = 4;
+  string extension = 5;
+  Visibility visibility = 6;
+}
+message FileOperationResponse{
+  OperationStatus status = 1;
+  optional string responseMessage = 2;
+  optional FileObjectDetails fileObjectDetails = 3;
+}
+message AuthKey{
+  string authKey = 1;
+}
+
+service FileManagementService {
+  rpc deleteFile(FileObject) returns (FileOperationResponse) {}
+  rpc changeFileVisibility(UpdateVisibilityRequest) returns (FileOperationResponse) {}
+}
+
