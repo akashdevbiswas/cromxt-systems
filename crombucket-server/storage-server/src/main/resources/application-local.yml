@@ -1,0 +1,9 @@
+STORAGE_SERVER_DISK_PATH: "/home/akash/Development/files"
+STORAGE_SERVER_HTTP_SERVICE_PORT: 9090
+STORAGE_SERVER_GRPC_SERVICE_PORT: 9091
+STORAGE_SERVER_ID: "1"
+spring:
+  application:
+    name: bucket
+server:
+  port: ${STORAGE_SERVER_HTTP_SERVICE_PORT}
