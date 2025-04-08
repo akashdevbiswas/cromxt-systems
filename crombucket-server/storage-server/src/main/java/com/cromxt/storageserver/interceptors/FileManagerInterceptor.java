@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import static com.cromxt.common.crombucket.grpc.MediaHeadersKey.AUTH_KEY;
+import static com.cromxt.crombucket.grpc.MediaHeadersKey.AUTH_KEY;
 
 @Slf4j
 @Component

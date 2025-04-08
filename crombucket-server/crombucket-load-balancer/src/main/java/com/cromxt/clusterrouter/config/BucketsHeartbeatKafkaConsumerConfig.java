@@ -1,7 +1,7 @@
 package com.cromxt.clusterrouter.config;
 
 import com.cromxt.clusterrouter.utils.RoutingProperties;
-import com.cromxt.common.crombucket.kafka.BucketHeartBeat;
+import com.cromxt.crombucket.kafka.BucketHeartBeat;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;

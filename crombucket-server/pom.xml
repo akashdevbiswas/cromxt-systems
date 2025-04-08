@@ -39,13 +39,10 @@
 		<module>file-manager</module>
 		<module>bucket-manager</module>
 		<module>storage-server</module>
-		<module>crombucket-common-modules</module>
-		<module>crombucket-grpc-configuration</module>
 		<module>crombucket-load-balancer</module>
 	</modules>
 
 	<dependencyManagement>
-
 		<dependencies>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
@@ -61,12 +58,12 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-			<dependency>
-				<groupId>io.grpc</groupId>
-				<artifactId>grpc-netty</artifactId>
-				<version>${grpc.version}</version>
-				<scope>import</scope>
-			</dependency>
+<!--			<dependency>-->
+<!--				<groupId>io.grpc</groupId>-->
+<!--				<artifactId>grpc-netty</artifactId>-->
+<!--				<version>${grpc.version}</version>-->
+<!--				<scope>import</scope>-->
+<!--			</dependency>-->
 		</dependencies>
 	</dependencyManagement>
 
@@ -85,6 +82,7 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>1.18.36</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

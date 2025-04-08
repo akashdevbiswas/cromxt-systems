@@ -9,7 +9,7 @@ import com.cromxt.storageserver.repository.MediaRepository;
 import com.cromxt.storageserver.service.AccessURLGenerator;
 import com.cromxt.storageserver.service.impl.FileManagementGRPCService;
 import com.cromxt.storageserver.service.impl.FileServiceImpl;
-import com.cromxt.common.crombucket.mediamanager.response.MediaObjects;
+import com.cromxt.crombucket.mediamanager.response.MediaObjects;
 import com.cromxt.proto.files.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;

@@ -1,15 +1,12 @@
 package com.cromxt.storageserver.controller;
 
 
-import com.cromxt.common.crombucket.mediamanager.response.MediaObjects;
+import com.cromxt.crombucket.mediamanager.response.MediaObjects;
 import com.cromxt.storageserver.dtos.UpdateMediaVisibilityRequest;
 import com.cromxt.storageserver.repository.MediaRepository;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
