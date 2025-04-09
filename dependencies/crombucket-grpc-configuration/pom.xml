@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>crombucket-grpc-configuration</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>crombucket-grpc-configuration</name>
-    <groupId>com.cromxt</groupId>
+    <groupId>com.cromxt.crombucket</groupId>
     <packaging>jar</packaging>
 
     <properties>
