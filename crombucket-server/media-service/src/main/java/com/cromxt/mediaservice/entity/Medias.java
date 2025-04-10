@@ -13,7 +13,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Setter
 public class Medias {
-
     @Id
     private String mediaId;
     @Indexed(unique = true)

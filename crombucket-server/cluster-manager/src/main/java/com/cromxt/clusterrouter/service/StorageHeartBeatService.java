@@ -1,6 +1,6 @@
 package com.cromxt.clusterrouter.service;
 
-import com.cromxt.userservice.kafka.BucketHeartBeat;
+import com.cromxt.crombucket.kafka.BucketHeartBeat;
 
 public interface StorageHeartBeatService {
 

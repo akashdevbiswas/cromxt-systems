@@ -1,4 +1,6 @@
 package com.cromxt.mediaservice.dtos;
 
-public record MediaObjectResponse() {
+public record MediaObjectResponse(
+
+) {
 }

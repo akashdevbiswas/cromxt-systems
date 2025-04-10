@@ -1,7 +1,7 @@
 package com.cromxt.clusterrouter.client;
 
 import com.cromxt.clusterrouter.utils.RoutingProperties;
-import com.cromxt.userservice.systemmanager.StorageServerRequest;
+import com.cromxt.crombucket.systemmanager.StorageServerRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;

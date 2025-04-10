@@ -2,7 +2,7 @@ package com.cromxt.clusterrouter.service;
 
 
 import com.cromxt.clusterrouter.dtos.StorageServerResponse;
-import com.cromxt.userservice.systemmanager.StorageServerRequest;
+import com.cromxt.crombucket.systemmanager.StorageServerRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

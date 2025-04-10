@@ -11,15 +11,5 @@ public record MediaController(
         MediaService mediaService
 ) {
 
-    private Long getFileSize(FilePart mediaObject) {
-        return mediaObject
-                .content()
-                .map(dataBuffer -> {
-                    long size = dataBuffer.readableByteCount();
-                    dataBuffer.readPosition(0);
-                    return size;
-                })
-                .reduce(Long::sum).block();
-    }
 
 }
