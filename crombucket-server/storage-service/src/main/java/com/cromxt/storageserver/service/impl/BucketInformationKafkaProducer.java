@@ -1,7 +1,7 @@
 package com.cromxt.storageserver.service.impl;
 
 
-import com.cromxt.crombucket.kafka.BucketHeartBeat;
+import com.cromxt.userservice.kafka.BucketHeartBeat;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.kafka.core.KafkaTemplate;

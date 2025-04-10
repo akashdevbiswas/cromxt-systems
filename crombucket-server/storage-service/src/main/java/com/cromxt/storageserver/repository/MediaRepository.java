@@ -1,7 +1,7 @@
 package com.cromxt.storageserver.repository;
 
 import com.cromxt.storageserver.dtos.UpdateMediaVisibilityRequest;
-import com.cromxt.crombucket.mediamanager.response.MediaObjects;
+import com.cromxt.userservice.mediamanager.response.MediaObjects;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

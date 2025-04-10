@@ -1,7 +1,7 @@
 package com.cromxt.clusterrouter.service.impl;
 
 import com.cromxt.clusterrouter.service.StorageHeartBeatService;
-import com.cromxt.crombucket.kafka.BucketHeartBeat;
+import com.cromxt.userservice.kafka.BucketHeartBeat;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;

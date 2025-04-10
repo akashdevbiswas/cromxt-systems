@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import static com.cromxt.crombucket.grpc.MediaHeadersKey.FILE_METADATA;
+import static com.cromxt.userservice.grpc.MediaHeadersKey.FILE_METADATA;
 
 
 @Slf4j

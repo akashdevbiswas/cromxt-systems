@@ -1,7 +1,7 @@
 package com.cromxt.storageserver.client;
 
 
-import com.cromxt.crombucket.bucketservice.UsersBucketInfo;
+import com.cromxt.userservice.bucketservice.UsersBucketInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;

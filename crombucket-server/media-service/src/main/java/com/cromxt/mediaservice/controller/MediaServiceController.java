@@ -1,8 +1,8 @@
 package com.cromxt.mediaservice.controller;
 
 
-import com.cromxt.crombucket.mediamanager.requests.MediaRequest;
-import com.cromxt.crombucket.mediamanager.response.UpdateMediaUploadStatusRequest;
+import com.cromxt.userservice.mediamanager.requests.MediaRequest;
+import com.cromxt.userservice.mediamanager.response.UpdateMediaUploadStatusRequest;
 import com.cromxt.mediaservice.service.MediaClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

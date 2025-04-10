@@ -40,6 +40,7 @@
 		<module>bucket-service</module>
 		<module>storage-service</module>
 		<module>cluster-manager</module>
+		<module>user-service</module>
 	</modules>
 
 	<dependencyManagement>
@@ -64,6 +65,12 @@
 <!--				<version>${grpc.version}</version>-->
 <!--				<scope>import</scope>-->
 <!--			</dependency>-->
+			<dependency>
+				<groupId>io.grpc</groupId>
+				<artifactId>grpc-stub</artifactId>
+				<version>${grpc.version}</version>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
