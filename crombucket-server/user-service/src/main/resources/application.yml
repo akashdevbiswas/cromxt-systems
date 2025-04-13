@@ -1,6 +1,9 @@
 spring:
   application:
     name: user-service
+
+server:
+  port: 8905
 #  data:
 #    mongodb:
-#      us
+#      username:
