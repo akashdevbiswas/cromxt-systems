@@ -1,9 +1,14 @@
 spring:
   application:
     name: user-service
-
+  data:
+    mongodb:
+      authentication-database: admin
+      username: root
+      password: password
+      database: users
+      host: "127.0.0.1"
+      port: 27017
+      auto-index-creation: true
 server:
   port: 8905
-#  data:
-#    mongodb:
-#      username:

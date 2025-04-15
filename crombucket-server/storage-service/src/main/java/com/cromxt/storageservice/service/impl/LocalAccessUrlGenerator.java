@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class LocalAccessUrlGenerator implements AccessURLGenerator {
 
-    private final BucketInformationService bucketInformationService;
+    private final StorageServerDetails storageServerDetails;
 
     @Override
     public String generateAccessURL(String fileName) {
         String hostName = "localhost";
-        Integer port = bucketInformationService.getHttpPort();
+        Integer port = storageServerDetails.getHttpPort();
         return String.format("http://%s:%s/api/v1/files/%s", hostName, port, fileName);
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CrombucketAccessUrlGenerator implements AccessURLGenerator {
 
-    private final BucketInformationService bucketInformationService;
+    private final StorageServerDetails storageServerDetails;
 
     @Override
     public String generateAccessURL(String fileId) {

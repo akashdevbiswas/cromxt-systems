@@ -3,7 +3,7 @@ package com.cromxt.storageservice.config;
 
 import com.cromxt.storageservice.interceptors.FileHandlerInterceptor;
 import com.cromxt.storageservice.interceptors.FileManagerInterceptor;
-import com.cromxt.storageservice.service.impl.BucketInformationService;
+import com.cromxt.storageservice.service.impl.StorageServerDetails;
 import com.cromxt.storageservice.service.impl.FileHandlerGRPCServiceImpl;
 import com.cromxt.storageservice.service.impl.FileManagementGRPCService;
 import io.grpc.Server;
@@ -22,15 +22,15 @@ import java.net.InetSocketAddress;
 @RequiredArgsConstructor
 public class GrpcServerConfig {
 
-    private final BucketInformationService bucketInformationService;
+    private final StorageServerDetails storageServerDetails;
     private final FileHandlerGRPCServiceImpl fileHandlerGRPCService;
     private final FileHandlerInterceptor fileHandlerInterceptor;
 
     @Bean(name = "grpcServer")
     @Profile({"local","local-docker","local-docker-dev"})
     public Server configureServer() {
-        Integer grpcPort = bucketInformationService.getRpcPort();
-        String grpcHost = bucketInformationService.getApplicationHostname();
+        Integer grpcPort = storageServerDetails.getRpcPort();
+        String grpcHost = storageServerDetails.getApplicationHostname();
 
         log.info("Create gRPC server at {} on port {}", grpcHost, grpcPort);
         return NettyServerBuilder
@@ -46,8 +46,8 @@ public class GrpcServerConfig {
             FileManagementGRPCService fileManagementGRPCService,
             FileManagerInterceptor fileManagerInterceptor
     ) {
-        Integer grpcPort = bucketInformationService.getRpcPort();
-        String grpcHost = bucketInformationService.getApplicationHostname();
+        Integer grpcPort = storageServerDetails.getRpcPort();
+        String grpcHost = storageServerDetails.getApplicationHostname();
 
         log.info("Create gRPC server at {} on port {}", grpcHost, grpcPort);
         return NettyServerBuilder

@@ -1,7 +1,7 @@
 package com.cromxt.storageservice.controller;
 
 
-import com.cromxt.storageservice.service.impl.BucketInformationService;
+import com.cromxt.storageservice.service.impl.StorageServerDetails;
 import com.cromxt.crombucket.routeing.StorageServerAddress;
 import com.cromxt.crombucket.routeing.MediaDetails;
 import lombok.RequiredArgsConstructor;
@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class LocalBucketsController {
 
-    private final BucketInformationService bucketInformationService;
+    private final StorageServerDetails storageServerDetails;
 
     @PostMapping(value = "/fetch-storage-address")
     public StorageServerAddress getBucketDetails(@RequestBody MediaDetails ignored) {
         return StorageServerAddress.builder()
-                .hostName(bucketInformationService.getRouteIp())
-                .rpcPort(bucketInformationService.getRpcPort())
+                .hostName(storageServerDetails.getRouteIp())
+                .rpcPort(storageServerDetails.getRpcPort())
                 .build();
     }
 }

@@ -13,7 +13,7 @@ import java.net.UnknownHostException;
 @Slf4j
 @Service
 @Getter
-public class BucketInformationService {
+public class StorageServerDetails {
 
     private final Integer httpPort;
     private final Integer rpcPort;
@@ -23,7 +23,7 @@ public class BucketInformationService {
     private final String rootDirectory;
     private final String routeIp;
 
-    public BucketInformationService(
+    public StorageServerDetails(
             Environment environment
     ) {
 
@@ -37,8 +37,6 @@ public class BucketInformationService {
         String profile = environment.getProperty("spring.profiles.active", String.class);
         assert profile != null;
         this.routeIp = getRouteIp(profile, hostName);
-
-        System.out.println("Hello World");
     }
 
     private String findHostName() {

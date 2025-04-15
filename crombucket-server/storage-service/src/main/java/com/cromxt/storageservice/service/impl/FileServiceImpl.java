@@ -28,13 +28,13 @@ import java.util.concurrent.atomic.AtomicLong;
 @Getter
 public class FileServiceImpl implements FileService {
 
-    private final BucketInformationService bucketInformationService;
+    private final StorageServerDetails storageServerDetails;
 
 
-    public FileServiceImpl(BucketInformationService bucketInformationService, ApplicationContext applicationContext) {
-        this.bucketInformationService = bucketInformationService;
+    public FileServiceImpl(StorageServerDetails storageServerDetails, ApplicationContext applicationContext) {
+        this.storageServerDetails = storageServerDetails;
 
-        String basePath = bucketInformationService.getBaseDirectory();
+        String basePath = storageServerDetails.getBaseDirectory();
         assert basePath != null;
 
         File directory = new File(basePath);
@@ -205,7 +205,7 @@ public class FileServiceImpl implements FileService {
 
     @NonNull
     private String getAbsolutePath(String fileId) {
-        return String.format("%s/%s", bucketInformationService.getBaseDirectory(), fileId);
+        return String.format("%s/%s", storageServerDetails.getBaseDirectory(), fileId);
     }
 
     private String createAUniqueFileName(String clientId, String extension) {
@@ -232,7 +232,7 @@ public class FileServiceImpl implements FileService {
 
     //    This two services only for local dev purpose where fetch all the files.
     public Flux<FileObjects> getAllAvailableFiles() {
-        String basedir = bucketInformationService.getBaseDirectory();
+        String basedir = storageServerDetails.getBaseDirectory();
 
         List<FileObjects> fileObjectsList = new ArrayList<>();
 

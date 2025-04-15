@@ -15,16 +15,16 @@ public class BucketInformationKafkaProducer {
     private final KafkaTemplate<String, BucketHeartBeat> kafkaTemplate;
     private final String topic;
     private final String bucketId;
-    private final BucketInformationService bucketInformationService;
+    private final StorageServerDetails storageServerDetails;
 
     public BucketInformationKafkaProducer(
             KafkaTemplate<String, BucketHeartBeat> kafkaTemplate,
             Environment environment,
-            BucketInformationService bucketInformationService) {
+            StorageServerDetails storageServerDetails) {
         this.kafkaTemplate = kafkaTemplate;
         this.topic = environment.getProperty("BUCKET_CONFIG_KAFKA_TOPIC_NAME", String.class, "buckets");
         this.bucketId = environment.getProperty("BUCKET_CONFIG_ID", String.class);
-        this.bucketInformationService = bucketInformationService;
+        this.storageServerDetails = storageServerDetails;
 
     }
 
@@ -36,7 +36,7 @@ public class BucketInformationKafkaProducer {
     private BucketHeartBeat getBucketInformation(){
         return BucketHeartBeat.builder()
                 .bucketId(bucketId)
-                .availableSpaceInBytes(bucketInformationService.getAvailableSpace())
+                .availableSpaceInBytes(storageServerDetails.getAvailableSpace())
                 .build();
     }
 

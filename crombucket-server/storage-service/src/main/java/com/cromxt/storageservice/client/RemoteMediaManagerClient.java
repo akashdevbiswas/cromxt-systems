@@ -4,7 +4,7 @@ package com.cromxt.storageservice.client;
 import com.cromxt.storageservice.constants.FileVisibility;
 import com.cromxt.storageservice.models.FileObjects;
 import com.cromxt.storageservice.service.AccessURLGenerator;
-import com.cromxt.storageservice.service.impl.BucketInformationService;
+import com.cromxt.storageservice.service.impl.StorageServerDetails;
 import com.cromxt.crombucket.mediamanager.requests.MediaRequest;
 import com.cromxt.crombucket.mediamanager.response.MediaObjects;
 import com.cromxt.crombucket.mediamanager.response.UpdateMediaUploadStatusRequest;
@@ -26,13 +26,13 @@ public class RemoteMediaManagerClient implements MediaManagerClient {
     private final WebClient webClient;
     private final String mediaClientBaseUrl;
     private final String apiKey;
-    private final BucketInformationService bucketInformationService;
+    private final StorageServerDetails storageServerDetails;
     private final String clusterId;
     private final String regionId;
 
     public RemoteMediaManagerClient(WebClient webClient,
                                     AccessURLGenerator accessURLGenerator,
-                                    BucketInformationService bucketInformationService,
+                                    StorageServerDetails storageServerDetails,
                                     Environment environment) {
         String clientUrl = environment.getProperty("STORAGE_SERVER_MEDIA_CLIENT_URL", String.class);
         String apiKey = environment.getProperty("STORAGE_SERVER_MEDIA_CLIENT_API_KEY", String.class);
@@ -45,7 +45,7 @@ public class RemoteMediaManagerClient implements MediaManagerClient {
         this.webClient = webClient;
         this.clusterId = clusterId;
         this.regionId = regionId;
-        this.bucketInformationService = bucketInformationService;
+        this.storageServerDetails = storageServerDetails;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class RemoteMediaManagerClient implements MediaManagerClient {
                 .clientId(clientId)
                 .clusterId(clusterId)
                 .regionId(regionId)
-                .bucketId(bucketInformationService.getBucketId())
+                .bucketId(storageServerDetails.getBucketId())
                 .visibility(visibility.name())
                 .build();
         String url = String.format("%s/api/v1/medias", mediaClientBaseUrl);

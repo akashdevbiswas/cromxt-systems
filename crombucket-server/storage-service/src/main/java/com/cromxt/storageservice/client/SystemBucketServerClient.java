@@ -1,7 +1,7 @@
 package com.cromxt.storageservice.client;
 
 
-import com.cromxt.storageservice.service.impl.BucketInformationService;
+import com.cromxt.storageservice.service.impl.StorageServerDetails;
 import com.cromxt.crombucket.bucketservice.UsersBucketInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
@@ -14,12 +14,12 @@ import reactor.core.publisher.Mono;
 public class SystemBucketServerClient implements BucketServerClient {
 
 
-    private final BucketInformationService bucketInformationService;
+    private final StorageServerDetails storageServerDetails;
 
     @Override
     public Mono<UsersBucketInfo> getBucketInfoByClientId(String clientId) {
         return Mono.just(UsersBucketInfo.builder()
-                .availableSpace(bucketInformationService.getAvailableSpace())
+                .availableSpace(storageServerDetails.getAvailableSpace())
                 .build());
     }
 }
