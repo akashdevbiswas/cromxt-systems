@@ -1,7 +1,7 @@
 package com.cromxt.storageservice.controller;
 
 
-import com.cromxt.crombucket.mediamanager.response.MediaObjects;
+import com.cromxt.jwt.mediamanager.response.MediaObjects;
 import com.cromxt.storageservice.dtos.UpdateMediaVisibilityRequest;
 import com.cromxt.storageservice.repository.MediaRepository;
 import lombok.RequiredArgsConstructor;

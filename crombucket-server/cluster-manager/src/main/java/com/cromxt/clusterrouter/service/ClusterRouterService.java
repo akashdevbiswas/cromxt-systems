@@ -1,7 +1,7 @@
 package com.cromxt.clusterrouter.service;
 
-import com.cromxt.crombucket.routeing.StorageServerAddress;
-import com.cromxt.crombucket.routeing.MediaDetails;
+import com.cromxt.jwt.routeing.StorageServerAddress;
+import com.cromxt.jwt.routeing.MediaDetails;
 import reactor.core.publisher.Mono;
 
 public interface ClusterRouterService {

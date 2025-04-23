@@ -2,7 +2,7 @@ package com.cromxt.clusterrouter.controller;
 
 import com.cromxt.clusterrouter.dtos.StorageServerResponse;
 import com.cromxt.clusterrouter.service.ClusterManagementService;
-import com.cromxt.crombucket.systemmanager.StorageServerRequest;
+import com.cromxt.jwt.systemmanager.StorageServerRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;

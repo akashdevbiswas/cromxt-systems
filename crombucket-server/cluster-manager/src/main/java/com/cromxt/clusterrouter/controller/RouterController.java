@@ -1,8 +1,8 @@
 package com.cromxt.clusterrouter.controller;
 
 import com.cromxt.clusterrouter.service.ClusterRouterService;
-import com.cromxt.crombucket.routeing.StorageServerAddress;
-import com.cromxt.crombucket.routeing.MediaDetails;
+import com.cromxt.jwt.routeing.StorageServerAddress;
+import com.cromxt.jwt.routeing.MediaDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

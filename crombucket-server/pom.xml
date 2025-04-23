@@ -59,12 +59,6 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-<!--			<dependency>-->
-<!--				<groupId>io.grpc</groupId>-->
-<!--				<artifactId>grpc-netty</artifactId>-->
-<!--				<version>${grpc.version}</version>-->
-<!--				<scope>import</scope>-->
-<!--			</dependency>-->
 			<dependency>
 				<groupId>io.grpc</groupId>
 				<artifactId>grpc-stub</artifactId>
@@ -79,6 +73,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.cromxt.crombucket</groupId>
+			<artifactId>jwt-service</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>io.projectreactor</groupId>

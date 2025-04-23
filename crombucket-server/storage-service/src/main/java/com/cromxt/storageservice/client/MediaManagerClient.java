@@ -2,7 +2,7 @@ package com.cromxt.storageservice.client;
 
 import com.cromxt.storageservice.constants.FileVisibility;
 import com.cromxt.storageservice.models.FileObjects;
-import com.cromxt.crombucket.mediamanager.response.MediaObjects;
+import com.cromxt.jwt.mediamanager.response.MediaObjects;
 import reactor.core.publisher.Mono;
 
 

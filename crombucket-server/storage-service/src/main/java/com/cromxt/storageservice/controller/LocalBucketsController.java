@@ -2,8 +2,8 @@ package com.cromxt.storageservice.controller;
 
 
 import com.cromxt.storageservice.service.impl.StorageServerDetails;
-import com.cromxt.crombucket.routeing.StorageServerAddress;
-import com.cromxt.crombucket.routeing.MediaDetails;
+import com.cromxt.jwt.routeing.StorageServerAddress;
+import com.cromxt.jwt.routeing.MediaDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.PostMapping;

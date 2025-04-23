@@ -1,6 +1,6 @@
 package com.cromxt.storageservice.client;
 
-import com.cromxt.crombucket.bucketservice.UsersBucketInfo;
+import com.cromxt.jwt.bucketservice.UsersBucketInfo;
 import reactor.core.publisher.Mono;
 
 public interface BucketServerClient {
