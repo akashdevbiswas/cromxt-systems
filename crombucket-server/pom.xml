@@ -42,7 +42,6 @@
 		<module>storage-service</module>
 		<module>cluster-manager</module>
 		<module>crombucket-common-modules</module>
-		<module>crombucket-grpc-configuration</module>
 	</modules>
 
 	<dependencyManagement>
@@ -60,27 +59,6 @@
 				<version>${spring-cloud.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>io.grpc</groupId>
-				<artifactId>grpc-netty-shaded</artifactId>
-				<version>${grpc.version}</version>
-				<scope>runtime</scope>
-			</dependency>
-			<dependency>
-				<groupId>io.grpc</groupId>
-				<artifactId>grpc-protobuf</artifactId>
-				<version>${grpc.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>io.grpc</groupId>
-				<artifactId>grpc-stub</artifactId>
-				<version>${grpc.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.salesforce.servicelibs</groupId>
-				<artifactId>reactor-grpc-stub</artifactId>
-				<version>${reactor-grpc.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.cromxt.crombucket</groupId>
