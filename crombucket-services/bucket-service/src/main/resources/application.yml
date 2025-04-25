@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: bucket-service
+  config:
+    import: "configserver:http://localhost:8888"
+  
+  
+

@@ -31,7 +31,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity serverHttpSecurity) {
-        String tokenExpirationRedirectionUrl = environment.getProperty("TOKEN_EXPIRATION_REDIRECTION_URL", String.class,"http://localhost:4200/login");
+        String tokenExpirationRedirectionUrl = environment.getProperty("TOKEN_EXPIRATION_REDIRECTION_URL", String.class);
 
         JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtService,tokenExpirationRedirectionUrl);
 
