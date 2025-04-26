@@ -12,7 +12,7 @@
     </parent>
 
     <version>1.0.0</version>
-    <artifactId>crombucket-configserver</artifactId>
+    <artifactId>cromxt-configserver</artifactId>
     <name>cromxt-configserver</name>
 
     <properties>

@@ -13,9 +13,14 @@ import com.cromxt.auth.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import java.util.HashMap;
+import java.util.List;
 
 
 @Service
@@ -34,8 +39,9 @@ public class UserServiceImpl implements AuthService, UserService {
         return authenticationManager
                 .authenticate(token)
                 .map(authentication -> {
-                    UserEntity principal = (UserEntity) authentication.getPrincipal();
-                    String authToken = jwtService.generateToken(principal);
+                    UserEntity user = (UserEntity) authentication.getPrincipal();
+                    List<String> authorities = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+                    String authToken = jwtService.generateToken(user.getId(), authorities ,new HashMap<>());
                     return new AuthTokens(authToken);
                 });
     }

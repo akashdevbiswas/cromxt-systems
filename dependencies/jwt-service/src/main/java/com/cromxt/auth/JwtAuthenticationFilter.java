@@ -46,7 +46,7 @@ public class JwtAuthenticationFilter implements WebFilter {
 
                                         try{
                                             UserDetails userDetails = jwtService.extractUserDetails(token);
-                                            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                                            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
                                             Context authContext = ReactiveSecurityContextHolder.withAuthentication(authenticationToken);
                                             return chain.filter(exchange).contextWrite(authContext);
                                         }catch (ExpiredJwtException expiredJwtToken){

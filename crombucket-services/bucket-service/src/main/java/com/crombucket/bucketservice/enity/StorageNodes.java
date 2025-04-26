@@ -1,11 +1,10 @@
 package com.crombucket.bucketservice.enity;
 
-
-import java.util.Set;
+import java.time.LocalDate;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,12 +16,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class Clusters {
+public class StorageNodes {
 
     @Id
     private String id;
-    private String clusterName;
-    private Long capacity;
-    @DBRef
-    private Set<StorageNodes> storageNodes;
+    private String storageCode;
+    @DocumentReference
+    private Clusters clusterId;
+    
+    private LocalDate initDate;
 }

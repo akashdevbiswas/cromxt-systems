@@ -1,10 +1,14 @@
 package com.crombucket.bucketservice.repository;
 
-import com.crombucket.bucketservice.enity.Buckets;
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
+
+import com.crombucket.bucketservice.enity.Buckets;
+
+import reactor.core.publisher.Flux;
 
 
 @Repository
-public interface BucketsRepository extends ReactiveMongoRepository<Buckets,String> {
+public interface BucketsRepository  {
+
+    Flux<Buckets> findAllByCLientId(String clientId, Integer pageNumber ,Integer pageSize);
 }

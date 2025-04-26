@@ -1,13 +1,13 @@
 package com.crombucket.bucketservice.enity;
 
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 @Document
 @AllArgsConstructor
@@ -15,12 +15,8 @@ import org.springframework.data.mongodb.core.mapping.DocumentReference;
 @Builder
 @Data
 public class Buckets {
-
     @Id
     private String id;
     private String clientId;
-    private BucketType bucketType;
-    private Long availableSpace;
-    @DocumentReference
-    private BucketGroups bucketGroups;
+    private Long capacity; 
 }

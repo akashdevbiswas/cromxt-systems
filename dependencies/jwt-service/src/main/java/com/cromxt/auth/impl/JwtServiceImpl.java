@@ -48,15 +48,18 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String generateToken(UserDetails user) {
-        String username = user.getUsername();
-        List<String> grantedAuthorities = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+    public String generateToken(String userId, List<String> authorities, Map<String, Object> extraPayload) {
         Map<String,Object> extraClaims = new HashMap<>();
-        extraClaims.put(AUTHORITIES,grantedAuthorities);
-        return createToken(username,extraClaims);
+        extraClaims.put(AUTHORITIES,authorities);
+
+        if(Objects.isNull(extraPayload) || extraPayload.isEmpty()){
+            return createToken(userId,extraClaims);
+        }
+        extraPayload.keySet().forEach(eachKey->extraClaims.put(eachKey,extraPayload.get(eachKey)));
+        return createToken(userId,extraClaims);
     }
 
-    @Override
+    
     public String generateSecret(String id) throws NoSuchAlgorithmException {
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
         String data = String.format("%s-%s-%s", id, secret, System.currentTimeMillis());
