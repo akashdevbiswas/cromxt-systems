@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="crombucket-common-modules" />
+        <module name="cromxt-configserver" />
+        <module name="bucket-service" />
+        <module name="cluster-manager" />
+        <module name="media-service" />
+        <module name="storage-service" />
+        <module name="crombucket-grpc-configuration" />
+        <module name="jwt-service" />
+      </profile>
+      <profile name="Annotation profile for storage-manager" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
+        </processorPath>
+        <module name="storage-manager" />
+        <module name="user-service" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="bucket-service" options="-parameters" />
+      <module name="cluster-manager" options="-parameters" />
+      <module name="cromxt-configserver" options="-parameters" />
+      <module name="media-service" options="-parameters" />
+      <module name="storage-manager" options="-parameters" />
+      <module name="storage-service" options="-parameters" />
+      <module name="user-service" options="-parameters" />
+    </option>
+  </component>
+</project>

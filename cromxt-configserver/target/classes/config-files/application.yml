@@ -1,3 +1,14 @@
 JWT_SECRET: "8c1763630733e04d6addfd91ff2a56663c97eaeef1c499595b37b66bb04cadb264130381f80ad494e1b410544869c9168c216a874eaa79f358a07aaa634d858a"
 JWT_EXPIRATION: 86400000
-TOKEN_EXPIRATION_REDIRECTION_URL: http://localhost:4200/login
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://root:password@127.0.0.1:27017
+      authentication-database: admin
+#      username: root
+#      password: password
+#      database: buckets
+#      host: "127.0.0.1"
+#      port: 27017
+#      auto-index-creation: true

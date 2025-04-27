@@ -1,4 +1,4 @@
-package com.crombucket.bucketservice.enity;
+package com.crombucket.storagemanager.entity;
 
 
 import java.util.Set;
@@ -24,5 +24,5 @@ public class Clusters {
     private String clusterName;
     private Long capacity;
     @DBRef
-    private Set<StorageNodes> storageNodes;
+    private Set<StorageNode> storageNodes;
 }

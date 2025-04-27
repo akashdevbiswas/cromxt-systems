@@ -1,0 +1,6 @@
+server:
+  port: 9901
+spring:
+  data:
+    mongodb:
+      database: bucket-manager

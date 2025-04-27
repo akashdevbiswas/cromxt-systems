@@ -1,7 +1,7 @@
 package com.crombucket.bucketservice.dtos.response;
 
 
-import com.crombucket.bucketservice.enity.BucketType;
+import com.crombucket.bucketservice.enity.StorageNodeType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class BucketResponse {
     private String bucketId;
-    private BucketType bucketType;
+    private StorageNodeType storageNodeType;
     private String ownerId;
     private LocalDate creationDate;
     private Long availableSpace;

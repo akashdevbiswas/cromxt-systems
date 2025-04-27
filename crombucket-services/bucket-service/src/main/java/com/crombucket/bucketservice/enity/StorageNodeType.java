@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum BucketType {
+public enum StorageNodeType {
     SMALL(5120L),
     MEDIUM(8192L),
     LARGE(10240L);

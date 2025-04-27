@@ -30,11 +30,11 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public UserDetails extractUserDetails(String token) {
         Claims claims = extractAllClaims(token);
-        String username = claims.getSubject();
+        String userId = claims.getSubject();
         List<String> authorityList = (List<String>) claims.get(AUTHORITIES,List.class);
         List<SimpleGrantedAuthority> authorities = authorityList.stream().map(SimpleGrantedAuthority::new).toList();
         return User.builder()
-                .username(username)
+                .username(userId)
                 .password("no_password")
                 .authorities(authorities)
                 .accountExpired(false)

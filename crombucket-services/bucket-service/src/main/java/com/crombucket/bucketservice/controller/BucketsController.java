@@ -4,7 +4,7 @@ import com.crombucket.bucketservice.dtos.request.BucketRequest;
 import com.crombucket.bucketservice.dtos.response.BucketResponse;
 import com.crombucket.bucketservice.dtos.response.BucketTypesResponse;
 import com.crombucket.bucketservice.dtos.response.BucketsListResponse;
-import com.crombucket.bucketservice.enity.BucketType;
+import com.crombucket.bucketservice.enity.StorageNodeType;
 import com.crombucket.bucketservice.service.BucketService;
 import lombok.RequiredArgsConstructor;
 
@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,7 +36,7 @@ public class BucketsController {
 
     @PostMapping
     public Mono<ResponseEntity<BucketResponse>> createBucket(@RequestBody BucketRequest bucketRequest,
-            Authentication authentication) {
+                                                             Authentication authentication) {
         Mono<BucketResponse> savedBucketResponse = bucketService.saveBucket(bucketRequest);
         return savedBucketResponse
                 .map(bucketResponse -> new ResponseEntity<>(bucketResponse, HttpStatus.CREATED))
@@ -49,21 +50,20 @@ public class BucketsController {
     @GetMapping(value = "/types")
     @ResponseStatus(code = HttpStatus.OK)
     public Flux<BucketTypesResponse> getAllBucketTypes() {
-        List<BucketTypesResponse> bucketTypes = Arrays.stream(BucketType.values())
-                .map(bucketType -> new BucketTypesResponse(bucketType.name(), bucketType.getBucketSize())).toList();
+        List<BucketTypesResponse> bucketTypes = Arrays.stream(StorageNodeType.values())
+                .map(storageNodeType -> new BucketTypesResponse(storageNodeType.name(), storageNodeType.getBucketSize())).toList();
         return Flux.fromIterable(bucketTypes);
     }
 
     @GetMapping
     public Mono<ResponseEntity<BucketsListResponse>> getAllBuckets(
-        @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
-        @RequestParam(required = false ,defaultValue = "20")Integer pageSize ,
-        Authentication authentication){
-        String userId = (String) authentication.getPrincipal();
-        return bucketService.getAllBucketsByUserId(userId,pageNumber,pageSize)
-        .map(bucketList->{
-            return ResponseEntity.ok(bucketList);
-        });
+            @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
+            @RequestParam(required = false, defaultValue = "20") Integer pageSize,
+            Authentication authentication) {
+        UserDetails userId = (UserDetails) authentication.getPrincipal();
+        return bucketService.getAllBucketsByUserId(userId.getUsername(), pageNumber, pageSize)
+                .map(ResponseEntity::ok);
     }
+
 
 }
