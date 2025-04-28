@@ -28,7 +28,6 @@ public class ApiKeyAuthenticationFilter implements WebFilter {
     @Override
     public Mono<Void> filter(@NonNull ServerWebExchange exchange,@NonNull WebFilterChain chain) {
 
-
         Mono<SecurityContext> contextMono = ReactiveSecurityContextHolder.getContext();
 
         return contextMono

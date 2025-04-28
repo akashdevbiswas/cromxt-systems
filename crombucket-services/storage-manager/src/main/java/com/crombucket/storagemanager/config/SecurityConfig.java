@@ -6,6 +6,8 @@ import com.cromxt.auth.JwtAuthenticationFilter;
 import com.cromxt.auth.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -15,6 +17,8 @@ import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
+
+import java.util.Objects;
 
 @Configuration
 @RequiredArgsConstructor
@@ -28,13 +32,15 @@ public class SecurityConfig {
     private final Environment environment;
 
     @Bean
-    SecurityWebFilterChain webFilterChain(ServerHttpSecurity security){
+    SecurityWebFilterChain webFilterChain(ServerHttpSecurity security, ApplicationContext context){
 
         String redirectionUrl = environment.getProperty("TOKEN_EXPIRATION_REDIRECTION_URL", String.class);
         String apiKey =  environment.getProperty("SERVICE_API_KEY",String.class);
 
-        assert redirectionUrl != null && apiKey!=null;
-
+        if(Objects.isNull(redirectionUrl) || Objects.isNull(apiKey)){
+            log.error("Service Key Or Redirection URL Not found.");
+            SpringApplication.exit(context,()->1);
+        }
 
         log.info("The auth url :{} ",redirectionUrl);
 
