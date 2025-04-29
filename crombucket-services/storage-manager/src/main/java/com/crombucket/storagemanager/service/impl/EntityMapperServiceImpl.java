@@ -1,10 +1,12 @@
 package com.crombucket.storagemanager.service.impl;
 
 import com.crombucket.storagemanager.dtos.requests.ClusterRequest;
-import com.crombucket.storagemanager.dtos.requests.PositionRequest;
+import com.crombucket.storagemanager.dtos.requests.StorageNodeRequest;
 import com.crombucket.storagemanager.dtos.response.ClusterResponse;
-import com.crombucket.storagemanager.dtos.response.ClustersListResponse;
+import com.crombucket.storagemanager.repository.Page;
+import com.crombucket.storagemanager.dtos.response.StorageNodeResponse;
 import com.crombucket.storagemanager.entity.StorageClusters;
+import com.crombucket.storagemanager.entity.StorageNode;
 import com.crombucket.storagemanager.service.EntityMapperService;
 import org.springframework.stereotype.Service;
 
@@ -26,27 +28,49 @@ public class EntityMapperServiceImpl implements EntityMapperService {
 
     @Override
     public ClusterResponse createStorageClustersResponseFromStorageCluster(StorageClusters savedCluster) {
-
         return new ClusterResponse(
-            savedCluster.getId(),
+                savedCluster.getId(),
                 savedCluster.getClusterCode(),
                 savedCluster.getCapacity()
         );
     }
 
     @Override
-    public ClustersListResponse createClusterListResponseFromStorageClustersList(List<StorageClusters> clustersList, Integer pageNumber, Integer pageSize) {
+    public StorageNode createStorageNodeFromNodeRequest(StorageNodeRequest nodeRequest) {
+        StorageClusters cluster = StorageClusters.builder().clusterCode(nodeRequest.clusterCode()).build();
+        return StorageNode.builder()
+                .createdAt(LocalDate.now())
+                .storageCode(nodeRequest.storageNodeCode())
+                .clusters(cluster)
+                .createdAt(LocalDate.now())
+                .clusterJoinedDate(LocalDate.now())
+                .build();
+    }
 
-        List<ClusterResponse> clusterResponseList = clustersList.stream().map(this::createStorageClustersResponseFromStorageCluster).toList();
 
-        return new ClustersListResponse(
-                pageNumber,
-                clustersList.size(),
-                clustersList.size()<pageSize,
-                clusterResponseList
+    @Override
+    public StorageNodeResponse createStorageResponseFromStorageNodeEntity(StorageNode storageNode) {
+        return new StorageNodeResponse(
+                storageNode.getId(),
+                storageNode.getStorageCode(),
+                storageNode.getAvailableSpace(),
+                storageNode.getCreatedAt(),
+                storageNode.getClusterJoinedDate()
         );
     }
 
+    @Override
+    public <T, K> Page<T> pageResponseBuilder(List<T> contentList, Page<K> page) {
+        return Page.<T>builder()
+                .totalPages(page.getTotalPages())
+                .pageSize(page.getPageSize())
+                .isFirst(page.getIsFirst())
+                .isLast(page.getIsLast())
+                .content(contentList)
+                .results(page.getResults())
+                .currentPage(page.getCurrentPage())
+                .build();
+    }
 
 
 }

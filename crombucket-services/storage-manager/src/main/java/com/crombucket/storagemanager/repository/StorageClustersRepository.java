@@ -9,11 +9,10 @@ public interface StorageClustersRepository {
 
     Mono<StorageClusters> saveClusters(StorageClusters cluster);
 
-    Flux<StorageClusters> findAllClusters(Pageable pageable);
+    Mono<Page<StorageClusters>> findAllClusters(Pageable pageable);
 
-    Mono<StorageClusters> findClusterById(String clusterId);
+    Mono<StorageClusters> findClusterByClusterCode(String clusterCode);
 
-    Mono<Long> deleteCluster(String clusterId);
-
+    Mono<Long> deleteCluster(String clusterCode);
 
 }
