@@ -27,6 +27,16 @@ public class StorageNodeController {
         return responseBuilder.buildResponseWithBody(storageNodeMono, HttpStatus.CREATED);
     }
 
+    @DeleteMapping(value = "/{nodeCode}")
+    public Mono<ResponseEntity<Void>> deleteStorageNode(@PathVariable String nodeCode ){
+        Mono<Long> deletedCount = storageNodeService.deleteNode(nodeCode);
+        return deletedCount
+                .flatMap(deleteCount->{
+                    String message = "Number of objects deleted " + deleteCount;
+                    return responseBuilder.buildEmptyResponse(Mono.empty(),HttpStatus.ACCEPTED,message);
+                }).onErrorResume(err-> responseBuilder.buildEmptyResponse(Mono.error(err),HttpStatus.FORBIDDEN));
+    }
+
     @GetMapping("/clusters/{clusterCode}")
     public Mono<ResponseEntity<Page<StorageNodeResponse>>> getAllClustersByClusterId(
             @PathVariable String clusterCode,

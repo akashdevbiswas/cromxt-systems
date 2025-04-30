@@ -10,9 +10,9 @@
 		<relativePath/>
 	</parent>
 
-	<artifactId>storage-service</artifactId>
+	<artifactId>storagenode</artifactId>
 	<version>0.0.1</version>
-	<name>storage-service</name>
+	<name>storagenode</name>
 	<packaging>jar</packaging>
 	<description>Handle all the files and manage them.</description>
 

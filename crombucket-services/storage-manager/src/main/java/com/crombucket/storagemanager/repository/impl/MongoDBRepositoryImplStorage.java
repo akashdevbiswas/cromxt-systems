@@ -84,6 +84,11 @@ public class MongoDBRepositoryImplStorage implements StorageClustersRepository, 
         return findAllPageable(StorageNode.class,findClustersByClustersCode,pageable);
     }
 
+    @Override
+    public Mono<Long> deleteStorageNode(String nodeCode) {
+        return null;
+    }
+
     private <T> Mono<Page<T>> findAllPageable(Class<T> entity, Query query, Pageable pageable) {
         return mongoTemplate.count(query, entity)
                 .flatMap(storageNodeCount -> {

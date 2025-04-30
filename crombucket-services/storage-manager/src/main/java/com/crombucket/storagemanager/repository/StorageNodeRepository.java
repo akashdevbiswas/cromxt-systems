@@ -10,4 +10,5 @@ public interface StorageNodeRepository {
 
     Mono<Page<StorageNode>> findAllStorageNodesByClusterCode(String clusterCode, Pageable pageable);
 
+    Mono<Long> deleteStorageNode(String nodeCode);
 }

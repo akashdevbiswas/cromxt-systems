@@ -10,4 +10,6 @@ public interface StorageNodeService {
     Mono<StorageNodeResponse> createStorageNode(StorageNodeRequest nodeRequest);
 
     Mono<Page<StorageNodeResponse>> getAllStorageNodesByClusterCode(String clusterCode, Integer pageNumber, Integer pageSize);
+
+    Mono<Long> deleteNode(String nodeCode);
 }

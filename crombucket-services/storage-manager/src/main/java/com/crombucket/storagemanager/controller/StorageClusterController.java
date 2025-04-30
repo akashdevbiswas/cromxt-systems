@@ -53,4 +53,9 @@ public class StorageClusterController {
                     return responseBuilder.buildEmptyResponse(Mono.empty(),HttpStatus.ACCEPTED,message);
                 }).onErrorResume(err-> responseBuilder.buildEmptyResponse(Mono.error(err),HttpStatus.FORBIDDEN));
     }
+
+    @PutMapping("/{clusterCode}")
+    public Mono<ResponseEntity<ClusterResponse>> updateCluster(@PathVariable String clusterCode) {
+        return null;
+    }
 }

@@ -11,8 +11,8 @@
 		<!-- lookup parent from repository -->
 	</parent>
 
-	<artifactId>cluster-manager</artifactId>
-	<name>cluster-manager</name>
+	<artifactId>storagenode-router</artifactId>
+	<name>storagenode-router</name>
 	<packaging>jar</packaging>
 	<version>0.0.1</version>
 	<description>Route service handle all route related information.</description>

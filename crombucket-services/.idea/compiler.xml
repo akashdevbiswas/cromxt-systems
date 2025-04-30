@@ -10,13 +10,13 @@
         <module name="crombucket-common-modules" />
         <module name="cromxt-configserver" />
         <module name="bucket-service" />
-        <module name="cluster-manager" />
+        <module name="storagenode-router" />
         <module name="media-service" />
         <module name="storage-service" />
         <module name="crombucket-grpc-configuration" />
         <module name="jwt-service" />
       </profile>
-      <profile name="Annotation profile for storage-manager" enabled="true">
+      <profile name="Annotation profile for user-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -27,6 +27,9 @@
         <module name="user-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="cluster-manager" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
@@ -36,6 +39,7 @@
       <module name="media-service" options="-parameters" />
       <module name="storage-manager" options="-parameters" />
       <module name="storage-service" options="-parameters" />
+      <module name="storagenode-router" options="-parameters" />
       <module name="user-service" options="-parameters" />
     </option>
   </component>

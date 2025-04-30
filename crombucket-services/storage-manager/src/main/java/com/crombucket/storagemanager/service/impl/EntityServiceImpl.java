@@ -1,6 +1,5 @@
 package com.crombucket.storagemanager.service.impl;
 
-import com.crombucket.storagemanager.repository.Page;
 import com.crombucket.storagemanager.dtos.requests.ClusterRequest;
 import com.crombucket.storagemanager.dtos.requests.StorageNodeRequest;
 import com.crombucket.storagemanager.dtos.response.ClusterResponse;
@@ -9,6 +8,7 @@ import com.crombucket.storagemanager.entity.StorageClusters;
 import com.crombucket.storagemanager.entity.StorageNode;
 import com.crombucket.storagemanager.exceptions.InvalidRequestException;
 import com.crombucket.storagemanager.exceptions.MongoDBConnectionException;
+import com.crombucket.storagemanager.repository.Page;
 import com.crombucket.storagemanager.repository.StorageClustersRepository;
 import com.crombucket.storagemanager.repository.StorageNodeRepository;
 import com.crombucket.storagemanager.service.EntityMapperService;
@@ -21,7 +21,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -103,6 +102,11 @@ public class EntityServiceImpl implements StorageClusterService, StorageNodeServ
                     List<StorageNodeResponse> storageNodeResponseList = content.stream().map(entityMapperService::createStorageResponseFromStorageNodeEntity).toList();
                     return entityMapperService.pageResponseBuilder(storageNodeResponseList,storageNodePage);
                 });
+    }
+
+    @Override
+    public Mono<Long> deleteNode(String nodeCode) {
+        return storageNodeRepository.deleteStorageNode(nodeCode);
     }
 
 
