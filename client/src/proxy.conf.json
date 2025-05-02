@@ -1,0 +1,6 @@
+{
+    "user-service": {
+        "target": "http://localhost:8901",
+        "changeOrigin": true
+    }
+}

@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
-import LoginPage from '../pages/login.page';
+import AuthPage from '../pages/auth.page';
 import HomePage from '../pages/home.page';
+import LoginComponent from '../components/login.component';
+import SignUpComponent from '../components/signup.component';
 
 export const routes: Routes = [
     {
@@ -8,8 +10,23 @@ export const routes: Routes = [
         component: HomePage
     },
     {
-        path: 'login',
-        component: LoginPage
+        path: 'auth',
+        component: AuthPage,
+        children:[
+            {   
+                path: 'login',
+                component: LoginComponent
+            },
+            {
+                path: 'sign-up',
+                component: SignUpComponent
+            },
+            {
+                path: '',
+                redirectTo: '/auth/login',
+                pathMatch: 'full'
+            } 
+        ]
     },
     {
         path:'',
