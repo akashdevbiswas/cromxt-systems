@@ -3,6 +3,7 @@ import InputComponent from './input.component';
 import { FormControl } from '@angular/forms';
 import ButtonComponent from './button.component';
 import AuthService, { UserRequest } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'signup-component',
@@ -39,7 +40,7 @@ import AuthService, { UserRequest } from '../services/auth.service';
       </div>
 
       <div class="input-group">
-      <input-component
+        <input-component
           lable="Gender"
           class="w-full"
           type="select"
@@ -88,22 +89,24 @@ export default class SignUpComponent {
   password = new FormControl('');
   confirmPassword = new FormControl('');
 
-  genderOptions = ['Male', 'Female', 'Others'];
+  genderOptions = ['MALE', 'FEMALE', 'OTHERS'];
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
-  onSubmit(eve:SubmitEvent) {
+  onSubmit(eve: SubmitEvent) {
     eve.preventDefault();
     if (this.password.value !== this.confirmPassword.value) {
       return;
     }
-    console.log(this.username.value,
+    console.log(
+      this.username.value,
       this.email.value,
       this.password.value,
       this.firstName.value,
       this.lastName.value,
       this.gender.value,
-      this.dateOfBirth.value);
+      this.dateOfBirth.value
+    );
     if (
       this.username.value &&
       this.email.value &&
@@ -124,11 +127,11 @@ export default class SignUpComponent {
         dateOfBirth: this.dateOfBirth.value,
       };
 
-      this.authService.registerUser(userRequest).subscribe((res)=>{
-        console.log(res.status);
-          if(res.status == 204){
-            alert('User registered successfully');
-          }
+      this.authService.registerUser(userRequest).subscribe((res) => {
+        console.log(res);
+        if (res.status == 204) {
+          this.router.navigateByUrl('/auth/login');
+        }
       });
     }
   }

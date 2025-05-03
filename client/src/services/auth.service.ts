@@ -12,7 +12,8 @@ export default class AuthService implements OnInit{
     constructor(private httpClient: HttpClient, private localStorage: BrowserStorageService){}
 
     ngOnInit(): void {
-        const token = this.localStorage.get('token');
+        const token = this.localStorage.get('authentication');
+        
         if(token){
             this.authentication.set(token);
         }else{
@@ -36,7 +37,7 @@ export default class AuthService implements OnInit{
     }
 
     public login(UserCredentials: UserCredentials){
-        return this.httpClient.post('/user-service/api/v1/auth', UserCredentials, {
+        return this.httpClient.post<Authorization>('/user-service/api/v1/auth', UserCredentials, {
             observe: 'response'
         });
     }
@@ -60,4 +61,7 @@ export interface UserRequest{
 export interface UserCredentials{
     emailOrUsername: string;
     password: string;
+}
+export interface Authorization{
+    token: string;
 }

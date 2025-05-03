@@ -1,24 +1,18 @@
-import { Inject, Injectable, InjectionToken } from '@angular/core';
+import { inject, Injectable, InjectionToken } from '@angular/core';
 
-export const BROWSER_STORAGE = new InjectionToken<Storage>('Browser Storage', {
-  providedIn: 'root',
-  factory: () => localStorage && localStorage
-});
 
 @Injectable({
   providedIn: 'root'
 })
 export class BrowserStorageService {
-  private storage = Inject(BROWSER_STORAGE);
+
   public get(key: string) {
-    return this.storage && this.storage.getItem(key);
+    return localStorage.getItem(key);
   }
   public set(key: string, value: string) {
-    if(!this.storage) return;
-    this.storage.setItem(key, value);
+    localStorage.setItem(key, value);
   }
   public remove(key: string) {
-    if(!this.storage) return;
-    this.storage.removeItem(key);
+    localStorage.removeItem(key);
   }
 }

@@ -1,6 +1,10 @@
 {
-    "user-service": {
+    "/user-service": {
         "target": "http://localhost:8901",
-        "changeOrigin": true
+        "changeOrigin": true,
+        "secure": false,
+        "pathRewrite": {
+            "^/user-service": ""
+        }
     }
 }

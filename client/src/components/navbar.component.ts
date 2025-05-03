@@ -21,7 +21,9 @@ import { Router } from '@angular/router';
           >
             <div class="avatar avatar-placeholder">
               <div class="bg-neutral text-neutral-content w-12 rounded-full">
-                <span>{{user.firstName.charAt(0) + user.lastName.charAt(0)}}</span>
+                <span>{{
+                  user.firstName.charAt(0) + user.lastName.charAt(0)
+                }}</span>
               </div>
             </div>
             <p>{{ user.username }}</p>
@@ -48,6 +50,7 @@ import { Router } from '@angular/router';
     </nav>
   `,
   imports: [ButtonComponent],
+  host: { ngSkipHydration: 'true' },
 })
 export default class NavbarComponent implements OnInit {
   user: User | null = null;
