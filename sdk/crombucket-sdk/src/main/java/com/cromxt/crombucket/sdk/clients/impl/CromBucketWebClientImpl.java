@@ -1,9 +1,9 @@
 package com.cromxt.crombucket.sdk.clients.impl;
 
-import com.cromxt.crombucket.mediamanager.response.MediaObjects;
-import com.cromxt.crombucket.routeing.MediaDetails;
-import com.cromxt.crombucket.routeing.StorageServerAddress;
-import com.cromxt.proto.files.*;
+import com.crombucket.common.mediaservice.response.MediaObjects;
+import com.crombucket.common.routeing.MediaDetails;
+import com.crombucket.common.routeing.StorageServerAddress;
+import com.crombucket.proto.storagenode.*;
 import com.cromxt.crombucket.sdk.BucketUserDetails;
 import com.cromxt.crombucket.sdk.FileVisibility;
 import com.cromxt.crombucket.sdk.UpdateFileVisibilityRequest;

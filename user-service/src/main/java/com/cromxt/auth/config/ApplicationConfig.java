@@ -1,9 +1,9 @@
 package com.cromxt.auth.config;
 
 
-import com.cromxt.auth.JwtService;
+import com.cromxt.authentication.JwtService;
 import com.cromxt.auth.entity.UserEntity;
-import com.cromxt.auth.impl.JwtServiceImpl;
+import com.cromxt.authentication.JwtServiceImpl;
 import com.cromxt.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

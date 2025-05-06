@@ -1,7 +1,7 @@
 package com.cromxt.auth.controller;
 
 import com.cromxt.auth.requests.UserCredentials;
-import com.cromxt.auth.requests.UserDetailsDTO;
+import com.cromxt.auth.requests.UserRequest;
 import com.cromxt.auth.responses.AuthTokens;
 import com.cromxt.auth.service.AuthService;
 import com.cromxt.auth.service.UserService;
@@ -36,7 +36,7 @@ public class AuthController {
     }
 
     @PostMapping(value = "/register")
-    public Mono<ResponseEntity<Object>> register(@RequestBody UserDetailsDTO userDetailsDTO) {
+    public Mono<ResponseEntity<Object>> register(@RequestBody UserRequest userDetailsDTO) {
         return userService.saveUser(userDetailsDTO)
                 .then(Mono.just(ResponseEntity.noContent().build()))
                 .onErrorResume(err -> {

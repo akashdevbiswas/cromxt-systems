@@ -1,7 +1,7 @@
 package com.crombucket.storageservice.service;
 
 import com.crombucket.storageservice.constants.FileVisibility;
-import com.cromxt.proto.files.Visibility;
+import com.crombucket.proto.storagenode.Visibility;
 import lombok.NonNull;
 
 public interface GRPCService {

@@ -3,8 +3,8 @@ package com.crombucket.storagemanager.config;
 
 import com.crombucket.common.ResponseBuilder;
 import com.crombucket.common.ResponseBuilderImpl;
-import com.cromxt.auth.JwtService;
-import com.cromxt.auth.impl.JwtServiceImpl;
+import com.cromxt.authentication.JwtService;
+import com.cromxt.authentication.JwtServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;

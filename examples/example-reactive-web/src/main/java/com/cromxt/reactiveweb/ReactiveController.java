@@ -1,10 +1,10 @@
 package com.cromxt.reactiveweb;
 
 
-import com.cromxt.toolkit.crombucket.FileVisibility;
-import com.cromxt.toolkit.crombucket.UpdateFileVisibilityRequest;
-import com.cromxt.toolkit.crombucket.clients.ReactiveCromBucketClient;
-import com.cromxt.toolkit.crombucket.response.FileResponse;
+import com.cromxt.crombucket.sdk.FileVisibility;
+import com.cromxt.crombucket.sdk.UpdateFileVisibilityRequest;
+import com.cromxt.crombucket.sdk.clients.ReactiveCromBucketClient;
+import com.cromxt.crombucket.sdk.response.FileResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.*;

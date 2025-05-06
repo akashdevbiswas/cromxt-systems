@@ -1,13 +1,14 @@
 package com.crombucket.storageservice.client;
 
 
+import com.crombucket.common.mediaservice.requests.MediaRequest;
+import com.crombucket.common.mediaservice.response.MediaObjects;
+import com.crombucket.common.mediaservice.response.UpdateMediaUploadStatusRequest;
 import com.crombucket.storageservice.constants.FileVisibility;
 import com.crombucket.storageservice.models.FileObjects;
 import com.crombucket.storageservice.service.AccessURLGenerator;
 import com.crombucket.storageservice.service.impl.StorageServerDetails;
-import com.crombucket.common.mediamanager.requests.MediaRequest;
-import com.crombucket.common.mediamanager.response.MediaObjects;
-import com.crombucket.common.mediamanager.response.UpdateMediaUploadStatusRequest;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;

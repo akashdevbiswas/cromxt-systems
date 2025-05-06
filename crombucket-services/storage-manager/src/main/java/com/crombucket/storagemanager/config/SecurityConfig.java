@@ -2,8 +2,8 @@ package com.crombucket.storagemanager.config;
 
 
 import com.crombucket.storagemanager.filter.ApiKeyAuthenticationFilter;
-import com.cromxt.auth.JwtAuthenticationFilter;
-import com.cromxt.auth.JwtService;
+import com.cromxt.authentication.webflux.ReactiveJwtAuthenticationFilter;
+import com.cromxt.authentication.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
@@ -44,7 +44,7 @@ public class SecurityConfig {
 
         log.info("The auth url :{} ",redirectionUrl);
 
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtService,redirectionUrl);
+        ReactiveJwtAuthenticationFilter jwtAuthenticationFilter = new ReactiveJwtAuthenticationFilter(jwtService,redirectionUrl);
         ApiKeyAuthenticationFilter apiKeyAuthenticationFilter = new ApiKeyAuthenticationFilter(apiKey);
 
         return security

@@ -4,7 +4,7 @@ package com.crombucket.storageservice.service;
 import com.crombucket.storageservice.constants.FileVisibility;
 import com.crombucket.storageservice.exception.FileException;
 import com.crombucket.storageservice.models.FileObjects;
-import com.cromxt.proto.files.FileUploadRequest;
+import com.crombucket.proto.storagenode.FileUploadRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

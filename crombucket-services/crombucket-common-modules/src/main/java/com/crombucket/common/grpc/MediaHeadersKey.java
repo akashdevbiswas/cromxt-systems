@@ -1,8 +1,8 @@
 package com.crombucket.common.grpc;
 
 
-import com.cromxt.proto.files.AuthKey;
-import com.cromxt.proto.files.FileMetadata;
+import com.crombucket.proto.storagenode.AuthKey;
+import com.crombucket.proto.storagenode.FileMetadata;
 import io.grpc.Context;
 import io.grpc.Metadata;
 import lombok.Getter;

@@ -85,9 +85,9 @@
 			<artifactId>spring-cloud-starter-config</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.cromxt</groupId>
-			<artifactId>jwt-service</artifactId>
-			<version>1.0.0</version>
+			<groupId>com.cromxt.authentication</groupId>
+			<artifactId>jwt-modules</artifactId>
+			<version>0.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>

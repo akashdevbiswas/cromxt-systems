@@ -14,8 +14,7 @@ import reactor.core.publisher.Mono;
 public class RemoteBucketServerClient implements BucketServerClient {
 
     private final WebClient webClient;
-
-
+    
     @Override
     public Mono<UsersBucketInfo> getBucketInfoByClientId(String clientId) {
         return null;

@@ -1,7 +1,7 @@
 package com.crombucket.storageservice.interceptors;
 
 import com.crombucket.storageservice.auth.BucketAuthorizationBase;
-import com.cromxt.proto.files.FileMetadata;
+import com.crombucket.proto.storagenode.FileMetadata;
 import io.grpc.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

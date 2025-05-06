@@ -5,7 +5,7 @@ import com.crombucket.storagemanager.dtos.requests.StorageNodeRequest;
 import com.crombucket.storagemanager.dtos.response.ClusterResponse;
 import com.crombucket.storagemanager.repository.Page;
 import com.crombucket.storagemanager.dtos.response.StorageNodeResponse;
-import com.crombucket.storagemanager.entity.StorageClusters;
+import com.crombucket.storagemanager.entity.Clusters;
 import com.crombucket.storagemanager.entity.StorageNode;
 import com.crombucket.storagemanager.service.EntityMapperService;
 import org.springframework.stereotype.Service;
@@ -18,8 +18,8 @@ public class EntityMapperServiceImpl implements EntityMapperService {
 
 
     @Override
-    public StorageClusters createClusterEntityFromClusterRequest(ClusterRequest clusterRequest) {
-        return StorageClusters.builder()
+    public Clusters createClusterEntityFromClusterRequest(ClusterRequest clusterRequest) {
+        return Clusters.builder()
                 .clusterCode(clusterRequest.clusterCode())
                 .createdOn(LocalDate.now())
                 .capacity(0L)
@@ -27,7 +27,7 @@ public class EntityMapperServiceImpl implements EntityMapperService {
     }
 
     @Override
-    public ClusterResponse createStorageClustersResponseFromStorageCluster(StorageClusters savedCluster) {
+    public ClusterResponse createStorageClustersResponseFromStorageCluster(Clusters savedCluster) {
         return new ClusterResponse(
                 savedCluster.getId(),
                 savedCluster.getClusterCode(),
@@ -37,7 +37,7 @@ public class EntityMapperServiceImpl implements EntityMapperService {
 
     @Override
     public StorageNode createStorageNodeFromNodeRequest(StorageNodeRequest nodeRequest) {
-        StorageClusters cluster = StorageClusters.builder().clusterCode(nodeRequest.clusterCode()).build();
+        Clusters cluster = Clusters.builder().clusterCode(nodeRequest.clusterCode()).build();
         return StorageNode.builder()
                 .createdAt(LocalDate.now())
                 .storageCode(nodeRequest.storageNodeCode())

@@ -1,18 +1,19 @@
 package com.crombucket.storagemanager.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.time.LocalDate;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
-import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Document
 @AllArgsConstructor
@@ -27,7 +28,7 @@ public class StorageNode {
     private String storageCode;
     @JsonManagedReference
     @DocumentReference(lookup = "{ 'clusterCode' : ?#{#target} }")
-    private StorageClusters clusters;
+    private Clusters clusters;
     private LocalDate createdAt;
     private LocalDate clusterJoinedDate;
     private Long availableSpace;

@@ -50,10 +50,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.cromxt.toolkit</groupId>
-			<artifactId>cromxt-maven-toolkit</artifactId>
-			<version>1.0-SNAPSHOT</version>
-			<scope>compile</scope>
+			<groupId>com.cromxt.crombucket</groupId>
+			<artifactId>crombucket-sdk</artifactId>
+			<version>0.0.1</version>
 		</dependency>
 	</dependencies>
 

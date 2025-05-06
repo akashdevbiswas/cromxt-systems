@@ -2,7 +2,7 @@ package com.crombucket.storageservice.interceptors;
 
 
 import com.crombucket.storageservice.auth.BucketAuthorizationBase;
-import com.cromxt.proto.files.AuthKey;
+import com.crombucket.proto.storagenode.AuthKey;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.grpc.*;
 import lombok.RequiredArgsConstructor;

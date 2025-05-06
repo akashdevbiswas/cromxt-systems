@@ -1,8 +1,9 @@
 package com.crombucket.storageservice.client;
 
+import com.crombucket.common.mediaservice.response.MediaObjects;
 import com.crombucket.storageservice.constants.FileVisibility;
 import com.crombucket.storageservice.models.FileObjects;
-import com.crombucket.common.mediamanager.response.MediaObjects;
+
 import reactor.core.publisher.Mono;
 
 

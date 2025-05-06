@@ -1,9 +1,9 @@
 package com.cromxt.crombucket.sdk.clients;
 
-import com.cromxt.crombucket.grpc.MediaHeadersKey;
-import com.cromxt.crombucket.routeing.StorageServerAddress;
-import com.cromxt.proto.files.FileMetadata;
-import com.cromxt.proto.files.Visibility;
+import com.crombucket.common.grpc.MediaHeadersKey;
+import com.crombucket.common.routeing.StorageServerAddress;
+import com.crombucket.proto.storagenode.FileMetadata;
+import com.crombucket.proto.storagenode.Visibility;
 import com.cromxt.crombucket.sdk.FileVisibility;
 import io.grpc.ManagedChannel;
 import io.grpc.Metadata;

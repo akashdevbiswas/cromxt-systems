@@ -1,10 +1,10 @@
 package com.cromxt.reactiveweb;
 
 
-import com.cromxt.toolkit.crombucket.BucketUserDetails;
-import com.cromxt.toolkit.crombucket.clients.ReactiveCromBucketClient;
-import com.cromxt.toolkit.crombucket.clients.impl.ReactiveCromBucketClientImpl;
-import com.cromxt.toolkit.crombucket.users.LocalBucketUserDetails;
+import com.cromxt.crombucket.sdk.BucketUserDetails;
+import com.cromxt.crombucket.sdk.clients.ReactiveCromBucketClient;
+import com.cromxt.crombucket.sdk.clients.impl.ReactiveCromBucketClientImpl;
+import com.cromxt.crombucket.sdk.users.LocalBucketUserDetails;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;

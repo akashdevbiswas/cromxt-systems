@@ -1,6 +1,6 @@
 package com.crombucket.storagemanager.repository.impl;
 
-import com.crombucket.storagemanager.entity.StorageClusters;
+import com.crombucket.storagemanager.entity.Clusters;
 import com.crombucket.storagemanager.entity.StorageNode;
 import com.crombucket.storagemanager.exceptions.InvalidRequestException;
 import com.crombucket.storagemanager.exceptions.MongoDBConnectionException;
@@ -33,7 +33,7 @@ public class MongoDBRepositoryImplStorage implements StorageClustersRepository, 
 
 
     @Override
-    public Mono<StorageClusters> saveClusters(StorageClusters cluster) {
+    public Mono<Clusters> saveClusters(Clusters cluster) {
         return mongoTemplate.save(cluster).onErrorResume(err -> {
             log.error(err.getMessage());
             return Mono.error(new MongoDBConnectionException("An Unexpected error occurred while save the cluster."));
@@ -41,15 +41,15 @@ public class MongoDBRepositoryImplStorage implements StorageClustersRepository, 
     }
 
     @Override
-    public Mono<Page<StorageClusters>> findAllClusters(Pageable pageable) {
+    public Mono<Page<Clusters>> findAllClusters(Pageable pageable) {
         Query query = new Query();
-        return findAllPageable(StorageClusters.class,query,pageable);
+        return findAllPageable(Clusters.class,query,pageable);
     }
 
     @Override
-    public Mono<StorageClusters> findClusterByClusterCode(String clusterCode) {
+    public Mono<Clusters> findClusterByClusterCode(String clusterCode) {
         Query query = queryGenerator.createQueryToFindClustersByClustersCode(clusterCode);
-        return mongoTemplate.findOne(query, StorageClusters.class);
+        return mongoTemplate.findOne(query, Clusters.class);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class MongoDBRepositoryImplStorage implements StorageClustersRepository, 
                     }
                     Query findClusterQuery = new Query().addCriteria(Criteria.where(ID).is(clusterCode));
                     return mongoTemplate
-                            .remove(findClusterQuery, StorageClusters.class)
+                            .remove(findClusterQuery, Clusters.class)
                             .flatMap(deleteResult -> {
                                 if (!deleteResult.wasAcknowledged()) {
                                     return Mono.error(new MongoDBConnectionException("The object is not deleted."));

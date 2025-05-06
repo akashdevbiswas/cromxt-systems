@@ -5,7 +5,7 @@ import com.crombucket.storageservice.models.FileObjects;
 import com.crombucket.storageservice.service.AccessURLGenerator;
 import com.crombucket.storageservice.service.FileService;
 import com.crombucket.storageservice.service.GRPCService;
-import com.cromxt.proto.files.*;
+import com.crombucket.proto.storagenode.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

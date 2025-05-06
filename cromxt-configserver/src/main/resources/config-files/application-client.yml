@@ -1,1 +1,1 @@
-TOKEN_EXPIRATION_REDIRECTION_URL: http://localhost:4200/login
+TOKEN_EXPIRATION_REDIRECTION_URL: http://localhost:4200/auth

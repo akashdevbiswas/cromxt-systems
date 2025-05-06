@@ -1,26 +1,29 @@
 package com.cromxt.auth.service.impl;
 
 
-import com.cromxt.auth.JwtService;
+import java.util.HashMap;
+import java.util.List;
+
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.cromxt.auth.dtos.responses.UserResponse;
 import com.cromxt.auth.entity.Role;
 import com.cromxt.auth.entity.UserEntity;
 import com.cromxt.auth.repository.UserRepository;
 import com.cromxt.auth.requests.UserCredentials;
-import com.cromxt.auth.requests.UserDetailsDTO;
+import com.cromxt.auth.requests.UserRequest;
 import com.cromxt.auth.responses.AuthTokens;
 import com.cromxt.auth.service.AuthService;
+import com.cromxt.auth.service.EntityMapperService;
 import com.cromxt.auth.service.UserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.ReactiveAuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
+import com.cromxt.authentication.JwtService;
 
-import java.util.HashMap;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Mono;
 
 
 @Service
@@ -31,6 +34,7 @@ public class UserServiceImpl implements AuthService, UserService {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EntityMapperService entityMapperService;
 
 
     @Override
@@ -47,12 +51,12 @@ public class UserServiceImpl implements AuthService, UserService {
     }
 
     @Override
-    public Mono<Void> saveUser(UserDetailsDTO userDetailsDTO) {
+    public Mono<Void> saveUser(UserRequest userDetailsDTO) {
         UserEntity userEntity = getUserEntity(userDetailsDTO);
         return userRepository.save(userEntity).then();
     }
 
-    private UserEntity getUserEntity(UserDetailsDTO userDetailsDTO){
+    private UserEntity getUserEntity(UserRequest userDetailsDTO){
         return UserEntity.builder()
                 .username(userDetailsDTO.username())
                 .email(userDetailsDTO.email())
@@ -62,5 +66,10 @@ public class UserServiceImpl implements AuthService, UserService {
                 .password(passwordEncoder.encode(userDetailsDTO.password()))
                 .gender(userDetailsDTO.gender())
                 .build();
+    }
+
+    @Override
+    public Mono<UserResponse> getUserById(String userId) {
+        return userRepository.findById(userId).map(entityMapperService::getUserResponseFromUserEntity);
     }
 }

@@ -5,16 +5,16 @@ import com.crombucket.storagemanager.dtos.requests.ClusterRequest;
 import com.crombucket.storagemanager.dtos.requests.StorageNodeRequest;
 import com.crombucket.storagemanager.dtos.response.ClusterResponse;
 import com.crombucket.storagemanager.dtos.response.StorageNodeResponse;
-import com.crombucket.storagemanager.entity.StorageClusters;
+import com.crombucket.storagemanager.entity.Clusters;
 import com.crombucket.storagemanager.entity.StorageNode;
 
 import java.util.List;
 
 public interface EntityMapperService {
 
-    StorageClusters createClusterEntityFromClusterRequest(ClusterRequest clusterRequest);
+    Clusters createClusterEntityFromClusterRequest(ClusterRequest clusterRequest);
 
-    ClusterResponse createStorageClustersResponseFromStorageCluster(StorageClusters savedCluster);
+    ClusterResponse createStorageClustersResponseFromStorageCluster(Clusters savedCluster);
 
     StorageNode createStorageNodeFromNodeRequest(StorageNodeRequest nodeRequest);
 

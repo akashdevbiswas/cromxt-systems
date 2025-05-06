@@ -4,7 +4,7 @@ import com.crombucket.storageservice.constants.FileVisibility;
 import com.crombucket.storageservice.exception.MediaOperationException;
 import com.crombucket.storageservice.models.FileObjects;
 import com.crombucket.storageservice.service.FileService;
-import com.cromxt.proto.files.FileUploadRequest;
+import com.crombucket.proto.storagenode.FileUploadRequest;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;

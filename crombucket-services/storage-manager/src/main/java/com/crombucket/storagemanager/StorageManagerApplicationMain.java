@@ -1,10 +1,9 @@
 package com.crombucket.storagemanager;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.env.Environment;
+
+import lombok.RequiredArgsConstructor;
 
 @SpringBootApplication
 @RequiredArgsConstructor

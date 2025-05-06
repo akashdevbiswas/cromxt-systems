@@ -4,7 +4,7 @@ import com.crombucket.storagemanager.dtos.requests.ClusterRequest;
 import com.crombucket.storagemanager.dtos.requests.StorageNodeRequest;
 import com.crombucket.storagemanager.dtos.response.ClusterResponse;
 import com.crombucket.storagemanager.dtos.response.StorageNodeResponse;
-import com.crombucket.storagemanager.entity.StorageClusters;
+import com.crombucket.storagemanager.entity.Clusters;
 import com.crombucket.storagemanager.entity.StorageNode;
 import com.crombucket.storagemanager.exceptions.InvalidRequestException;
 import com.crombucket.storagemanager.exceptions.MongoDBConnectionException;
@@ -42,7 +42,7 @@ public class EntityServiceImpl implements StorageClusterService, StorageNodeServ
 
     @Override
     public Mono<ClusterResponse> createNewCluster(ClusterRequest clusterRequest) {
-        StorageClusters storageCluster = entityMapperService.createClusterEntityFromClusterRequest(clusterRequest);
+        Clusters storageCluster = entityMapperService.createClusterEntityFromClusterRequest(clusterRequest);
         return storageClustersRepository.saveClusters(storageCluster).map(entityMapperService::createStorageClustersResponseFromStorageCluster);
     }
 

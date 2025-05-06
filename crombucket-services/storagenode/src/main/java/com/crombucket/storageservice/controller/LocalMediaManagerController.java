@@ -1,7 +1,9 @@
 package com.crombucket.storageservice.controller;
 
 
-import com.crombucket.common.mediamanager.response.MediaObjects;
+import com.crombucket.common.mediaservice.requests.MediaObjectInitializeRequest;
+import com.crombucket.common.mediaservice.response.MediaObjects;
+import com.crombucket.common.mediaservice.response.MediaAddress;
 import com.crombucket.storageservice.dtos.UpdateMediaVisibilityRequest;
 import com.crombucket.storageservice.repository.MediaRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,11 @@ public class LocalMediaManagerController {
 
     private final MediaRepository mediaRepository;
 
+    
+    @PostMapping
+    public Mono<MediaAddress> saveMedia(@RequestBody MediaObjectInitializeRequest mediaSaveRequest){
+        return null;
+    } 
 
     @GetMapping
     public Flux<MediaObjects> getMedias(){

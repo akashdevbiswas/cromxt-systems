@@ -1,10 +1,10 @@
 package com.example.web;
 
 
-import com.cromxt.toolkit.crombucket.BucketUserDetails;
-import com.cromxt.toolkit.crombucket.clients.CromBucketWebClient;
-import com.cromxt.toolkit.crombucket.clients.impl.CromBucketWebClientImpl;
-import com.cromxt.toolkit.crombucket.users.LocalBucketUserDetails;
+import com.cromxt.crombucket.sdk.BucketUserDetails;
+import com.cromxt.crombucket.sdk.clients.CromBucketWebClient;
+import com.cromxt.crombucket.sdk.clients.impl.CromBucketWebClientImpl;
+import com.cromxt.crombucket.sdk.users.LocalBucketUserDetails;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;

@@ -1,8 +1,8 @@
 package com.cromxt.auth.config;
 
 
-import com.cromxt.auth.JwtAuthenticationFilter;
-import com.cromxt.auth.JwtService;
+import com.cromxt.authentication.webflux.ReactiveJwtAuthenticationFilter;
+import com.cromxt.authentication.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,12 +33,12 @@ public class SecurityConfig {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity serverHttpSecurity) {
         String tokenExpirationRedirectionUrl = environment.getProperty("TOKEN_EXPIRATION_REDIRECTION_URL", String.class);
 
-        JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtService,tokenExpirationRedirectionUrl);
+        ReactiveJwtAuthenticationFilter jwtFilter = new ReactiveJwtAuthenticationFilter(jwtService,tokenExpirationRedirectionUrl);
 
         return serverHttpSecurity
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .authorizeExchange(authorizeExchangeSpec ->
                         authorizeExchangeSpec
                                 .pathMatchers(whitelistUrl).permitAll()

@@ -1,3 +1,0 @@
-com/cromxt/auth/JwtService.class
-com/cromxt/auth/JwtAuthenticationFilter.class
-com/cromxt/auth/impl/JwtServiceImpl.class
