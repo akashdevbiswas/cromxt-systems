@@ -3,26 +3,27 @@ package com.crombucket.storagemanager.entity;
 import java.time.LocalDate;
 
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+
+
 
 @Document
-@Builder
 @AllArgsConstructor
-@Getter
-@Setter
-public class VirtualStorages {
+@Builder
+@Data
+public class Regions {
+  @Id
   private String id;
-  private MemoryType memoryType;
-  @DBRef
-  private Clusters clusters;
-  @DBRef
-  private Bucket bucketId;
+  @Indexed(unique = true)
+  private String regionCode;
+  @Indexed(unique = true)
+  private String regionName;
   @CreatedDate
-  private LocalDate createdAt;
+  private LocalDate startedOn;
 }

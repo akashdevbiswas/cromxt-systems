@@ -1,14 +1,18 @@
 package com.crombucket.common;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import reactor.core.publisher.Mono;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
+
+
+@Slf4j
 public class ResponseBuilderImpl implements ResponseBuilder {
 
 
@@ -31,6 +35,7 @@ public class ResponseBuilderImpl implements ResponseBuilder {
             HttpHeaders headers = generateHeaders(message, extraHeaders);
             return new ResponseEntity<>(clusterResponse,headers, status);
         }).onErrorResume(err->{
+            log.error("Error occurred to perform operation {}",err.getMessage());
             HttpHeaders httpHeaders = generateHeaders(err.getMessage(),new HashMap<>());
             return Mono.just(ResponseEntity.badRequest().headers(httpHeaders).build());
         });

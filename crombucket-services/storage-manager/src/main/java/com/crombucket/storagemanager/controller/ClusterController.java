@@ -28,14 +28,14 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping(value = "/api/v1/clusters")
 @RequiredArgsConstructor
-public class StorageClusterController {
+public class ClusterController {
 
     private final StorageClusterService storageClusterService;
     private final ResponseBuilder responseBuilder;
 
 
-    @PostMapping
-    public Mono<ResponseEntity<ClusterResponse>> createClusters(@RequestBody ClusterRequest clusterRequest) {
+    @PostMapping(value = {"/{regionCode}"})
+    public Mono<ResponseEntity<ClusterResponse>> createClusters(@PathVariable String regionCode, @RequestBody ClusterRequest clusterRequest) {
         Mono<ClusterResponse> clusterResponseMono = storageClusterService.createNewCluster(clusterRequest);
         return responseBuilder.buildResponseWithBody(clusterResponseMono, HttpStatus.CREATED);
     }

@@ -1,12 +1,15 @@
 package com.crombucket.storagemanager.repository.impl;
 
 import com.crombucket.storagemanager.entity.Clusters;
+import com.crombucket.storagemanager.entity.Regions;
 import com.crombucket.storagemanager.entity.StorageNode;
 import com.crombucket.storagemanager.exceptions.InvalidRequestException;
 import com.crombucket.storagemanager.exceptions.MongoDBConnectionException;
 import com.crombucket.storagemanager.repository.Page;
 import com.crombucket.storagemanager.repository.QueryGenerator;
-import com.crombucket.storagemanager.repository.StorageClustersRepository;
+import com.crombucket.storagemanager.repository.RegionRepository;
+import com.crombucket.storagemanager.repository.BucketRepository;
+import com.crombucket.storagemanager.repository.ClustersRepository;
 import com.crombucket.storagemanager.repository.StorageNodeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,11 +23,13 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import javax.swing.plaf.synth.Region;
+
 
 @Repository
 @RequiredArgsConstructor
 @Slf4j
-public class MongoDBRepositoryImplStorage implements StorageClustersRepository, StorageNodeRepository {
+public class MongoDBRepositoryImpl implements ClustersRepository, StorageNodeRepository,BucketRepository, RegionRepository {
 
     private final ReactiveMongoTemplate mongoTemplate;
     private final QueryGenerator queryGenerator;
@@ -121,5 +126,29 @@ public class MongoDBRepositoryImplStorage implements StorageClustersRepository, 
         int pageNumber = totalNumberOfPages < (pageable.getPageNumber() * pageable.getPageSize()) ? totalNumberOfPages - 1 : pageable.getPageNumber();
         return PageRequest.of(pageNumber,pageable.getPageSize(),pageable.getSort());
     }
+
+    @Override
+    public Mono<Clusters> getLargeCluster() {
+        Query findLargeSpaceAvailableCluster = queryGenerator.createQueryToFindClusterHavingLargeSpace();
+        return mongoTemplate.findOne(findLargeSpaceAvailableCluster, Clusters.class);
+    }
+
+    @Override
+    public Mono<Regions> saveRegion(Regions region) {
+        return mongoTemplate.save(region);
+    }
+
+    @Override
+    public Mono<Regions> findRegionByRegionCode(String regionCode) {
+        Query query = queryGenerator.createQueryToFindRegionByRegionCode(regionCode);
+        return mongoTemplate.findOne(query, Regions.class);
+    }
+
+    @Override
+    public Mono<Page<Regions>> findAllRegionsByName(String regionName, Pageable pageable) {
+        Query query = queryGenerator.createQueryToFindAllRegionsByName(regionName);
+        return findAllPageable(Regions.class, query, pageable);
+    }
+    
 
 }

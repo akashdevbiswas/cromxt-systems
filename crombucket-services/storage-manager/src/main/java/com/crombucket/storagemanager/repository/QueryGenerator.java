@@ -8,4 +8,10 @@ public interface QueryGenerator {
     Query createQueryToFindAllStorageNodeWhereClusterCode(String clusterCode);
 
     Query createQueryToFindClustersByClustersCode(String clusterCode);
+
+    Query createQueryToFindClusterHavingLargeSpace();
+
+    Query createQueryToFindRegionByRegionCode(String regionCode);
+
+    Query createQueryToFindAllRegionsByName(String regionName);
 }

@@ -1,10 +1,14 @@
 package com.crombucket.storagemanager.repository.impl;
 
-import com.crombucket.storagemanager.entity.Clusters;
-import com.crombucket.storagemanager.repository.QueryGenerator;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+
+import com.crombucket.storagemanager.entity.Clusters;
+import com.crombucket.storagemanager.repository.QueryGenerator;
 
 @Service
 public class QueryGeneratorImpl implements QueryGenerator {
@@ -21,5 +25,18 @@ public class QueryGeneratorImpl implements QueryGenerator {
     @Override
     public Query createQueryToFindClustersByClustersCode(String clusterCode){
         return new Query().addCriteria(Criteria.where(CLUSTER_CODE).is(clusterCode));
+    }
+    @Override
+    public Query createQueryToFindClusterHavingLargeSpace() {
+        Sort sort = Sort.by(Order.by("availableSpace").with(Sort.Direction.DESC));
+        return new Query().with(sort);
+    }
+    @Override
+    public Query createQueryToFindRegionByRegionCode(String regionCode) {
+        return new Query().addCriteria(Criteria.where("regionCode").is(regionCode));
+    }
+    @Override
+    public Query createQueryToFindAllRegionsByName(String regionName) {
+        return new Query().addCriteria(Criteria.where("regionName").alike(Example.of(regionName)));
     }
 }

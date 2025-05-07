@@ -1,11 +1,12 @@
 package com.crombucket.storagemanager.repository;
 
-import com.crombucket.storagemanager.entity.Clusters;
 import org.springframework.data.domain.Pageable;
-import reactor.core.publisher.Flux;
+
+import com.crombucket.storagemanager.entity.Clusters;
+
 import reactor.core.publisher.Mono;
 
-public interface StorageClustersRepository {
+public interface ClustersRepository {
 
     Mono<Clusters> saveClusters(Clusters cluster);
 
@@ -14,5 +15,7 @@ public interface StorageClustersRepository {
     Mono<Clusters> findClusterByClusterCode(String clusterCode);
 
     Mono<Long> deleteCluster(String clusterCode);
+
+    Mono<Clusters> getLargeCluster();
 
 }

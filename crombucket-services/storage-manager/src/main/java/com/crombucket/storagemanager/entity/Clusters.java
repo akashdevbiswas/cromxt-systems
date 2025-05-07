@@ -22,5 +22,6 @@ public class Clusters {
     @Indexed(unique = true)
     private String clusterCode;
     private Long capacity;
+    private Long availableSpace;
     private LocalDate createdOn;
 }

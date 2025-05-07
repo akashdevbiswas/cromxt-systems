@@ -3,9 +3,11 @@ package com.crombucket.storagemanager.service.impl;
 import com.crombucket.storagemanager.dtos.requests.ClusterRequest;
 import com.crombucket.storagemanager.dtos.requests.StorageNodeRequest;
 import com.crombucket.storagemanager.dtos.response.ClusterResponse;
+import com.crombucket.storagemanager.dtos.response.RegionResponse;
 import com.crombucket.storagemanager.repository.Page;
 import com.crombucket.storagemanager.dtos.response.StorageNodeResponse;
 import com.crombucket.storagemanager.entity.Clusters;
+import com.crombucket.storagemanager.entity.Regions;
 import com.crombucket.storagemanager.entity.StorageNode;
 import com.crombucket.storagemanager.service.EntityMapperService;
 import org.springframework.stereotype.Service;
@@ -70,6 +72,11 @@ public class EntityMapperServiceImpl implements EntityMapperService {
                 .results(page.getResults())
                 .currentPage(page.getCurrentPage())
                 .build();
+    }
+
+    @Override
+    public RegionResponse createRegionResponseFromRegions(Regions regions) {
+        return new RegionResponse(regions.getRegionName(), regions.getRegionCode(), regions.getStartedOn());
     }
 
 
