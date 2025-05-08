@@ -1,21 +1,24 @@
 package com.crombucket.storagemanager.filter;
 
-import lombok.RequiredArgsConstructor;
+import java.security.Security;
+import java.util.List;
+import java.util.Objects;
+
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
-import reactor.core.publisher.Mono;
-import reactor.util.context.Context;
 
-import java.util.List;
-import java.util.Objects;
+import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 public class ApiKeyAuthenticationFilter implements WebFilter {
@@ -25,11 +28,19 @@ public class ApiKeyAuthenticationFilter implements WebFilter {
     @NonNull
     @Override
     public Mono<Void> filter(@NonNull ServerWebExchange exchange, @NonNull WebFilterChain chain) {
-
         Mono<SecurityContext> contextMono = ReactiveSecurityContextHolder.getContext();
         return contextMono
-                .flatMap(ignored -> chain.filter(exchange))
-                .switchIfEmpty(verifyApiKey(exchange, chain));
+        .switchIfEmpty(Mono.defer(()-> {
+            System.out.println("This is ApiKeyAuthenticationFilter");
+            return Mono.just(new SecurityContextImpl());
+        }))
+        .flatMap(context->{
+            if (context.getAuthentication() != null) {
+                return chain.filter(exchange);
+            }
+            return verifyApiKey(exchange, chain);
+        });
+                
     }
 
     private Mono<Void> verifyApiKey(ServerWebExchange exchange, WebFilterChain chain) {
@@ -41,9 +52,11 @@ public class ApiKeyAuthenticationFilter implements WebFilter {
         }
         List<? extends GrantedAuthority> authority = List.of(
                 new SimpleGrantedAuthority("ROLE_SERVICE"));
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken("SERVICE",
+        Authentication authenticationToken = new UsernamePasswordAuthenticationToken("SERVICE",
                 null, authority);
-        Context authContext = ReactiveSecurityContextHolder.withAuthentication(authenticationToken);
-        return chain.filter(exchange).contextWrite(authContext);
+
+        SecurityContext context = new SecurityContextImpl(authenticationToken);
+        return chain.filter(exchange)
+                .contextWrite(ReactiveSecurityContextHolder.withSecurityContext(Mono.just(context)));
     }
 }
