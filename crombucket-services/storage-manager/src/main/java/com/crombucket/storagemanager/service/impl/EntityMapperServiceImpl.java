@@ -20,11 +20,13 @@ public class EntityMapperServiceImpl implements EntityMapperService {
 
 
     @Override
-    public Clusters createClusterEntityFromClusterRequest(ClusterRequest clusterRequest) {
+    public Clusters createClusterEntityFromClusterRequest(Regions region, ClusterRequest clusterRequest) {
         return Clusters.builder()
                 .clusterCode(clusterRequest.clusterCode())
                 .createdOn(LocalDate.now())
                 .capacity(0L)
+                .availableSpace(0L)
+                .region(region)
                 .build();
     }
 
@@ -33,7 +35,8 @@ public class EntityMapperServiceImpl implements EntityMapperService {
         return new ClusterResponse(
                 savedCluster.getId(),
                 savedCluster.getClusterCode(),
-                savedCluster.getCapacity()
+                savedCluster.getCapacity(),
+                createRegionResponseFromRegions(savedCluster.getRegion())
         );
     }
 

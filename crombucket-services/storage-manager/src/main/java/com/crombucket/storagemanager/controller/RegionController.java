@@ -37,9 +37,8 @@ public class RegionController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public Mono<ResponseEntity<RegionResponse>> createRegion(@RequestBody RegionRequest regionRequest) {
-    // Mono<RegionResponse> regionResponse = regionService.createRegion(regionRequest);
-    // return responseBuilder.buildResponseWithBody(regionResponse, HttpStatus.CREATED);
-    return null;
+    Mono<RegionResponse> regionResponse = regionService.createRegion(regionRequest);
+    return responseBuilder.buildResponseWithBody(regionResponse, HttpStatus.CREATED);
   }
 
   @GetMapping(value = "/name/{regionName}")

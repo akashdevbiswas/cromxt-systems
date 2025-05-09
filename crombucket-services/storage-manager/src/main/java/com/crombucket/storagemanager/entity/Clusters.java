@@ -1,15 +1,17 @@
 package com.crombucket.storagemanager.entity;
 
 
+import java.time.LocalDate;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.time.LocalDate;
 
 @Document
 @AllArgsConstructor
@@ -24,4 +26,6 @@ public class Clusters {
     private Long capacity;
     private Long availableSpace;
     private LocalDate createdOn;
+    @DBRef
+    private Regions region;
 }

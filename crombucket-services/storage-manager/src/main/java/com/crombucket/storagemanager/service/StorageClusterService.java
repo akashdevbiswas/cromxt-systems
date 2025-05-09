@@ -7,7 +7,7 @@ import com.crombucket.storagemanager.utility.ClusterSortingOrder;
 import reactor.core.publisher.Mono;
 
 public interface StorageClusterService {
-    Mono<ClusterResponse> createNewCluster(ClusterRequest clusterRequest);
+    Mono<ClusterResponse> createNewCluster(String regionCode, ClusterRequest clusterRequest);
 
     Mono<Page<ClusterResponse>> getAllStorageClusters(Integer pageNumber, Integer pageSize, ClusterSortingOrder order);
 

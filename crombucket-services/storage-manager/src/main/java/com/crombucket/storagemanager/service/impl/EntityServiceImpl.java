@@ -47,10 +47,16 @@ public class EntityServiceImpl implements StorageClusterService, StorageNodeServ
     private final RegionRepository regionRepository;
 
     @Override
-    public Mono<ClusterResponse> createNewCluster(ClusterRequest clusterRequest) {
-        Clusters storageCluster = entityMapperService.createClusterEntityFromClusterRequest(clusterRequest);
-        return storageClustersRepository.saveClusters(storageCluster)
-                .map(entityMapperService::createStorageClustersResponseFromStorageCluster);
+    public Mono<ClusterResponse> createNewCluster(String regionCode, ClusterRequest clusterRequest) {
+        Mono<Regions> regionsMono = regionRepository.findRegionByRegionCode(regionCode);
+        return regionsMono
+                .switchIfEmpty(Mono.error(
+                        new InvalidRequestException("Region with regionCode: " + regionCode + " does not exist.")))
+                .flatMap(regions -> {
+                    Clusters storageCluster = entityMapperService.createClusterEntityFromClusterRequest(regions, clusterRequest);
+                    return storageClustersRepository.saveClusters(storageCluster)
+                            .map(entityMapperService::createStorageClustersResponseFromStorageCluster);
+                });
     }
 
     @Override

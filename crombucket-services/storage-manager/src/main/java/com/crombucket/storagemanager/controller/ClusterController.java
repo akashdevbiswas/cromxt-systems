@@ -36,7 +36,7 @@ public class ClusterController {
 
     @PostMapping(value = {"/{regionCode}"})
     public Mono<ResponseEntity<ClusterResponse>> createClusters(@PathVariable String regionCode, @RequestBody ClusterRequest clusterRequest) {
-        Mono<ClusterResponse> clusterResponseMono = storageClusterService.createNewCluster(clusterRequest);
+        Mono<ClusterResponse> clusterResponseMono = storageClusterService.createNewCluster(regionCode, clusterRequest);
         return responseBuilder.buildResponseWithBody(clusterResponseMono, HttpStatus.CREATED);
     }
 

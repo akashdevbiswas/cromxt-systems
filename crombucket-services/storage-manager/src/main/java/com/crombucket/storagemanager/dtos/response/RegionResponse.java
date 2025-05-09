@@ -1,11 +1,11 @@
 package com.crombucket.storagemanager.dtos.response;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 public record RegionResponse(
   String regionName,
   String regionCode,
-  LocalDate startedFrom
+  Date startedFrom
 ) {
   
 }

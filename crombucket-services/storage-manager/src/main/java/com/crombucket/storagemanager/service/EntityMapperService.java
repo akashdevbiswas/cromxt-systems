@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface EntityMapperService {
 
-    Clusters createClusterEntityFromClusterRequest(ClusterRequest clusterRequest);
+    Clusters createClusterEntityFromClusterRequest(Regions region, ClusterRequest clusterRequest);
 
     ClusterResponse createStorageClustersResponseFromStorageCluster(Clusters savedCluster);
 

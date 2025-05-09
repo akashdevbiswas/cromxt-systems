@@ -1,6 +1,6 @@
 package com.crombucket.storagemanager.entity;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -25,5 +25,5 @@ public class Regions {
   @Indexed(unique = true)
   private String regionName;
   @CreatedDate
-  private LocalDate startedOn;
+  private Date startedOn;
 }
