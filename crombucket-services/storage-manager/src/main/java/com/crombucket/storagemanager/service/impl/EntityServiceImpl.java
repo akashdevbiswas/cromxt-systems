@@ -22,7 +22,7 @@ import com.crombucket.storagemanager.service.EntityMapperService;
 import com.crombucket.storagemanager.service.RegionService;
 import com.crombucket.storagemanager.service.StorageClusterService;
 import com.crombucket.storagemanager.service.StorageNodeService;
-import com.crombucket.storagemanager.utility.ClusterSortingOrder;
+import com.crombucket.storagemanager.utility.SortingOrder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -53,25 +53,26 @@ public class EntityServiceImpl implements StorageClusterService, StorageNodeServ
                 .switchIfEmpty(Mono.error(
                         new InvalidRequestException("Region with regionCode: " + regionCode + " does not exist.")))
                 .flatMap(regions -> {
-                    Clusters storageCluster = entityMapperService.createClusterEntityFromClusterRequest(regions, clusterRequest);
+                    Clusters storageCluster = entityMapperService.createClusterEntityFromClusterRequest(regions,
+                            clusterRequest);
                     return storageClustersRepository.saveClusters(storageCluster)
-                            .map(entityMapperService::createStorageClustersResponseFromStorageCluster);
+                            .map(entityMapperService::createClustersResponseFromStorageCluster);
                 });
     }
 
     @Override
-    public Mono<Page<ClusterResponse>> getAllStorageClusters(Integer pageNumber, Integer pageSize,
-            ClusterSortingOrder order) {
+    public Mono<Page<ClusterResponse>> getAllClusters(Integer pageNumber, Integer pageSize,
+            SortingOrder order, String regionCodeOrName) {
 
-        final Sort sort = ClusterSortingOrder.getSortingOrder(order);
+        final Sort sort = SortingOrder.getSortingOrder(order);
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
         return storageClustersRepository
-                .findAllClusters(pageable)
+                .findAllClusters(pageable, null)
                 .map(storageClustersPage -> {
                     List<ClusterResponse> storageClusterResponseList = storageClustersPage.getContent().stream()
-                            .map(entityMapperService::createStorageClustersResponseFromStorageCluster).toList();
+                            .map(entityMapperService::createClustersResponseFromStorageCluster).toList();
                     return entityMapperService.pageResponseBuilder(storageClusterResponseList, storageClustersPage);
                 });
     }
@@ -96,7 +97,7 @@ public class EntityServiceImpl implements StorageClusterService, StorageNodeServ
     @Override
     public Mono<ClusterResponse> getClusterById(String clusterCode) {
         return storageClustersRepository.findClusterByClusterCode(clusterCode)
-                .map(entityMapperService::createStorageClustersResponseFromStorageCluster);
+                .map(entityMapperService::createClustersResponseFromStorageCluster);
     }
 
     @Override
@@ -150,10 +151,10 @@ public class EntityServiceImpl implements StorageClusterService, StorageNodeServ
     }
 
     @Override
-    public Mono<Page<RegionResponse>> findAllRegionsByName(String regionName, Integer pageNumber, Integer pageSize) {
+    public Mono<Page<RegionResponse>> findAllRegions(String regionName, Integer pageNumber, Integer pageSize, SortingOrder order) {
         return regionRepository
-                .findAllRegionsByName(regionName,
-                        PageRequest.of(pageNumber, pageSize, Sort.by(Order.desc("startedOn"))))
+                .findRegions(regionName,
+                        PageRequest.of(pageNumber, pageSize, SortingOrder.getSortingOrder(order)))
                 .map(regionPage -> {
                     List<RegionResponse> regionResponseList = regionPage.getContent().stream()
                             .map(entityMapperService::createRegionResponseFromRegions).toList();

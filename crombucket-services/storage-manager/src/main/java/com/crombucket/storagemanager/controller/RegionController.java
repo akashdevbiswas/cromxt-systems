@@ -16,6 +16,7 @@ import com.crombucket.storagemanager.dtos.requests.RegionRequest;
 import com.crombucket.storagemanager.dtos.response.RegionResponse;
 import com.crombucket.storagemanager.repository.Page;
 import com.crombucket.storagemanager.service.RegionService;
+import com.crombucket.storagemanager.utility.SortingOrder;
 
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -41,13 +42,15 @@ public class RegionController {
     return responseBuilder.buildResponseWithBody(regionResponse, HttpStatus.CREATED);
   }
 
-  @GetMapping(value = "/name/{regionName}")
-  public Mono<ResponseEntity<Page<RegionResponse>>> findRegionsByName(
-      @PathVariable String regionName,
+  @GetMapping
+  public Mono<ResponseEntity<Page<RegionResponse>>> findRegionsByName(      
       @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
-      @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-    Mono<Page<RegionResponse>> regionNamesMono = regionService.findAllRegionsByName(regionName, pageNumber, pageSize);
+      @RequestParam(required = false, defaultValue = "10") Integer pageSize,
+      @RequestParam(required = false) String regionNameOrCode,
+      @RequestParam (required = false, defaultValue = "NEWEST") SortingOrder order ) {
+    Mono<Page<RegionResponse>> regionNamesMono = regionService.findAllRegions(regionNameOrCode, pageNumber, pageSize, order);
     return responseBuilder.buildResponseWithBody(regionNamesMono, HttpStatus.OK);
   }
+
 
 }

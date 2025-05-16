@@ -2,13 +2,13 @@ package com.crombucket.storagemanager.utility;
 
 import org.springframework.data.domain.Sort;
 
-public enum ClusterSortingOrder {
+public enum SortingOrder {
     NEWEST,
     OLDER,
     MAX_STORAGE_AVAILABLE,
     MINIMUM_STORAGE_AVAILABLE;
 
-    public static Sort getSortingOrder(ClusterSortingOrder order){
+    public static Sort getSortingOrder(SortingOrder order){
         return switch (order) {
             case NEWEST -> Sort.by(Sort.Order.by("createdOn"));
             case OLDER -> Sort.by(Sort.Order.asc("createdOn"));

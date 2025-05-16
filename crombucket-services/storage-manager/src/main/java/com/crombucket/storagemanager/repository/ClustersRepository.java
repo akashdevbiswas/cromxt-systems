@@ -10,7 +10,7 @@ public interface ClustersRepository {
 
     Mono<Clusters> saveClusters(Clusters cluster);
 
-    Mono<Page<Clusters>> findAllClusters(Pageable pageable);
+    Mono<Page<Clusters>> findAllClusters(Pageable pageable, String regionCodeOrName);
 
     Mono<Clusters> findClusterByClusterCode(String clusterCode);
 

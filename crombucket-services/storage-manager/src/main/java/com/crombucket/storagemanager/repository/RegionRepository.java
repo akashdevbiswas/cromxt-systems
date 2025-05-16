@@ -12,5 +12,5 @@ public interface RegionRepository {
 
   Mono<Regions> findRegionByRegionCode(String regionCode);
 
-  Mono<Page<Regions>> findAllRegionsByName(String regionName, Pageable pageable);
+  Mono<Page<Regions>> findRegions(String regionNameOrCode, Pageable pageable);
 }

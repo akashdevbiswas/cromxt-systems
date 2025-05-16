@@ -54,6 +54,16 @@
             "projectName": "crombucket-gateway",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-StorageNodeApplication<storagenode>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.crombucket.storageservice.StorageNodeApplication",
+            "projectName": "storagenode",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }

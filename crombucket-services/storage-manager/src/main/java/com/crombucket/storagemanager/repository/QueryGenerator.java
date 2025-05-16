@@ -13,5 +13,7 @@ public interface QueryGenerator {
 
     Query createQueryToFindRegionByRegionCode(String regionCode);
 
-    Query createQueryToFindAllRegionsByName(String regionName);
+    Query createQueryToFindAllRegionsByName(String regionNameOrCode);
+
+    Query createQueryToFindAllClustersByRegionNameOrCode(String regionCodeOrName);
 }

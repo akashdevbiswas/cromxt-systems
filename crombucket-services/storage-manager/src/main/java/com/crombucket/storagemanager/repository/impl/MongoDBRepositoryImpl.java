@@ -1,6 +1,7 @@
 package com.crombucket.storagemanager.repository.impl;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,17 +26,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
-
 @Repository
 @RequiredArgsConstructor
 @Slf4j
-public class MongoDBRepositoryImpl implements ClustersRepository, StorageNodeRepository,BucketRepository, RegionRepository {
+public class MongoDBRepositoryImpl
+        implements ClustersRepository, StorageNodeRepository, BucketRepository, RegionRepository {
 
     private final ReactiveMongoTemplate mongoTemplate;
     private final QueryGenerator queryGenerator;
 
     private static final String ID = "id";
-
 
     @Override
     public Mono<Clusters> saveClusters(Clusters cluster) {
@@ -46,9 +46,12 @@ public class MongoDBRepositoryImpl implements ClustersRepository, StorageNodeRep
     }
 
     @Override
-    public Mono<Page<Clusters>> findAllClusters(Pageable pageable) {
-        Query query = new Query();
-        return findAllPageable(Clusters.class,query,pageable);
+    public Mono<Page<Clusters>> findAllClusters(Pageable pageable, String regionCodeOrName) {
+        if (Objects.nonNull(regionCodeOrName) && !regionCodeOrName.isEmpty()) {
+            Query criteriaQuery = queryGenerator.createQueryToFindAllClustersByRegionNameOrCode(regionCodeOrName);
+            return findAllPageable(Clusters.class, criteriaQuery, pageable);
+        }
+        return findAllPageable(Clusters.class, new Query(), pageable);
     }
 
     @Override
@@ -63,7 +66,8 @@ public class MongoDBRepositoryImpl implements ClustersRepository, StorageNodeRep
         return mongoTemplate.count(query, StorageNode.class)
                 .flatMap(storageClusters -> {
                     if (storageClusters > 0) {
-                        throw new InvalidRequestException("The cluster is not empty, there are still active storage nodes.");
+                        throw new InvalidRequestException(
+                                "The cluster is not empty, there are still active storage nodes.");
                     }
                     Query findClusterQuery = new Query().addCriteria(Criteria.where(ID).is(clusterCode));
                     return mongoTemplate
@@ -77,7 +81,6 @@ public class MongoDBRepositoryImpl implements ClustersRepository, StorageNodeRep
                 });
     }
 
-
     @Override
     public Mono<StorageNode> save(StorageNode newStorageNode) {
         return mongoTemplate.save(newStorageNode);
@@ -86,7 +89,7 @@ public class MongoDBRepositoryImpl implements ClustersRepository, StorageNodeRep
     @Override
     public Mono<Page<StorageNode>> findAllStorageNodesByClusterCode(String clusterCode, Pageable pageable) {
         Query findClustersByClustersCode = queryGenerator.createQueryToFindAllStorageNodeWhereClusterCode(clusterCode);
-        return findAllPageable(StorageNode.class,findClustersByClustersCode,pageable);
+        return findAllPageable(StorageNode.class, findClustersByClustersCode, pageable);
     }
 
     @Override
@@ -120,11 +123,13 @@ public class MongoDBRepositoryImpl implements ClustersRepository, StorageNodeRep
 
     private Pageable validatePageable(Long totalNumberOfResults, Pageable pageable) {
         int totalNumberOfPages = (int) Math.ceil((double) totalNumberOfResults / pageable.getPageSize());
-        if(pageable.getPageNumber() ==0){
+        if (pageable.getPageNumber() == 0) {
             return pageable;
         }
-        int pageNumber = totalNumberOfPages < (pageable.getPageNumber() * pageable.getPageSize()) ? totalNumberOfPages - 1 : pageable.getPageNumber();
-        return PageRequest.of(pageNumber,pageable.getPageSize(),pageable.getSort());
+        int pageNumber = totalNumberOfPages < (pageable.getPageNumber() * pageable.getPageSize())
+                ? totalNumberOfPages - 1
+                : pageable.getPageNumber();
+        return PageRequest.of(pageNumber, pageable.getPageSize(), pageable.getSort());
     }
 
     @Override
@@ -145,10 +150,12 @@ public class MongoDBRepositoryImpl implements ClustersRepository, StorageNodeRep
     }
 
     @Override
-    public Mono<Page<Regions>> findAllRegionsByName(String regionName, Pageable pageable) {
-        Query query = queryGenerator.createQueryToFindAllRegionsByName(regionName);
-        return findAllPageable(Regions.class, query, pageable);
+    public Mono<Page<Regions>> findRegions(String regionNameOrCode, Pageable pageable) {
+        if(Objects.nonNull(regionNameOrCode) && !regionNameOrCode.isEmpty()){           
+            Query query = queryGenerator.createQueryToFindAllRegionsByName(regionNameOrCode);
+            return findAllPageable(Regions.class, query, pageable);
+        }
+        return findAllPageable(Regions.class, new Query(), pageable);
     }
-    
 
 }

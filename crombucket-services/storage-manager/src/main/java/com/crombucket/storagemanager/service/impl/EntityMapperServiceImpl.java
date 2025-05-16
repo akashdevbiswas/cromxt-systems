@@ -10,6 +10,9 @@ import com.crombucket.storagemanager.entity.Clusters;
 import com.crombucket.storagemanager.entity.Regions;
 import com.crombucket.storagemanager.entity.StorageNode;
 import com.crombucket.storagemanager.service.EntityMapperService;
+
+import reactor.core.publisher.Mono;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -31,12 +34,11 @@ public class EntityMapperServiceImpl implements EntityMapperService {
     }
 
     @Override
-    public ClusterResponse createStorageClustersResponseFromStorageCluster(Clusters savedCluster) {
+    public ClusterResponse createClustersResponseFromStorageCluster(Clusters savedCluster) {
         return new ClusterResponse(
                 savedCluster.getId(),
                 savedCluster.getClusterCode(),
-                savedCluster.getCapacity(),
-                createRegionResponseFromRegions(savedCluster.getRegion())
+                savedCluster.getCapacity()
         );
     }
 

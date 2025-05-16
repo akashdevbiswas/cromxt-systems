@@ -16,7 +16,7 @@ public interface EntityMapperService {
 
     Clusters createClusterEntityFromClusterRequest(Regions region, ClusterRequest clusterRequest);
 
-    ClusterResponse createStorageClustersResponseFromStorageCluster(Clusters savedCluster);
+    ClusterResponse createClustersResponseFromStorageCluster(Clusters savedCluster);
 
     StorageNode createStorageNodeFromNodeRequest(StorageNodeRequest nodeRequest);
 

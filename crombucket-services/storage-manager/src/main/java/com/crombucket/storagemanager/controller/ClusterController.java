@@ -1,6 +1,5 @@
 package com.crombucket.storagemanager.controller;
 
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,11 +18,10 @@ import com.crombucket.storagemanager.dtos.requests.ClusterRequest;
 import com.crombucket.storagemanager.dtos.response.ClusterResponse;
 import com.crombucket.storagemanager.repository.Page;
 import com.crombucket.storagemanager.service.StorageClusterService;
-import com.crombucket.storagemanager.utility.ClusterSortingOrder;
+import com.crombucket.storagemanager.utility.SortingOrder;
 
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
-
 
 @RestController
 @RequestMapping(value = "/api/v1/clusters")
@@ -33,9 +31,9 @@ public class ClusterController {
     private final StorageClusterService storageClusterService;
     private final ResponseBuilder responseBuilder;
 
-
-    @PostMapping(value = {"/{regionCode}"})
-    public Mono<ResponseEntity<ClusterResponse>> createClusters(@PathVariable String regionCode, @RequestBody ClusterRequest clusterRequest) {
+    @PostMapping(value = { "/{regionCode}" })
+    public Mono<ResponseEntity<ClusterResponse>> createClusters(@PathVariable String regionCode,
+            @RequestBody ClusterRequest clusterRequest) {
         Mono<ClusterResponse> clusterResponseMono = storageClusterService.createNewCluster(regionCode, clusterRequest);
         return responseBuilder.buildResponseWithBody(clusterResponseMono, HttpStatus.CREATED);
     }
@@ -44,9 +42,11 @@ public class ClusterController {
     public Mono<ResponseEntity<Page<ClusterResponse>>> getAllClusters(
             @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
             @RequestParam(required = false, defaultValue = "20") Integer pageSize,
-            @RequestParam(required = false, defaultValue = "NEWEST") ClusterSortingOrder order) {
+            @RequestParam(required = false, defaultValue = "NEWEST") SortingOrder order,
+            @RequestParam(required = false) String regionCodeOrName) {
 
-        Mono<Page<ClusterResponse>> clustersListResponseMono = storageClusterService.getAllStorageClusters(pageNumber, pageSize, order);
+        Mono<Page<ClusterResponse>> clustersListResponseMono = storageClusterService.getAllClusters(pageNumber,
+                pageSize, order, regionCodeOrName);
         return responseBuilder.buildResponseWithBody(clustersListResponseMono, HttpStatus.OK);
     }
 
@@ -60,16 +60,15 @@ public class ClusterController {
     public Mono<ResponseEntity<ClusterAddress>> getMethodName(@PathVariable String clusterCode) {
         return null;
     }
-    
 
     @DeleteMapping("/{clusterCode}")
     public Mono<ResponseEntity<Void>> deleteCluster(@PathVariable String clusterCode) {
         return storageClusterService
                 .deleteCluster(clusterCode)
-                .flatMap(deleteCount->{
+                .flatMap(deleteCount -> {
                     String message = "Number of objects deleted " + deleteCount;
-                    return responseBuilder.buildEmptyResponse(Mono.empty(),HttpStatus.ACCEPTED,message);
-                }).onErrorResume(err-> responseBuilder.buildEmptyResponse(Mono.error(err),HttpStatus.FORBIDDEN));
+                    return responseBuilder.buildEmptyResponse(Mono.empty(), HttpStatus.ACCEPTED, message);
+                }).onErrorResume(err -> responseBuilder.buildEmptyResponse(Mono.error(err), HttpStatus.FORBIDDEN));
     }
 
     @PutMapping("/{clusterCode}")

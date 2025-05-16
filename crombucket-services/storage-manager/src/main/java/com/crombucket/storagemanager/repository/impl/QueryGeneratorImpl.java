@@ -41,11 +41,18 @@ public class QueryGeneratorImpl implements QueryGenerator {
     }
 
     @Override
-    public Query createQueryToFindAllRegionsByName(String regionName) {
-        Regions regionsExample = Regions.builder().regionName(regionName).build();
+    public Query createQueryToFindAllRegionsByName(String regionNameOrCode) {
+        Regions regionsExample = Regions.builder().regionName(regionNameOrCode).regionCode(regionNameOrCode).build();
         ExampleMatcher matcher = ExampleMatcher.matching()
                 .withIgnoreCase()
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
         return new Query().addCriteria(new Criteria().alike(Example.of(regionsExample, matcher)));
+    }
+
+    @Override
+    public Query createQueryToFindAllClustersByRegionNameOrCode(String regionCodeOrName) {
+        return new Query().addCriteria(Criteria.where("regions")
+                    .is(Regions.builder().regionCode(regionCodeOrName).build())
+                    .orOperator(Criteria.where("regions").is(Regions.builder().regionName(regionCodeOrName).build())));
     }
 }
