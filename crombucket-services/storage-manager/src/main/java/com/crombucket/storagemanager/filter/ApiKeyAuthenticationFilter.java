@@ -1,6 +1,5 @@
 package com.crombucket.storagemanager.filter;
 
-import java.security.Security;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,10 +29,7 @@ public class ApiKeyAuthenticationFilter implements WebFilter {
     public Mono<Void> filter(@NonNull ServerWebExchange exchange, @NonNull WebFilterChain chain) {
         Mono<SecurityContext> contextMono = ReactiveSecurityContextHolder.getContext();
         return contextMono
-        .switchIfEmpty(Mono.defer(()-> {
-            System.out.println("This is ApiKeyAuthenticationFilter");
-            return Mono.just(new SecurityContextImpl());
-        }))
+        .switchIfEmpty(Mono.just(new SecurityContextImpl()))
         .flatMap(context->{
             if (context.getAuthentication() != null) {
                 return chain.filter(exchange);
