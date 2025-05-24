@@ -1,17 +1,19 @@
 package com.cromxt.auth.entity;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.util.Collection;
+import java.util.Date;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Builder
@@ -32,6 +34,7 @@ public class UserEntity implements UserDetails {
     private String password;
     private Role role;
     private Gender gender;
+    private Date dateOfBirth;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

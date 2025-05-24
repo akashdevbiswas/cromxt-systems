@@ -1,6 +1,11 @@
 package com.cromxt.auth.service.impl;
 
-
+import java.text.DateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,12 +26,14 @@ import com.cromxt.auth.service.AuthService;
 import com.cromxt.auth.service.EntityMapperService;
 import com.cromxt.auth.service.UserService;
 import com.cromxt.authentication.JwtService;
+import com.mongodb.MongoWriteException;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
-
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements AuthService, UserService {
 
@@ -36,16 +43,17 @@ public class UserServiceImpl implements AuthService, UserService {
     private final PasswordEncoder passwordEncoder;
     private final EntityMapperService entityMapperService;
 
-
     @Override
     public Mono<AuthTokens> authenticateUserCredentials(UserCredentials userCredentials) {
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userCredentials.emailOrUsername(),userCredentials.password());
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                userCredentials.emailOrUsername(), userCredentials.password());
         return authenticationManager
                 .authenticate(token)
                 .map(authentication -> {
                     UserEntity user = (UserEntity) authentication.getPrincipal();
-                    List<String> authorities = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
-                    String authToken = jwtService.generateToken(user.getId(), authorities ,new HashMap<>());
+                    List<String> authorities = user.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                            .toList();
+                    String authToken = jwtService.generateToken(user.getId(), authorities, new HashMap<>());
                     return new AuthTokens(authToken);
                 });
     }
@@ -53,10 +61,21 @@ public class UserServiceImpl implements AuthService, UserService {
     @Override
     public Mono<Void> saveUser(UserRequest userDetailsDTO) {
         UserEntity userEntity = getUserEntity(userDetailsDTO);
-        return userRepository.save(userEntity).then();
+        return userRepository
+                .save(userEntity)
+                .onErrorResume((err)-> {
+                    if(err instanceof MongoWriteException){
+                        return Mono.error(new RuntimeException("User already exists"));
+                    }
+                    return Mono.error(new RuntimeException("An unexpected error occurred while saving the user"));
+                })
+                .then();
     }
 
-    private UserEntity getUserEntity(UserRequest userDetailsDTO){
+    private UserEntity getUserEntity(UserRequest userDetailsDTO) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.parse(userDetailsDTO.dateOfBirth(), formatter);
+
         return UserEntity.builder()
                 .username(userDetailsDTO.username())
                 .email(userDetailsDTO.email())
@@ -65,6 +84,7 @@ public class UserServiceImpl implements AuthService, UserService {
                 .lastName(userDetailsDTO.lastName())
                 .password(passwordEncoder.encode(userDetailsDTO.password()))
                 .gender(userDetailsDTO.gender())
+                .dateOfBirth(Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .build();
     }
 

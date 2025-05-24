@@ -4,6 +4,8 @@ package com.cromxt.auth.config;
 import com.cromxt.authentication.JwtService;
 import com.cromxt.auth.entity.UserEntity;
 import com.cromxt.authentication.JwtServiceImpl;
+import com.cromxt.http.ResponseBuilder;
+import com.cromxt.http.ResponseBuilderImpl;
 import com.cromxt.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,5 +58,10 @@ public class ApplicationConfig {
         UserDetailsRepositoryReactiveAuthenticationManager authManager = new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService);
         authManager.setPasswordEncoder(passwordEncoder);
         return authManager;
+    }
+
+    @Bean
+    ResponseBuilder responseBuilder(){
+        return new ResponseBuilderImpl();
     }
 }

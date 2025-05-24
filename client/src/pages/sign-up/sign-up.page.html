@@ -1,0 +1,54 @@
+<form
+  class="form-container mt-[20px] md:mt-[40px] xl:mt-[80px]"
+  (submit)="onSubmit($event)"
+>
+  <h1 class="form-heading">Sign Up</h1>
+  <input-component
+    [title]="'Username'"
+    [type]="'text'"
+    [formControlName]="username"
+    [focus]="true"
+  ></input-component>
+  <input-component
+    [title]="'Email'"
+    [type]="'email'"
+    [formControlName]="email"
+  ></input-component>
+  <div class="input-group">
+    <input-component
+      [title]="'Password'"
+      [type]="'password'"
+      [formControlName]="password"
+      [passwordView]="true"
+    ></input-component>
+    <input-component
+      [title]="'Confirm Password'"
+      [type]="'password'"
+      [formControlName]="confirmPassword"
+    ></input-component>
+  </div>
+  <div class="input-group">
+    <input-component
+      [title]="'First Name'"
+      [type]="'text'"
+      [formControlName]="firstName"
+    ></input-component>
+    <input-component
+      [title]="'Last Name'"
+      [type]="'text'"
+      [formControlName]="lastName"
+    ></input-component>
+  </div>
+  <input-component
+    [title]="'Date of Birth'"
+    [type]="'date'"
+    [formControlName]="dateOfBirth"
+  ></input-component>
+  <input-component
+    [title]="'Gender'"
+    [type]="'options'"
+    [formControlName]="gender"
+    [options]="genderOptions"
+  ></input-component>
+  <button-component [buttonName]="'Submit'" class="mx-auto mt-2"></button-component>
+</form>

@@ -9,6 +9,7 @@ public record UserRequest(
         String password,
         String firstName,
         String lastName,
-        Gender gender
+        Gender gender,
+        String dateOfBirth
 ) {
 }
